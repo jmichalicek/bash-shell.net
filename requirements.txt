@@ -1,0 +1,16 @@
+Django==1.5.1
+Markdown==2.0.3
+Pillow==2.1.0
+South==0.8.2
+-e git+ssh://git@github.com/jmichalicek/bsblog.git@81f7afebefb23531727dea770dad372379128e88#egg=bsblog-dev
+-e git+ssh://git@github.com/jmichalicek/bscontrolpanel.git@430dd510adec8bef17b4e025710f408379f7ad2c#egg=bscontrolpanel-dev
+-e git+ssh://git@github.com/jmichalicek/bsproject.git@66f0e1f04348edaef05b2a1c2c97c0594ef3dae0#egg=bsproject-dev
+distribute==0.6.24
+dj-database-url==0.2.2
+django-coverage==1.2.4
+django-debug-toolbar==0.9.4
+-e git+ssh://git@github.com/jmichalicek/django-internetdefenseleague.git@8168932ce2ed4c65679c5848c38f0d954c86568b#egg=django_internetdefenseleague-dev
+-e git+ssh://git@github.com/jmichalicek/django-taxonomies.git@078bc0ca54e1f612221168ac1aac9c0c98c5506f#egg=django_taxonomies-dev
+mock==1.0.1
+psycopg2==2.5.1
+uWSGI==1.9.14
