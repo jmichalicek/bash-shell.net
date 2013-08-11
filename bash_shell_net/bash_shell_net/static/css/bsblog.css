@@ -1,0 +1,10 @@
+body {
+    background-position: 0 40px;
+    background-repeat: repeat-x;
+    padding-top: 90px;
+    position: relative;
+}
+
+.gist pre {
+    color: #000000;
+}
