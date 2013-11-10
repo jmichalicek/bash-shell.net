@@ -132,7 +132,6 @@ INSTALLED_APPS = (
     'django.contrib.sitemaps',
     'django_coverage',
     'south',
-    'bscontrolpanel',
     'bsblog',
     'bsproject',
     'taxonomy',
