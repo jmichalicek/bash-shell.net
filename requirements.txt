@@ -2,7 +2,6 @@ Django==1.5.1
 Markdown==2.0.3
 Pillow==2.1.0
 South==0.8.2
--e git+ssh://git@github.com/jmichalicek/bsblog.git@81f7afebefb23531727dea770dad372379128e88#egg=bsblog-dev
 -e git+ssh://git@github.com/jmichalicek/bscontrolpanel.git@430dd510adec8bef17b4e025710f408379f7ad2c#egg=bscontrolpanel-dev
 -e git+ssh://git@github.com/jmichalicek/bsproject.git@66f0e1f04348edaef05b2a1c2c97c0594ef3dae0#egg=bsproject-dev
 distribute==0.6.24

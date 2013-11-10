@@ -1,0 +1,22 @@
+[{"pk": 1,
+  "model": "auth.user",
+  "fields": {
+      "username": "test",
+      "first_name": "",
+      "last_name": "",
+      "is_active": true,
+      "is_superuser": true,
+      "is_staff": true,
+      "last_login": "2012-07-01T02:58:01.073Z",
+      "groups": [],
+      "user_permissions": [],
+      "password": "",
+      "email": "none@example.com",
+      "date_joined": "2012-07-01T02:58:01.073Z"
+  }
+ }, {"pk": 1,
+     "model": "bsblog.userprofile",
+     "fields": {
+         "user": 1
+     }
+ }]

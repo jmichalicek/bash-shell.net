@@ -1,0 +1,51 @@
+[{"pk": 1,
+  "model": "auth.user",
+  "fields": {
+      "username": "test",
+      "first_name": "",
+      "last_name": "",
+      "is_active": true,
+      "is_superuser": true,
+      "is_staff": true,
+      "last_login": "2012-07-01T02:58:01.073Z",
+      "groups": [],
+      "user_permissions": [],
+      "password": "",
+      "email": "none@example.com",
+      "date_joined": "2012-07-01T02:58:01.073Z"
+  }
+ }, {"pk": 1,
+     "model": "bsblog.userprofile",
+     "fields": {
+         "user": 1
+     }
+ }, {"pk": 1,
+     "model": "bsblog.category",
+     "fields": {
+         "name": "Blog"
+     }
+ }, {"pk": 1,
+     "model": "bsblog.post",
+     "fields": {
+         "user_profile": 1,
+	 "category": 1,
+         "title": "Test Post",
+	 "slug": "test-post",
+	 "text_markdown": "**test**",
+	 "text_html": "<p><strong>test</strong></p>",
+	 "created_date": "2012-07-01T18:47:31Z",
+	 "published": true
+    }
+ }, {"pk": 2,
+     "model": "bsblog.post",
+     "fields": {
+         "user_profile": 1,
+         "category": 1,
+         "title": "Test Post",
+         "slug": "test-post",
+         "text_markdown": "**test**",
+         "text_html": "<p><strong>test</strong></p>",
+         "created_date": "2011-07-01T18:47:31Z",
+         "published": true}
+    }
+]
