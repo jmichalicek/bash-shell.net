@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls  import *
 
 urlpatterns = patterns('',
                        url(r'^(?P<project_name>.+)/$', 'bsproject.views.project', name='bsproject_project'),
