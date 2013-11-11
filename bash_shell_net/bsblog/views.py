@@ -36,7 +36,7 @@ def index(request, page=1, post_limit=None):
         post_list = pages.page(page)
     except EmptyPage:
         raise Http404()
-        
+
     return render_to_response(
         'bsblog/index.html',
         {'post_list': post_list,
@@ -49,7 +49,7 @@ def item(request,year,month,day,slug):
     post = get_object_or_404(Post, created_date__year=year,
                              created_date__month=strptime(month, '%b').tm_mon,
                              created_date__day=day, slug=slug)
-    
+
     return render_to_response(
         'bsblog/blog_post.html',
         {'post': post},
