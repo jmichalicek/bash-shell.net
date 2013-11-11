@@ -100,7 +100,7 @@ class ArchiveViewTests(TestCase):
     def test_template(self):
         response = self.client.get(reverse('bsblog_archive'))
         self.assertEqual(response.templates[0].name, 'bsblog/archive.html')
-        
+
     def test_no_args(self):
         response = self.client.get(reverse('bsblog_archive'))
         posts = response.context['post_list']
@@ -182,4 +182,4 @@ class ItemViewTests(TestCase):
         self.assertTrue('post' in response.context)
         self.assertEqual(response.context['post'], self.post)
 
-        
+
