@@ -3,6 +3,9 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.views.decorators.cache import cache_control, cache_page
 from django.http import Http404
+from django.utils import timezone
+
+import pytz
 
 from taxonomy import models as taxonomy
 from models import Post, Category
@@ -46,9 +49,19 @@ def index(request, page=1, post_limit=None):
         )
 
 def item(request,year,month,day,slug):
+
+    # the urls are all dated using the date in UTC.
+    # so make sure we're using UTC to do this lookup or posts made
+    # during an hour where the day is different in UTC than whatever timezone
+    # was set when they were created will 404
+    current_tz = timezone.get_current_timezone()
+    timezone.activate(pytz.UTC)
+
     post = get_object_or_404(Post, created_date__year=year,
                              created_date__month=strptime(month, '%b').tm_mon,
                              created_date__day=day, slug=slug)
+
+    timezone.activate(current_tz)
 
     return render_to_response(
         'bsblog/blog_post.html',
