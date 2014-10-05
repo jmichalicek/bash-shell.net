@@ -2,14 +2,15 @@ Django==1.6
 Markdown==2.3.1
 Pillow==2.2.1
 South==0.8.4
-distribute==0.6.24
 dj-database-url==0.2.2
 django-coverage==1.2.4
-django-debug-toolbar==0.11.0
--e git+ssh://git@github.com/jmichalicek/django-internetdefenseleague.git@8168932ce2ed4c65679c5848c38f0d954c86568b#egg=django_internetdefenseleague-dev
--e git+ssh://git@github.com/jmichalicek/django-taxonomies.git@078bc0ca54e1f612221168ac1aac9c0c98c5506f#egg=django_taxonomies-dev
+django-debug-toolbar==0.11
+-e git+ssh://git@github.com/jmichalicek/django-internetdefenseleague.git@8168932ce2ed4c65679c5848c38f0d954c86568b#egg=django_internetdefenseleague-master
+django-redis-cache==0.13.0
+-e git+ssh://git@github.com/jmichalicek/django-taxonomies.git@078bc0ca54e1f612221168ac1aac9c0c98c5506f#egg=django_taxonomies-master
 mock==1.0.1
 psycopg2==2.5.1
 pytz==2013.8
+redis==2.10.3
 sqlparse==0.1.10
 uWSGI==1.9.19
