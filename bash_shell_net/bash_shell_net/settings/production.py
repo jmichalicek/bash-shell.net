@@ -3,12 +3,22 @@ from .base import *
 TEMPLATE_DEBUG = DEBUG = False
 ALLOWED_HOSTS = ['bash-shell.net']
 
+#CACHES = {
+#    'default': {
+#        'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
+#        'LOCATION': '127.0.0.1:11211',
+#    }
+#}
+
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
-        'LOCATION': '127.0.0.1:11211',
+        'BACKEND': 'redis_cache.RedisCache',
+        'LOCATION': 'localhost:6379',
+        'OPTIONS': {
+            'DB': 2,
+            },
+        },
     }
-}
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.cache.UpdateCacheMiddleware',
