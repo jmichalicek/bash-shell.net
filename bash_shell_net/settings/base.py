@@ -3,7 +3,7 @@ import os
 import dj_database_url
 
 # the dir with manage.py
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 DEFENSE_LEAGUE = True
 
 AUTH_PROFILE_MODULE='bsblog.UserProfile'
