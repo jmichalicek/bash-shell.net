@@ -63,7 +63,7 @@ class ProjectNews(models.Model):
     date_modified = models.DateTimeField(auto_now=True, auto_now_add=True)
     text_html = models.TextField(blank=True)
     text_markdown = models.TextField()
-    published = models.BooleanField(db_index=True)
+    published = models.BooleanField(db_index=True, default=False)
 
     def save(self):
         self.text_html = markdown.markdown(self.text_markdown, safe_mode=False)
