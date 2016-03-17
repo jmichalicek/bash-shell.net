@@ -6,6 +6,7 @@ import dj_database_url
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 DEFENSE_LEAGUE = True
 
+AUT_USER_MODEL = 'auth.User'
 AUTH_PROFILE_MODULE='bsblog.UserProfile'
 
 DEBUG = True
@@ -28,7 +29,7 @@ DATABASES = {'default': dj_database_url.config(
 # timezone as the operating system.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-TIME_ZONE = 'America/New_York'
+TIME_ZONE = 'UTC'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -136,11 +137,13 @@ INSTALLED_APPS = (
     'bsproject',
     'taxonomy',
     'internetdefenseleague',
+    'blog',
+    'projects',
 )
 
 COVERAGE_PATH_EXCLUDES = [r'.svn', r'.git', r'templates', r'static']
 
-#ALLOWED_HOSTS = ['dev.bash-shell.net']
+ALLOWED_HOSTS = ['*']
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
