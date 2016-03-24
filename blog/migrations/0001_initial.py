@@ -23,10 +23,10 @@ class Migration(SchemaMigration):
             ('content', self.gf('django.db.models.fields.TextField')(blank=True)),
             ('created_date', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
             ('updated_date', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
-            ('user_profile', self.gf('django.db.models.fields.related.ForeignKey')(related_name=u'posts', to=orm['bsblog.UserProfile'])),
-            ('is_published', self.gf('django.db.models.fields.BooleanField')(db_index=True)),
-            ('published_date', self.gf('django.db.models.fields.DateTimeField')(db_index=True)),
-            ('slug', self.gf('django.db.models.fields.SlugField')(max_length=50)),
+            ('user_profile', self.gf('django.db.models.fields.related.ForeignKey')(default=None, related_name=u'posts', null=True, blank=True, to=orm['bsblog.UserProfile'])),
+            ('is_published', self.gf('django.db.models.fields.BooleanField')(default=False, db_index=True)),
+            ('published_date', self.gf('django.db.models.fields.DateTimeField')(default=None, null=True, db_index=True, blank=True)),
+            ('slug', self.gf('django.db.models.fields.SlugField')(default=u'', max_length=50, blank=True)),
         ))
         db.send_create_signal(u'blog', ['Post'])
 
@@ -86,13 +86,13 @@ class Migration(SchemaMigration):
             'content': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'created_date': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_published': ('django.db.models.fields.BooleanField', [], {'db_index': 'True'}),
-            'published_date': ('django.db.models.fields.DateTimeField', [], {'db_index': 'True'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'max_length': '50'}),
+            'is_published': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'db_index': 'True'}),
+            'published_date': ('django.db.models.fields.DateTimeField', [], {'default': 'None', 'null': 'True', 'db_index': 'True', 'blank': 'True'}),
+            'slug': ('django.db.models.fields.SlugField', [], {'default': "u''", 'max_length': '50', 'blank': 'True'}),
             'tags': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "u'posts'", 'blank': 'True', 'to': u"orm['blog.Tag']"}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'updated_date': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'user_profile': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'posts'", 'to': u"orm['bsblog.UserProfile']"})
+            'user_profile': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'related_name': "u'posts'", 'null': 'True', 'blank': 'True', 'to': u"orm['bsblog.UserProfile']"})
         },
         u'blog.tag': {
             'Meta': {'ordering': "[u'name']", 'object_name': 'Tag'},

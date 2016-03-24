@@ -20,7 +20,7 @@ class Tag(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.name.lower())
+            self.slug = slugify(u'%s' % self.name.lower())
         super(Tag, self).save(*args, **kwargs)
 
 
@@ -31,13 +31,15 @@ class Post(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     tags = models.ManyToManyField('blog.Tag', blank=True, related_name='posts')
-    user_profile = models.ForeignKey('bsblog.UserProfile', related_name='posts')
-    is_published = models.BooleanField(db_index=True)
-    published_date = models.DateTimeField(db_index=True)
+    user_profile = models.ForeignKey('bsblog.UserProfile', related_name='posts', null=True, default=None, blank=True)
+    is_published = models.BooleanField(db_index=True, default=False, blank=True)
+    published_date = models.DateTimeField(db_index=True, null=True, default=None, blank=True)
 
     slug = models.SlugField(
         help_text='Automatically built from the title.',
-        db_index=True
+        db_index=True,
+        blank=True,
+        default=''
     )
 
     def get_absolute_url(self):
@@ -53,5 +55,5 @@ class Post(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.title.lower())
+            self.slug = slugify(u'%s' % self.title.lower())
         super(Post, self).save(*args, **kwargs)
