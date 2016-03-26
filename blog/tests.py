@@ -31,9 +31,9 @@ class PostTests(TestCase):
     Test the Post model
     """
 
-    @classmethod
-    def setUpClass(cls):
-        cls.post = PublishedPostFactory()
+    def setUp(self):
+        # move this to setUpTestData after django upgrade
+        self.post = PublishedPostFactory()
 
     def test_unicode(self):
         self.assertEqual(self.post.title, self.post.__unicode__())
@@ -55,10 +55,10 @@ class PostListViewTests(TestCase):
 
     URL_NAME = 'blog_post_list'
 
-    @classmethod
-    def setUpClass(cls):
-        cls.published_post = PublishedPostFactory()
-        cls.unpublished_post = UnpublishedPostFactory()
+    def setUp(self):
+        # move this to setUpTestData after django upgrade
+        self.published_post = PublishedPostFactory()
+        self.unpublished_post = UnpublishedPostFactory()
 
     def test_get(self):
         """Make sure we get a 200 response code"""
@@ -80,10 +80,10 @@ class PostDetailViewTests(TestCase):
 
     URL_NAME = 'blog_post_detail'
 
-    @classmethod
-    def setUpClass(cls):
-        cls.post = PublishedPostFactory()
-        cls.unpublished_post = UnpublishedPostFactory()
+    def setUp(self):
+        # move this to setUpTestData after django upgrade
+        self.post = PublishedPostFactory()
+        self.unpublished_post = UnpublishedPostFactory()
 
     def test_get(self):
         """Make sure we get a 200 response code"""
@@ -92,6 +92,7 @@ class PostDetailViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.templates[0].name, 'blog/post_detail.html')
         self.assertTrue('post' in response.context)
+        self.assertTrue('tags' in response.context)
         self.assertEqual(response.context['post'], self.post)
 
     def test_get_unpublished(self):
