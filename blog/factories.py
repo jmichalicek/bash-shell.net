@@ -21,6 +21,8 @@ class PublishedPostFactory(UnpublishedPostFactory):
     is_published = True
     title = factory.Sequence(lambda n: u'Published post %03d' % n)
     content = factory.Sequence(lambda n: u'Content of post %03d' % n)
+    # ensure published_date is in the past
+    published_date = factory.LazyAttribute(lambda n: timezone.now() - timedelta(minutes=1))
 
     class Meta:
         model = 'blog.Post'

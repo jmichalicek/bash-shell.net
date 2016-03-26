@@ -5,9 +5,6 @@ from django.utils.text import slugify
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
-from django.test.client import Client
-
-import markdown
 
 from .factories import *
 from .models import *
@@ -60,8 +57,8 @@ class PostListViewTests(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.published_post = UnpublishedPostFactory()
-        cls.unpublished_post = PublishedPostFactory()
+        cls.published_post = PublishedPostFactory()
+        cls.unpublished_post = UnpublishedPostFactory()
 
     def test_get(self):
         """Make sure we get a 200 response code"""
@@ -91,8 +88,9 @@ class PostDetailViewTests(TestCase):
     def test_get(self):
         """Make sure we get a 200 response code"""
         response = self.client.get(reverse(self.URL_NAME, args=[self.post.slug]))
+
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.templates[0].name, 'bsblog/blog_post.html')
+        self.assertEqual(response.templates[0].name, 'blog/post_detail.html')
         self.assertTrue('post' in response.context)
         self.assertEqual(response.context['post'], self.post)
 

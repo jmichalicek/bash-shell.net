@@ -13,7 +13,7 @@ class PostListView(ListView):
     model = Post
     queryset = Post.objects.all() #.select_related('user')
     paginate_by = 15
-    template_name = 'posts/post_list.html'
+    template_name = 'blog/post_list.html'
 
     def get_queryset(self):
         queryset = super(PostListView, self).get_queryset()
@@ -29,12 +29,12 @@ class PostDetailView(DetailView):
     """
     model = Post
     queryset = Post.objects.all() #  .select_related('user')
-    template_name = 'posts/post_detail.html'
+    template_name = 'blog/post_detail.html'
 
     def get_queryset(self):
         queryset = super(PostDetailView, self).get_queryset()
 
-        if not self.request.user.is_authenticated() or not self.request.user.is_superuser:
+        if not self.request.user.is_superuser:
             queryset = queryset.filter(is_published=True,
                                        published_date__isnull=False,
                                        published_date__lte=timezone.now())
