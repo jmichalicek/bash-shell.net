@@ -71,7 +71,7 @@ class PostListViewTests(TestCase):
 
     def test_empty_page(self):
         """Verify that a 404 is returned when a page with no results is requested"""
-        response = self.client.get(reverse(self.URL_NAME, args=[2]))
+        response = self.client.get(reverse(self.URL_NAME), {'page': 2})
         self.assertEqual(response.status_code, 404)
 
 
