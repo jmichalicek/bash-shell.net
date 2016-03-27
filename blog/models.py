@@ -48,7 +48,7 @@ class Post(models.Model):
         # become unreachable or everything has to be done in UTC and then the web browser
         # set date and time is incorrect when creating a post.  So allow proper user timezone
         # but create the url always as UTC
-        return reverse('blog_post_detail', [self.slug])
+        return reverse('blog_post_detail', args=[self.slug])
 
     def __unicode__(self):
         return u'%s' %(self.title)
