@@ -74,12 +74,27 @@ class ProjectHostingService(models.Model):
     Where a project is hosted
     """
 
+    class VersionControlSystems(object):
+        GIT = 1
+        MERCURIAL = 2
+        SVN = 3
+        CVS = 4
+
+    VCS_CHOICES = (
+        (VersionControlSystems.GIT, 'git'),
+        (VersionControlSystems.MERCURIAL, 'Mercurial'),
+        (VersionControlSystems.SVN, 'SVN'),
+        (VersionControlSystems.CVS, 'CVS'),
+    )
+
     project = models.ForeignKey('projects.Project', related_name='project_hosting_services')
     hosting_service = models.ForeignKey('projects.HostingService', null=True, on_delete=models.SET_NULL, default=None,
                                         related_name='project_hosting_services')
     project_url = models.URLField(blank=True, help_text='The website URL for the project')
-    public_vcs_uri = models.URLField(blank=True, help_text='The URI that can be used to clone, checkout, etc. the project')
-    vcs = models.ForeignKey('VersionControlSystem', null=True, blank=True, on_delete=models.SET_NULL, default=None)
+    public_vcs_uri = models.URLField(blank=True,
+                                     help_text='The URI that can be used to clone, checkout, etc. the project')
+    #vcs = models.ForeignKey('VersionControlSystem', null=True, blank=True, on_delete=models.SET_NULL, default=None)
+    vcs = models.IntegerField(choices=VCS_CHOICES)
 
     class Meta:
         ordering = ('project', 'hosting_service')
