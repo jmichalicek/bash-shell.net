@@ -53,13 +53,21 @@ class ProjectTests(TestCase):
         self.assertEqual(self.project.name, self.project.__unicode__())
 
     def test_get_absolute_url(self):
-        self.assertEqual(self.project.get_absolute_url(), reverse('bsproject_project', args=[self.project.name]))
+        self.assertEqual(self.project.get_absolute_url(), reverse('projects_project_detail', args=[self.project.slug]))
 
     def test_save(self):
-        """Test the overridden save() method"""
-        self.project.description_markdown = '''**test**'''
-        self.project.save()
-        self.assertEqual(self.project.description, '''<p><strong>test</strong></p>''')
+        """
+        Test that save sets slug if it is not set
+        """
+        p = Project(name='new project')
+        p.save()
+        self.assertEqual('new-project', p.slug)
+
+        # test that it does not reset if we have changed it
+        p.slug = 'asdf-1234'
+        p.save()
+        self.assertEqual('asdf-1234', p.slug)
+
 
 
 class FullProjectListViewTests(TestCase):
@@ -74,7 +82,7 @@ class FullProjectListViewTests(TestCase):
 
     def test_view_not_logged_in(self):
         self.client.logout()
-        response = self.client.get(reverse('bsproject_full_list'))
+        response = self.client.get(reverse('projects_project_list'))
 
         self.assertEqual(response.status_code, 200)
         self.assertTrue('projects' in response.context)
@@ -88,19 +96,16 @@ class ProjectViewTest(TestCase):
 
     def setUp(self):
         self.project = Project.objects.create(name='Test Project')
-        pnews = ProjectNews(published=True, project=self.project,
-                            text_markdown='fake news!')
+        pnews = ProjectNews(is_published=True, project=self.project,
+                            content='fake news!')
         pnews.full_clean()
         pnews.save()
 
         self.client = Client()
 
-    def tearDown(self):
-        self.project.delete()
-
     def test_view_not_logged_in(self):
         self.client.logout()
-        response = self.client.get(reverse('bsproject_project', args=[self.project.name]))
+        response = self.client.get(reverse('projects_project_detail', args=[self.project.slug]))
 
         self.assertEqual(response.status_code, 200)
         self.assertTrue('project' in response.context)
@@ -115,26 +120,14 @@ class ProjectNewsTest(TestCase):
     def setUp(self):
         self.project = Project.objects.create(name='Test Project')
 
-    def test_save_method(self):
-        news = ProjectNews()
-        news.project = self.project
-        news.text_markdown = '**test**'
-        news.full_clean()
-        news.save()
-        self.assertEqual(news.text_html, '''<p><strong>test</strong></p>''')
-
     def test_unicode_method(self):
-        news = ProjectNews()
-        news.project = self.project
-        news.text_markdown = '**test**'
-        news.full_clean()
+        news = ProjectNews(project=self.project)
+        news.content = '''<p><strong>test</strong></p>'''
         news.save()
-        self.assertEqual(news.__unicode__(), news.text_html)
+        self.assertEqual(news.__unicode__(), news.content)
 
     def test_published_default(self):
         """Default value of published should be False"""
-        news = ProjectNews(project=self.project, text_markdown='test')
-        news.full_clean()
+        news = ProjectNews(project=self.project, content='test')
         news.save()
-        self.assertFalse(news.published)
-
+        self.assertFalse(news.is_published)

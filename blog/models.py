@@ -31,7 +31,8 @@ class Post(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     tags = models.ManyToManyField('blog.Tag', blank=True, related_name='posts')
-    user_profile = models.ForeignKey('bsblog.UserProfile', related_name='posts', null=True, default=None, blank=True)
+    user_profile = models.ForeignKey(
+        'bsblog.UserProfile', related_name='posts', null=True, default=None, blank=True, on_delete=models.SET_NULL)
     is_published = models.BooleanField(db_index=True, default=False, blank=True)
     published_date = models.DateTimeField(db_index=True, null=True, default=None, blank=True)
 

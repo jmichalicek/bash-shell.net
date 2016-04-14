@@ -1,4 +1,4 @@
-from __future__ import absolute_import, unicode_literals, division
+from __future__ import absolute_import, unicode_literals, division, print_function
 
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -41,7 +41,8 @@ class Project(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField(blank=True,
                                    help_text='A description of the project, history, reason for existence, etc.')
-    primary_language = models.ForeignKey(blank=True, null=True, default=None, on_delete=models.SET_NULL, related_name='projects'))
+    primary_language = models.ForeignKey(
+        blank=True, null=True, default=None, on_delete=models.SET_NULL, related_name='projects')
     other_languages = models.ManyToManyField(blank=True, on_delete=models.SET_NULL,
                                              related_name='other_language_projects')
     created_date = models.DateTimeField(auto_now_add=True)
@@ -66,7 +67,7 @@ class Project(models.Model):
         super(Project,self).save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse('projects_project_detail', args=[self.name])
+        return reverse('projects_project_detail', args=[self.slug])
 
 
 class ProjectHostingService(models.Model):
@@ -118,12 +119,8 @@ class ProjectNews(models.Model):
     class Meta:
         order = ('-date_created', )
 
-    def save(self):
-        self.text_html = markdown.markdown(self.text_markdown, safe_mode=False)
-        super(ProjectNews,self).save()
-
     def __unicode__(self):
-        return u'%s' % self.text_html
+        return u'%s' % self.content
 
 
 class VersionControlSystem(models.Model):

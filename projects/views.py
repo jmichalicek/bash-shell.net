@@ -13,7 +13,7 @@ class ProjectListView(ListView):
 
     model = Project
     queryset = Project.objects.filter(is_active=True).order_by('primary_languague__name', 'name')
-    template_name = 'projects/project_list.html'
+    template_name = 'projects/projects_list.html'
 
 
 class ProjectDetailView(DetailView):
