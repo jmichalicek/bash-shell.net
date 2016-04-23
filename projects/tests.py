@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.test.client import Client
 
+from .factories import ProjectFactory, ActiveProjectFactory
 from .models import *
 
 class HostingServiceTests(TestCase):
@@ -44,10 +45,7 @@ class ProjectTests(TestCase):
     """Test the Project model"""
 
     def setUp(self):
-        self.project = Project.objects.create(name='Test Project')
-
-    def tearDown(self):
-        self.project.delete()
+        self.project = ProjectFactory()
 
     def test_unicode(self):
         self.assertEqual(self.project.name, self.project.__unicode__())
@@ -70,38 +68,32 @@ class ProjectTests(TestCase):
 
 
 
-class FullProjectListViewTests(TestCase):
+class ProjectListViewTests(TestCase):
     """Tests the full_project_list view"""
 
     def setUp(self):
-        self.project = Project.objects.create(name='Test Project')
-        self.client = Client()
-
-    def tearDown(self):
-        self.project.delete()
+        self.project = ActiveProjectFactory()
 
     def test_view_not_logged_in(self):
         self.client.logout()
         response = self.client.get(reverse('projects_project_list'))
 
         self.assertEqual(response.status_code, 200)
-        self.assertTrue('projects' in response.context)
+        self.assertTrue('project_list' in response.context)
 
-        projects = response.context['projects']
-        self.assertTrue(self.project in projects)
+        projects = response.context['project_list']
+        self.assertTrue(self.project in list(projects))
 
 
 class ProjectViewTest(TestCase):
     """Tests the project() view"""
 
     def setUp(self):
-        self.project = Project.objects.create(name='Test Project')
+        self.project = ActiveProjectFactory()
         pnews = ProjectNews(is_published=True, project=self.project,
-                            content='fake news!')
+                            content='fake news!', title='whee')
         pnews.full_clean()
         pnews.save()
-
-        self.client = Client()
 
     def test_view_not_logged_in(self):
         self.client.logout()
@@ -118,13 +110,12 @@ class ProjectNewsTest(TestCase):
     """Test the ProjectNews model"""
 
     def setUp(self):
-        self.project = Project.objects.create(name='Test Project')
+        self.project = ProjectFactory()
 
     def test_unicode_method(self):
         news = ProjectNews(project=self.project)
-        news.content = '''<p><strong>test</strong></p>'''
-        news.save()
-        self.assertEqual(news.__unicode__(), news.content)
+        news.title = 'News Title'
+        self.assertEqual(news.__unicode__(), 'News Title')
 
     def test_published_default(self):
         """Default value of published should be False"""
