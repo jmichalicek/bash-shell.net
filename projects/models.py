@@ -41,12 +41,11 @@ class Project(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField(blank=True,
                                    help_text='A description of the project, history, reason for existence, etc.')
-    primary_language = models.ForeignKey(
+    primary_language = models.ForeignKey('projects.Language',
         blank=True, null=True, default=None, on_delete=models.SET_NULL, related_name='projects')
-    other_languages = models.ManyToManyField(blank=True, on_delete=models.SET_NULL,
-                                             related_name='other_language_projects')
+    other_languages = models.ManyToManyField('projects.Language', blank=True, related_name='other_language_projects')
     created_date = models.DateTimeField(auto_now_add=True)
-    modified_date = models.DateTimeField(auto_now=True, auto_now_add=True)
+    modified_date = models.DateTimeField(auto_now=True)
     hosting_services = models.ManyToManyField(HostingService, blank=True, through='ProjectHostingService',
                                               help_text='Place the code or project may be hosted',
                                               related_name='projects')
@@ -54,7 +53,7 @@ class Project(models.Model):
     slug = models.SlugField(blank=True, max_length=50, default='')
 
     class Meta:
-        ordering = ('name')
+        ordering = ('name', )
 
     def __unicode__(self):
         return u'%s' % self.name
@@ -62,7 +61,7 @@ class Project(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             # duplicate slugs are not properly dealt with anywhere!
-            self.slug = slugify(self.title.lower())
+            self.slug = slugify(self.name.lower().strip())
 
         super(Project,self).save(*args, **kwargs)
 
@@ -117,10 +116,10 @@ class ProjectNews(models.Model):
     is_published = models.BooleanField(db_index=True, default=False, blank=True)
 
     class Meta:
-        order = ('-date_created', )
+        ordering = ('-created_date', )
 
     def __unicode__(self):
-        return u'%s' % self.content
+        return u'%s' % self.title
 
 
 class VersionControlSystem(models.Model):
