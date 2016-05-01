@@ -7,7 +7,6 @@ from django.core.management.base import BaseCommand, CommandError
 from django.utils import translation
 
 class Command(BaseCommand):
-    ...
     can_import_settings = True
 
     def handle(self, *args, **options):
@@ -15,11 +14,14 @@ class Command(BaseCommand):
         from bsblog.models import Category, Post as OldPost
 
         # migrate categories to tags
+        TAG_MAP = {}
         for category in Category.objects.all():
             try:
-                Tag.objects.get(name__iexact=category.name.strip())
+                tag = Tag.objects.get(name__iexact=category.name.strip())
             except Tag.DoesNotExist:
-                Tag.objects.create(name=category.name.strip())
+                tag = Tag.objects.create(name=category.name.strip())
+
+            TAG_MAP[category.id] = tag
 
         for old_post in OldPost.objects.all().order_by('id'):
             if Post.objects.filter(slug=old_post.slug).exists():
@@ -35,5 +37,6 @@ class Command(BaseCommand):
             if post.is_published:
                 post.published_date = old_post.created_date
 
-            post.tags = [old_post.category]
+            if old_post.category:
+                post.tags = [TAG_MAP[old_post.category.id]]
             Post.objects.filter(id=post.id).update(created_date=old_post.created_date, updated_date=old_post.created_date)

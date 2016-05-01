@@ -5,14 +5,14 @@ Migrate the old bsblog data to the new blog app
 
 from django.core.management.base import BaseCommand, CommandError
 from django.utils import translation
+from ...models import *
+
 
 class Command(BaseCommand):
-    ...
     can_import_settings = True
 
     def handle(self, *args, **options):
-        from ...models import *
-        from bsproejct import models as bsproject_models
+        from bsproject import models as bsproject_models
 
         HOSTING_SERVICE_MAP = {}
 
@@ -23,7 +23,7 @@ class Command(BaseCommand):
             )
             HOSTING_SERVICE_MAP[hosting_service.id] = hs
 
-        for language in bsproject_models.Langauge.objects.all():
+        for language in bsproject_models.Language.objects.all():
             Language.objects.get_or_create(name=language.name.strip(),
                                            defaults={'description': language.description.strip()}
             )
@@ -39,7 +39,7 @@ class Command(BaseCommand):
                 is_active=True
             )
             project.save()
-            langs = Language.objects.filter(name__in=old_project.other_languages.all().values_list('name', flatten=True))
+            langs = Language.objects.filter(name__in=old_project.other_languages.all().values_list('name', flat=True))
             project.other_languages = langs
             Project.objects.filter(id=project.id).update(
                 created_date=old_project.created_date, modified_date=old_project.modified_date)
@@ -59,7 +59,7 @@ class Command(BaseCommand):
                 phs = ProjectHostingService(
                     project=project,
                     project_url=hs.project_url,
-                    public_vcs_uri=hs.public_vcs_uri
+                    public_vcs_uri=hs.public_vcs_uri,
                     vcs=vcs,
                     hosting_service=HOSTING_SERVICE_MAP.get(hs.hosting_service.id, None)
                 )
@@ -74,6 +74,6 @@ class Command(BaseCommand):
                 )
                 news.save()
                 ProjectNews.objects.filter(id=news.id).update(
-                    created_date=old_news.created_date,
+                    created_date=old_news.date_created,
                     modified_date=old_news.date_modified
                 )

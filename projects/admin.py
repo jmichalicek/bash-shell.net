@@ -34,12 +34,12 @@ class ProjectHostingServiceAdmin(admin.ModelAdmin):
 
 
 class ProjectNewsAdmin(admin.ModelAdmin):
-    list_display = ('project', 'title', 'created_date', 'modified_date', 'published')
+    list_display = ('project', 'title', 'created_date', 'modified_date', 'is_published')
     list_filter = ('project',)
-    list_editable = ['published']
+    list_editable = ['is_published']
     search_fields = ['project__name', 'title']
     fieldsets = (
-        (None, {'fields': ['title', 'project', 'content', 'published']}),
+        (None, {'fields': ['title', 'project', 'content', 'is_published']}),
     )
 
 
