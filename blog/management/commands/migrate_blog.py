@@ -34,8 +34,13 @@ class Command(BaseCommand):
                 is_published=old_post.published,
                 user_profile=old_post.user_profile
             )
+
             if post.is_published:
+                print('setting published_date to %s' % old_post.created_date)
                 post.published_date = old_post.created_date
+                post.save(update_fields=['published_date'])
+            else:
+                print('not publishing post because post.is_published is %s but old_post.published is %s' % (post.is_published, old_post.published))
 
             if old_post.category:
                 post.tags = [TAG_MAP[old_post.category.id]]

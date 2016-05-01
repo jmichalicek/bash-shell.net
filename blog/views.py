@@ -14,6 +14,7 @@ class PostListView(ListView):
     queryset = Post.objects.all() #.select_related('user')
     paginate_by = 15
     template_name = 'blog/post_list.html'
+    ordering = '-published_date'
 
     def get_queryset(self):
         queryset = super(PostListView, self).get_queryset()

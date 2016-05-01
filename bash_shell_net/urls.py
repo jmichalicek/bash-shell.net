@@ -23,5 +23,5 @@ urlpatterns = patterns('',
                        url(r'^projects/', include('projects.urls')),
                        url(r'^old_blog/',include('bsblog.urls')),
                        url(r'^old_projects/', include('bsproject.urls')),
-                       url(r'^$',include('bsblog.urls')),
+                       url(r'^$',include('blog.urls')),
                        )
