@@ -7,13 +7,13 @@
 <div class="row">
   <div class="tab-content span8">
     <div class="tab-pane active" id="info">
-      {{ project.description|safe }}
+      {{ object.description|safe }}
     </div>
     <div class="tab-pane" id="news">
       <dl>
 	{% for news in project_news %}
 	<dt>{{ news.date_created }}</dt>
-	<dd>{{ news.text_html|safe }}</dd>
+	<dd>{{ news.content|safe }}</dd>
 	{% empty %}
 	<dd>Nothing to see here, move along.</dd>
 	{% endfor %}
@@ -22,23 +22,23 @@
   </div>
   <div class="span4">
     <div class="well">
-      <h2>{{ project.name }}</h2>
+      <h2>{{ object.name }}</h2>
       <dl class="dl-horizontal">
 	<dt><span class="pull-left">Created:</span></dt><dd>{{ project.created_date|date:"M d, Y" }}</dd>
 	<dt><span class="pull-left">Page updated:</span></dt><dd>{{ project.modified_date|date:"M d, Y" }}</dd>
 	<dt><span class="pull-left">Latest News:</span></dt><dd>{% if project_news.count > 0 %}{{ project_news.0.date_created|date:"M d, Y" }}{% endif %}</dd>
       </dl>
     </div>
-    {% if project.hosting_services.all.count > 0 %}
+    {% if object.project_hosting_services.all.exists %}
     <div class="well">
       <p>View this project on:</p>
       <p>
-	{% for host in project.projecthostingservice_set.all %}
+	{% for host in project.project_hosting_services.all %}
 	{# this all ends up on one line when output by the browser #}
-	{{ host.hosting_service }} |
+	{{ host.hosting_service.name }} |
 	{% if host.project_url %} <a href="{{ host.project_url }}">project page</a>{% endif %}
 	{% if host.public_vcs_uri and host.vcs %} {% if host.project_url %} - {% endif %}
-	<a href="{{ host.public_vcs_uri }}">{{ host.vcs }}</a>
+	<a href="{{ host.public_vcs_uri }}">{{ host.get_vcs_display }}</a>
 	{% endif %}<br />
 	{% endfor %}
       </p>

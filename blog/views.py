@@ -2,6 +2,7 @@ from __future__ import unicode_literals, absolute_import, division
 
 from django.utils import timezone
 from django.views.generic import DetailView, ListView
+from django.views.generic.dates import ArchiveIndexView
 
 from .models import Post
 
@@ -48,3 +49,12 @@ class PostDetailView(DetailView):
             'tags': self.object.tags.all()
         })
         return context
+
+
+class PostArchiveView(ArchiveIndexView):
+    """
+    Post archive by year, month
+    """
+    model = Post
+    date_field = 'published_date'
+    template_name = 'blog/post_archive.html'

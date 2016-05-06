@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block primary %}
-{% regroup projects by primary_language as languages %}
+{% regroup object_list by primary_language as languages %}
   {% for language in languages %}
   <div class="row">
     <div class="span12" id="{{ language.grouper }}">
