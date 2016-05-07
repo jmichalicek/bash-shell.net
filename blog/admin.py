@@ -6,13 +6,15 @@ from django.contrib.contenttypes import generic
 from .models import Post, Tag
 
 class PostAdmin(admin.ModelAdmin):
-    list_display = ('title','created_date', 'updated_date', 'published_date', 'is_published')
-    search_fields = ['title', 'content','tags',]
+    list_display = ('title', 'created_date', 'updated_date', 'published_date', 'is_published')
+    search_fields = ['title', 'content', 'tags',]
     list_filter = ('is_published', 'published_date', 'created_date', 'updated_date')
     fieldsets = (
-        (None,{'fields': ['title','content','tags','created_date','slug','is_published']}),
+        (None,{'fields': ['title', 'slug', 'content', 'tags', 'published_date', 'is_published']}),
+        (None, {'fields': ['created_date', 'updated_date']})
     )
     prepopulated_fields = {"slug" : ['title']}
+    readonly_fields = ('created_date', 'updated_date')
 
 
     def save_model(self, request, obj, form, change):
