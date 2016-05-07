@@ -37,7 +37,7 @@ class Post(taxonomy.TaxonomyMember):
     created_date = models.DateTimeField('Date Created', db_index=True)
     category = models.ForeignKey(Category, db_index=True)
     user_profile = models.ForeignKey(UserProfile)
-    published = models.BooleanField(db_index=True)
+    published = models.BooleanField(db_index=True, default=False)
 
     slug = models.SlugField(
         unique_for_date='created_date',

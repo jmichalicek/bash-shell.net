@@ -1,4 +1,4 @@
-Django==1.6
+Django==1.6.11
 Markdown==2.3.1
 Pillow==2.2.1
 South==0.8.4
@@ -14,3 +14,4 @@ pytz==2013.8
 redis==2.10.3
 sqlparse==0.1.10
 uWSGI==1.9.19
+factory-boy==2.6.1
