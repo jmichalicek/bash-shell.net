@@ -22,7 +22,7 @@ class PostListView(ListView):
         queryset = queryset.filter(published_date__isnull=False,
                                    published_date__lte=timezone.now())
         queryset = queryset.prefetch_related('tags')
-        return queryset
+        return queryset.order_by('-published_date')
 
 
 class PostDetailView(DetailView):
