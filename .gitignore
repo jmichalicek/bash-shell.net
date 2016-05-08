@@ -1,5 +1,5 @@
 *.pyc
-bash_shell_net/static
+static_collected
 media
 *~
 *.sqlite
