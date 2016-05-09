@@ -12,7 +12,7 @@ class PostListView(ListView):
     List of published posts
     """
     model = Post
-    queryset = Post.objects.all() #.select_related('user')
+    queryset = Post.objects.all().select_related('user')
     paginate_by = 15
     template_name = 'blog/post_list.html'
     ordering = '-published_date'
@@ -30,7 +30,7 @@ class PostDetailView(DetailView):
     Public view of a single Post
     """
     model = Post
-    queryset = Post.objects.all() #  .select_related('user')
+    queryset = Post.objects.all().select_related('user')
     template_name = 'blog/post_detail.html'
 
     def get_queryset(self):

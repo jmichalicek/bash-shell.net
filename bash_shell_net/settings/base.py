@@ -6,7 +6,8 @@ import dj_database_url
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 DEFENSE_LEAGUE = True
 
-AUT_USER_MODEL = 'auth.User'
+#AUTH_USER_MODEL = 'auth.User'
+AUTH_USER_MODEL = 'accounts.User'
 AUTH_PROFILE_MODULE='bsblog.UserProfile'
 
 DEBUG = True
@@ -137,6 +138,7 @@ INSTALLED_APPS = (
     'bsproject',
     'taxonomy',
     'internetdefenseleague',
+    'accounts',
     'blog',
     'projects',
 )
