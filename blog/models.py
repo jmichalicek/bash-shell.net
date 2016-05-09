@@ -35,6 +35,8 @@ class Post(models.Model):
         'bsblog.UserProfile', related_name='posts', null=True, default=None, blank=True, on_delete=models.SET_NULL)
     is_published = models.BooleanField(db_index=True, default=False, blank=True)
     published_date = models.DateTimeField(db_index=True, null=True, default=None, blank=True)
+    user = models.ForeignKey('accounts.User', null=True, on_delete=models.SET_NULL, default=None,
+                             blank=True, db_index=True, related_name='posts')
 
     slug = models.SlugField(
         help_text='Automatically built from the title.',

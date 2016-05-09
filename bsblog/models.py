@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
@@ -10,7 +11,7 @@ from taxonomy import models as taxonomy
 # Create your models here.
 # So that user can be extended more easily
 class UserProfile(models.Model):
-    user = models.ForeignKey(User, unique=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, unique=True)
 
     def __unicode__(self):
         return u'%s' %(self.user.username)
