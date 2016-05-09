@@ -6,7 +6,7 @@
     <div class="well">
       <div class="header">
 	<h2>{{ post.title }}</h2>
-	<em> by {{ post.user_profile.user.username}} on {{ post.published_date|date:"N j, Y, P T" }}</em>
+	<em> by {{ post.user.username}} on {{ post.published_date|date:"N j, Y, P T" }}</em>
       </div>
       <hr />
       {# markdown will properly wrap the following text in appropriate tags if needed #}
