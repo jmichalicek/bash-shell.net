@@ -8,7 +8,7 @@ DEFENSE_LEAGUE = True
 
 #AUTH_USER_MODEL = 'auth.User'
 AUTH_USER_MODEL = 'accounts.User'
-AUTH_PROFILE_MODULE='bsblog.UserProfile'
+#AUTH_PROFILE_MODULE='bsblog.UserProfile'
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -133,10 +133,10 @@ INSTALLED_APPS = (
     'django.contrib.flatpages',
     'django.contrib.sitemaps',
     'django_coverage',
-    'south',
-    'bsblog',
-    'bsproject',
-    'taxonomy',
+#    'south',
+#    'bsblog',
+#    'bsproject',
+#    'taxonomy',
     'internetdefenseleague',
     'accounts',
     'blog',
