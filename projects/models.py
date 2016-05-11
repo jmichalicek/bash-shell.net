@@ -110,7 +110,7 @@ class ProjectNews(models.Model):
 
     project = models.ForeignKey('projects.Project', related_name='project_news')
     created_date = models.DateTimeField(auto_now_add=True)
-    modified_date = models.DateTimeField(auto_now=True, auto_now_add=True)
+    modified_date = models.DateTimeField(auto_now=True)
     title = models.CharField(max_length=100)
     content = models.TextField(blank=True)
     is_published = models.BooleanField(db_index=True, default=False, blank=True)
