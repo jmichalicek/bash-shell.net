@@ -18,7 +18,7 @@ class PostAdmin(admin.ModelAdmin):
 
 
     def save_model(self, request, obj, form, change):
-        obj.user_profile = request.user.get_profile()
+        obj.user = request.user
         obj.save()
 
 
