@@ -149,6 +149,7 @@ INSTALLED_APPS = (
     'django.contrib.sitemaps',
     'django_coverage',
     'django_wysiwyg',
+    'ckeditor',
     'internetdefenseleague',
     'accounts',
     'blog',
@@ -187,3 +188,7 @@ LOGGING = {
         },
     }
 }
+
+# wysiwyg editor
+CKEDITOR_JQUERY_URL = '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'
+DJANGO_WYSIWYG_FLAVOR = "ckeditor"
