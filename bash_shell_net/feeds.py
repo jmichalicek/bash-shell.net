@@ -11,7 +11,7 @@ class BlogFeedRss(Feed):
 
     def items(self):
         return Post.objects.filter(
-            is_published=True, published_date__lte=timezone.now
+            is_published=True, published_date__lte=timezone.now()
         ).order_by('-published_date')[:5]
 
     def item_title(self, item):
