@@ -40,7 +40,8 @@ class Post(models.Model):
         help_text='Automatically built from the title.',
         db_index=True,
         blank=True,
-        default=''
+        default='',
+        max_length=100
     )
 
     def get_absolute_url(self):
