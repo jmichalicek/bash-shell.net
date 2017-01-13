@@ -1,0 +1,72 @@
+FROM debian:jessie-backports
+MAINTAINER Justin Michalicek <jmichalicek@gmail.com>
+EXPOSE 8000
+
+ENV HOME /home/developer
+
+RUN apt-get update && apt-get install -y --force-yes \
+    autoconf \
+    bind9-host \
+    bison \
+    build-essential \
+    coreutils \
+    curl \
+    daemontools \
+    dnsutils \
+    git \
+    libbz2-dev \
+    libcurl4-openssl-dev \
+    libev-dev \
+    libevent-dev \
+    libffi-dev \
+    libglib2.0-dev \
+    libjpeg-dev \
+    libpq-dev \
+    libpq5 \
+    libreadline-dev \
+    libsqlite3-dev \
+    libssl-dev \
+    libuv-dev \
+    libxml2-dev \
+    libxslt-dev \
+    postgresql \
+    postgresql-client \
+    postgresql-server-dev-all \
+    python \
+    tar \
+    telnet \
+    tmux \
+    vim \
+    zip \
+    zlib1g-dev
+
+RUN useradd -ms /bin/bash developer && echo "developer ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+# set dev db to trust all local users
+RUN sed -i -e 's#^host\s\+all\s\+all\s\+127.0.0.1\/32\s\+md5$#host    all all 127.0.0.1/32    trust#' /etc/postgresql/9.4/main/pg_hba.conf
+
+USER developer
+WORKDIR /home/developer
+RUN echo '. ~/.bashrc' >> ~/.bash_profile
+
+# could go simpler and just install desired python version without pyenv
+ENV PYENV_ROOT $HOME/.pyenv
+RUN curl -L https://raw.githubusercontent.com/yyuu/pyenv-installer/master/bin/pyenv-installer | /bin/bash
+ENV PATH $PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH
+RUN pyenv install 2.7.12 && pyenv local 2.7.12 && pyenv virtualenv bsnet
+RUN mkdir $HOME/docker_entrypoints
+RUN echo 'eval "$(pyenv init -)"' >> $HOME/.bashrc
+RUN echo 'eval "$(pyenv virtualenv-init -)"' >> $HOME/.bashrc
+
+USER root
+COPY docker/dev_entrypoint.sh $HOME/docker_entrypoints/dev_entrypoint.sh
+RUN chown developer $HOME/docker_entrypoints/dev_entrypoint.sh && chmod 755 $HOME/docker_entrypoints/dev_entrypoint.sh
+
+USER developer
+
+VOLUME ["$HOME/.pyenv/"]
+# for now do not make postgres data permanent
+# VOLUME ["/var/lib/postgresql/9.4/main"]
+VOLUME ["$HOME/bash-shell.net/"]
+
+CMD /bin/bash
