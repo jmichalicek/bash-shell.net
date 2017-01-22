@@ -2,8 +2,6 @@ FROM debian:jessie-backports
 MAINTAINER Justin Michalicek <jmichalicek@gmail.com>
 EXPOSE 8000
 
-ENV HOME /home/developer
-
 RUN apt-get update && apt-get install -y --force-yes \
     autoconf \
     bind9-host \
@@ -33,6 +31,7 @@ RUN apt-get update && apt-get install -y --force-yes \
     postgresql-client \
     postgresql-server-dev-all \
     python \
+    sudo \
     tar \
     telnet \
     tmux \
@@ -46,6 +45,7 @@ RUN useradd -ms /bin/bash developer && echo "developer ALL=(ALL) NOPASSWD:ALL" >
 RUN sed -i -e 's#^host\s\+all\s\+all\s\+127.0.0.1\/32\s\+md5$#host    all all 127.0.0.1/32    trust#' /etc/postgresql/9.4/main/pg_hba.conf
 
 USER developer
+ENV HOME /home/developer
 WORKDIR /home/developer
 RUN echo '. ~/.bashrc' >> ~/.bash_profile
 
@@ -53,7 +53,9 @@ RUN echo '. ~/.bashrc' >> ~/.bash_profile
 ENV PYENV_ROOT $HOME/.pyenv
 RUN curl -L https://raw.githubusercontent.com/yyuu/pyenv-installer/master/bin/pyenv-installer | /bin/bash
 ENV PATH $PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH
-RUN pyenv install 2.7.12 && pyenv local 2.7.12 && pyenv virtualenv bsnet
+RUN pyenv install 2.7.13 && pyenv local 2.7.13
+# this was just not working with &&
+RUN pyenv virtualenv bsdev
 RUN mkdir $HOME/docker_entrypoints
 RUN echo 'eval "$(pyenv init -)"' >> $HOME/.bashrc
 RUN echo 'eval "$(pyenv virtualenv-init -)"' >> $HOME/.bashrc
@@ -69,4 +71,5 @@ VOLUME ["$HOME/.pyenv/"]
 # VOLUME ["/var/lib/postgresql/9.4/main"]
 VOLUME ["$HOME/bash-shell.net/"]
 
+ENV DJANGO_SETTINGS_MODULE bash_shell_net.settings.local
 CMD /bin/bash

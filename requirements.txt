@@ -1,7 +1,7 @@
 Django==1.9.6
 Pillow==3.2.0
 dj-database-url==0.4.1
--e git+ssh://git@github.com/jmichalicek/django-internetdefenseleague.git@d9849b553885d36b3650d8f36c8a86f79b0cd37e#egg=django_internetdefenseleague-master
+-e git+https://@github.com/jmichalicek/django-internetdefenseleague.git@d9849b553885d36b3650d8f36c8a86f79b0cd37e#egg=django_internetdefenseleague-master
 django-redis-cache==1.6.5
 psycopg2==2.6.1
 pytz==2013.8
