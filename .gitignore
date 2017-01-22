@@ -1,4 +1,5 @@
 *.pyc
+.python-version
 static_collected
 media
 *~
