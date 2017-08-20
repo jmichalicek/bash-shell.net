@@ -13,6 +13,7 @@ TEST_USER = 'test_user'
 TEST_PASSWORD = 'test_password'
 TEST_EMAIL = 'none@example.com'
 
+
 class TagTests(TestCase):
     """Test the Tag model"""
 

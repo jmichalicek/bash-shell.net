@@ -6,6 +6,7 @@ from django.utils.text import slugify
 
 from django.contrib.auth.models import User
 
+
 class Tag(models.Model):
     """Category which posts belong to"""
     # name indexed because we order on name
