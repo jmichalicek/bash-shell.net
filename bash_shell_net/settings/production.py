@@ -32,3 +32,9 @@ MIDDLEWARE = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 )
+
+AWS_STORAGE_BUCKET_NAME = 'bash-shell-net'
+STATICFILES_LOCATION = 'static'
+STATICFILES_STORAGE = 'bash_shell_net.storages.StaticStorage'
+MEDIAFILES_LOCATION = 'uploads'
+DEFAULT_FILE_STORAGE = 'bash_shell_net.storages.MediaStorage'
