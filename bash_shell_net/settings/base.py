@@ -192,3 +192,12 @@ REDIS_HOST = os.environ.get('REDIS_HOST', '')
 # wysiwyg editor
 CKEDITOR_JQUERY_URL = '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'
 DJANGO_WYSIWYG_FLAVOR = "ckeditor"
+
+
+# S3/DO spaces settings
+AWS_IS_GZIPPED = True
+AWS_ACCESS_KEY_ID = os.environ.get('DO_ACCESS_KEY_ID', '')
+AWS_SECRET_ACCESS_KEY = os.environ.get('DO_SECRET_ACCESS_KEY', '')
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=604800'
+}
