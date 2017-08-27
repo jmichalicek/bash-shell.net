@@ -1,6 +1,6 @@
 from .base import *
 
-TEMPLATE_DEBUG = DEBUG = False
+DEBUG = False
 ALLOWED_HOSTS = ['bash-shell.net']
 
 #CACHES = {
@@ -20,7 +20,7 @@ CACHES = {
         },
     }
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
     'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
