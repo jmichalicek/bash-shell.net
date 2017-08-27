@@ -1,20 +1,17 @@
-Django==1.9.13
+Django==1.11.4
 Pillow==4.2.1
 dj-database-url==0.4.2
 git+https://github.com/jmichalicek/django-internetdefenseleague.git@d9849b553885d36b3650d8f36c8a86f79b0cd37e#egg=django_internetdefenseleague-master
 django-redis-cache==1.7.1
-psycopg2==2.7.3
+psycopg2==2.7.3.1
 pytz==2017.2
-redis==2.10.6
-sqlparse==0.2.3
 gunicorn==19.7.1
 
 # testing
 factory-boy==2.9.2
-#mock==2.0.0
 django-coverage==1.2.4
-django-debug-toolbar==1.4
+django-debug-toolbar==1.8
 
 # wysiwyg editing
-django-wysiwyg==0.7.1
-django-ckeditor==5.0.3
+django-wysiwyg==0.8.0
+django-ckeditor==5.3.0
