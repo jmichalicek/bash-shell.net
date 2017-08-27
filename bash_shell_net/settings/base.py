@@ -187,7 +187,7 @@ LOGGING = {
 }
 
 # CACHING
-REDIS_HOST = os.env.get('REDIS_HOST', '')
+REDIS_HOST = os.environ.get('REDIS_HOST', '')
 
 # wysiwyg editor
 CKEDITOR_JQUERY_URL = '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'
