@@ -201,3 +201,5 @@ AWS_SECRET_ACCESS_KEY = os.environ.get('DO_SECRET_ACCESS_KEY', '')
 AWS_S3_OBJECT_PARAMETERS = {
     'CacheControl': 'max-age=604800'
 }
+# This needs correctly set to work with digital ocean
+AWS_S3_ENDPOINT_URL = os.environ.get('AWS_S3_ENDPOINT_URL', 'https://nyc3.digitaloceanspaces.com')
