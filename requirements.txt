@@ -6,6 +6,10 @@ django-redis-cache==1.7.1
 psycopg2==2.7.3.1
 pytz==2017.2
 gunicorn==19.7.1
+
+
+# AWS/Digital Ocean Spaces
+boto3==1.4.6
 django-storages==1.6.5
 
 # testing
