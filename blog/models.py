@@ -16,8 +16,8 @@ class Tag(models.Model):
     class Meta:
         ordering = ['name']
 
-    def __unicode__(self):
-        return u'%s' %(self.name)
+    def __str__(self):
+        return self.name
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -53,8 +53,8 @@ class Post(models.Model):
         # but create the url always as UTC
         return reverse('blog_post_detail', args=[self.slug])
 
-    def __unicode__(self):
-        return u'%s' %(self.title)
+    def __str__(self):
+        return self.title
 
     def save(self, *args, **kwargs):
         if not self.slug:

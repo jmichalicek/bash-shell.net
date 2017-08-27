@@ -36,8 +36,8 @@ class PostTests(TestCase):
         # move this to setUpTestData after django upgrade
         self.post = PublishedPostFactory()
 
-    def test_unicode(self):
-        self.assertEqual(self.post.title, self.post.__unicode__())
+    def test_str(self):
+        self.assertEqual(self.post.title, self.post.__str__())
 
     def test_get_absolute_url(self):
         self.assertEqual(self.post.get_absolute_url(), reverse('blog_post_detail',
