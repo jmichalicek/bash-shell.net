@@ -13,7 +13,7 @@ ALLOWED_HOSTS = ['bash-shell.net']
 CACHES = {
     'default': {
         'BACKEND': 'redis_cache.RedisCache',
-        'LOCATION': 'localhost:6379',
+        'LOCATION': '%s:6379' % REDIS_HOST,
         'OPTIONS': {
             'DB': 2,
             },

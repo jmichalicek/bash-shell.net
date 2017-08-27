@@ -25,14 +25,14 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
-    def __unicode__(self):
-        return u'%s' % (self.email)
+    def __str__(self):
+        return self.email
 
     def get_short_name(self):
-        return u'%s' % (self.first_name)
+        return self.first_name
 
     def get_full_name(self):
-        return u'%s %s' % (self.first_name, self.last_name)
+        return '%s %s' % (self.first_name, self.last_name)
 
     def save(self, *args, **kwargs):
         if not self.username:
