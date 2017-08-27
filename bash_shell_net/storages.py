@@ -1,13 +1,13 @@
 from django.conf import settings
+from storages.backends.s3boto3 import S3Boto3Storage
 from django.contrib.staticfiles.storage import CachedFilesMixin
-from storages.backends.s3boto import S3BotoStorage
 
 
-class StaticStorage(CachedFilesMixin, S3BotoStorage):
+class StaticStorage(CachedFilesMixin, S3Boto3Storage):
     location = settings.STATICFILES_LOCATION
     file_overwrite_file = True
 
 
-class MediaStorage(S3BotoStorage):
+class MediaStorage(S3Boto3Storage):
     location = settings.MEDIAFILES_LOCATION
     file_overwrite = False
