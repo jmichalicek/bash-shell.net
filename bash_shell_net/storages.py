@@ -1,6 +1,6 @@
 from django.conf import settings
 from storages.backends.s3boto3 import S3Boto3Storage
-from django.contrib.staticfiles.storage import CachedFilesMixin
+from django.contrib.staticfiles.storage import CachedFilesMixin, ManifestFilesMixin
 
 
 # TODO: Test this against a real s3 bucket to see if problems are django-storages, django,
@@ -9,7 +9,7 @@ from django.contrib.staticfiles.storage import CachedFilesMixin
 # with gzip turned off.
 # I have fixed this before for s3 and django-storages seems to have the same fix now, so I fear
 # the issue is DO spaces.
-class StaticStorage(S3Boto3Storage):
+class StaticStorage(ManifestFilesMixin, S3Boto3Storage):
     location = settings.STATICFILES_LOCATION
     file_overwrite = True
     #max_post_process_passes = 15  # ckeditor is not playing nicely with the default 5, set it high
