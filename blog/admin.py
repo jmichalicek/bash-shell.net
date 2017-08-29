@@ -5,17 +5,19 @@ from django.contrib import admin
 
 from .models import Post, Tag
 
+
 class PostAdmin(admin.ModelAdmin):
     change_form_template = 'blog/admin/change_form.html'
     list_display = ('title', 'created_date', 'updated_date', 'published_date', 'is_published')
     search_fields = ['title', 'content', 'tags',]
     list_filter = ('is_published', 'published_date', 'created_date', 'updated_date')
     fieldsets = (
-        (None,{'fields': ['title', 'slug', 'content', 'tags', 'published_date', 'is_published']}),
-        (None, {'fields': ['created_date', 'updated_date']})
+        (None,{'fields': ['title', 'slug', 'content_markdown', 'tags', 'published_date', 'is_published']}),
+        (None, {'fields': ['created_date', 'updated_date']}),
+        (None, {'fields': ['content', ]})
     )
     prepopulated_fields = {"slug" : ['title']}
-    readonly_fields = ('created_date', 'updated_date')
+    readonly_fields = ('created_date', 'updated_date', 'content')
 
 
     def save_model(self, request, obj, form, change):

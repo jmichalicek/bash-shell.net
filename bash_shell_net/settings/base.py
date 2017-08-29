@@ -145,8 +145,6 @@ INSTALLED_APPS = (
     'django.contrib.flatpages',
     'django.contrib.sitemaps',
     'django_coverage',
-    'django_wysiwyg',
-    'ckeditor',
     'internetdefenseleague',
     'accounts',
     'blog',
@@ -188,10 +186,6 @@ LOGGING = {
 
 # CACHING
 REDIS_HOST = os.environ.get('REDIS_HOST', '')
-
-# wysiwyg editor
-CKEDITOR_JQUERY_URL = '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'
-DJANGO_WYSIWYG_FLAVOR = "ckeditor"
 
 
 # S3/DO spaces settings
