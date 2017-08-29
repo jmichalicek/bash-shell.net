@@ -1,3 +1,4 @@
+.envrc
 *.pyc
 static_collected
 media
