@@ -12,9 +12,8 @@ class PostAdmin(admin.ModelAdmin):
     search_fields = ['title', 'content', 'tags',]
     list_filter = ('is_published', 'published_date', 'created_date', 'updated_date')
     fieldsets = (
-        (None,{'fields': ['title', 'slug', 'content_markdown', 'tags', 'published_date', 'is_published']}),
+        (None,{'fields': ['title', 'slug', 'content', 'tags', 'published_date', 'is_published']}),
         (None, {'fields': ['created_date', 'updated_date']}),
-        (None, {'fields': ['content', ]})
     )
     prepopulated_fields = {"slug" : ['title']}
     readonly_fields = ('created_date', 'updated_date', 'content')

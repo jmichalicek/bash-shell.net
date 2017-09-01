@@ -29,7 +29,6 @@ class Post(models.Model):
     """Model for each separate post"""
     title = models.CharField(max_length=100)
     content = models.TextField(blank=True)
-    content_markdown = models.TextField(blank=True, default='')
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     tags = models.ManyToManyField('blog.Tag', blank=True, related_name='posts')
