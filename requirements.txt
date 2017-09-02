@@ -17,6 +17,4 @@ factory-boy==2.9.2
 django-coverage==1.2.4
 django-debug-toolbar==1.8
 
-# wysiwyg editing
-django-wysiwyg==0.8.0
-django-ckeditor==5.3.0
+Markdown==2.6.9

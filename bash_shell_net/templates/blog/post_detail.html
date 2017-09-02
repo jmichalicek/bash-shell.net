@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load blog_tags %}
 {% block primary %}
 <div class="row">
   <div class="span12">
@@ -8,7 +9,7 @@
 	<em>by {{ post.user.username}} on {{ post.published_date|date:"N j, Y, P T" }}</em>
       </div>
       <hr />
-      {{ post.content|safe }}
+      {{ post.content|render_markdown|safe }}
     </div>
   </div>
 </div>

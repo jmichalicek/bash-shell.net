@@ -21,7 +21,7 @@ class Tag(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(u'%s' % self.name.lower())
+            self.slug = slugify(self.name.lower())
         super(Tag, self).save(*args, **kwargs)
 
 
@@ -58,5 +58,5 @@ class Post(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(u'%s' % self.title.lower())
+            self.slug = slugify(self.title.lower())
         super(Post, self).save(*args, **kwargs)
