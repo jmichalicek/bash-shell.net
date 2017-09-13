@@ -1,0 +1,141 @@
+{
+    "_meta": {
+        "hash": {
+            "sha256": "d68d3e0424a731e0d7dba50b0187b37cc6e4b7fe77256d5aff83a3f9071b10f5"
+        },
+        "host-environment-markers": {
+            "implementation_name": "cpython",
+            "implementation_version": "3.6.2",
+            "os_name": "posix",
+            "platform_machine": "x86_64",
+            "platform_python_implementation": "CPython",
+            "platform_release": "16.7.0",
+            "platform_system": "Darwin",
+            "platform_version": "Darwin Kernel Version 16.7.0: Thu Jun 15 17:36:27 PDT 2017; root:xnu-3789.70.16~2/RELEASE_X86_64",
+            "python_full_version": "3.6.2",
+            "python_version": "3.6",
+            "sys_platform": "darwin"
+        },
+        "pipfile-spec": 1,
+        "requires": {},
+        "sources": [
+            {
+                "url": "https://pypi.python.org/simple",
+                "verify_ssl": true
+            }
+        ]
+    },
+    "default": {
+        "boto3": {
+            "version": "==1.4.6"
+        },
+        "botocore": {
+            "version": "==1.6.8"
+        },
+        "certifi": {
+            "version": "==2017.7.27.1"
+        },
+        "chardet": {
+            "version": "==3.0.4"
+        },
+        "dj-database-url": {
+            "version": "==0.4.2"
+        },
+        "django": {
+            "version": "==1.11.5"
+        },
+        "django-internetdefenseleague-master": {
+            "git": "https://github.com/jmichalicek/django-internetdefenseleague.git",
+            "ref": "d9849b553885d36b3650d8f36c8a86f79b0cd37e"
+        },
+        "django-redis-cache": {
+            "version": "==1.7.1"
+        },
+        "django-storages": {
+            "version": "==1.6.5"
+        },
+        "docutils": {
+            "version": "==0.14"
+        },
+        "gunicorn": {
+            "version": "==19.7.1"
+        },
+        "idna": {
+            "version": "==2.6"
+        },
+        "jmespath": {
+            "version": "==0.9.3"
+        },
+        "markdown": {
+            "version": "==2.6.9"
+        },
+        "olefile": {
+            "version": "==0.44"
+        },
+        "pillow": {
+            "version": "==4.2.1"
+        },
+        "psycopg2": {
+            "version": "==2.7.3.1"
+        },
+        "python-dateutil": {
+            "version": "==2.6.1"
+        },
+        "pytz": {
+            "version": "==2017.2"
+        },
+        "redis": {
+            "version": "==2.10.6"
+        },
+        "requests": {
+            "version": "==2.18.4"
+        },
+        "s3transfer": {
+            "version": "==0.1.11"
+        },
+        "six": {
+            "version": "==1.10.0"
+        },
+        "urllib3": {
+            "version": "==1.22"
+        }
+    },
+    "develop": {
+        "django": {
+            "version": "==1.11.5"
+        },
+        "django-coverage": {
+            "version": "==1.2.4"
+        },
+        "django-debug-toolbar": {
+            "version": "==1.8"
+        },
+        "dnspython": {
+            "version": "==1.15.0"
+        },
+        "email-validator": {
+            "version": "==1.0.2"
+        },
+        "factory-boy": {
+            "version": "==2.9.2"
+        },
+        "faker": {
+            "version": "==0.8.3"
+        },
+        "idna": {
+            "version": "==2.6"
+        },
+        "python-dateutil": {
+            "version": "==2.6.1"
+        },
+        "pytz": {
+            "version": "==2017.2"
+        },
+        "six": {
+            "version": "==1.10.0"
+        },
+        "sqlparse": {
+            "version": "==0.2.3"
+        }
+    }
+}
