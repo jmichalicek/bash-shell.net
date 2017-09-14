@@ -18,7 +18,7 @@ requests = "*"
 [dev-packages]
 factory_boy = "==2.9.2"
 django-coverage = "==1.2.4"
-django-debug-toolbar = "==1.8"
+django-debug-toolbar = ">=1.8"
 
 [packages.django-internetdefenseleague-master]
 git = "https://github.com/jmichalicek/django-internetdefenseleague.git"
