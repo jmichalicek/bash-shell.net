@@ -144,7 +144,6 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     'django.contrib.flatpages',
     'django.contrib.sitemaps',
-    'django_coverage',
     'internetdefenseleague',
     'accounts',
     'blog',
