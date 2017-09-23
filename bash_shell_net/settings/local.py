@@ -1,3 +1,3 @@
 from .base import *
 
-INSTALLED_APPS += ['django_coverage', ]
+INSTALLED_APPS += ('django_coverage', )
