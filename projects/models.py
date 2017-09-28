@@ -15,8 +15,8 @@ class HostingService(models.Model):
     class Meta:
         ordering = ('name', )
 
-    def __unicode__(self):
-        return u'%s' % self.name
+    def __str__(self):
+        return self.name
 
 
 class Language(models.Model):
@@ -30,8 +30,8 @@ class Language(models.Model):
     class Meta:
         ordering = ('name', )
 
-    def __unicode__(self):
-        return u'%s' % self.name
+    def __str__(self):
+        return self.name
 
 
 class Project(models.Model):
@@ -55,8 +55,8 @@ class Project(models.Model):
     class Meta:
         ordering = ('name', )
 
-    def __unicode__(self):
-        return u'%s' % self.name
+    def __str__(self):
+        return self.name
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -99,8 +99,8 @@ class ProjectHostingService(models.Model):
     class Meta:
         ordering = ('project', 'hosting_service')
 
-    def __unicode__(self):
-        return u'%s: %s' %(self.project, self.hosting_service)
+    def __str__(self):
+        return '%s: %s' %(self.project, self.hosting_service)
 
 
 class ProjectNews(models.Model):
@@ -118,8 +118,8 @@ class ProjectNews(models.Model):
     class Meta:
         ordering = ('-created_date', )
 
-    def __unicode__(self):
-        return u'%s' % self.title
+    def __str__(self):
+        return self.title
 
 
 class VersionControlSystem(models.Model):
@@ -128,5 +128,5 @@ class VersionControlSystem(models.Model):
     class Meta:
         ordering = ('name', )
 
-    def __unicode__(self):
-        return u'%s' % self.name
+    def __str__(self):
+        return self.name

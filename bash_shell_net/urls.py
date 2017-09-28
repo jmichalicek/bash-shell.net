@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -7,8 +7,9 @@ admin.autodiscover()
 from django.contrib.flatpages.sitemaps import FlatPageSitemap
 from django.contrib.sitemaps import GenericSitemap
 from django.contrib.sitemaps.views import sitemap
-from sitemaps import *
-from feeds import BlogFeedRss
+
+from .sitemaps import *
+from .feeds import BlogFeedRss
 
 
 

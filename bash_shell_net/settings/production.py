@@ -1,6 +1,6 @@
 from .base import *
 
-TEMPLATE_DEBUG = DEBUG = False
+DEBUG = False
 ALLOWED_HOSTS = ['bash-shell.net']
 
 #CACHES = {
@@ -13,14 +13,14 @@ ALLOWED_HOSTS = ['bash-shell.net']
 CACHES = {
     'default': {
         'BACKEND': 'redis_cache.RedisCache',
-        'LOCATION': 'localhost:6379',
+        'LOCATION': '%s:6379' % REDIS_HOST,
         'OPTIONS': {
             'DB': 2,
             },
         },
     }
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
     'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
@@ -32,3 +32,9 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 )
+
+AWS_STORAGE_BUCKET_NAME = 'bash-shell-net'
+STATICFILES_LOCATION = 'static'
+STATICFILES_STORAGE = 'bash_shell_net.storages.StaticStorage'
+MEDIAFILES_LOCATION = 'uploads'
+DEFAULT_FILE_STORAGE = 'bash_shell_net.storages.MediaStorage'

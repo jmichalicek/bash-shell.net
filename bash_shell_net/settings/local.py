@@ -1,3 +1,3 @@
 from .base import *
 
-TEMPLATE_DEBUG = DEBUG = True
+INSTALLED_APPS += ('django_coverage', )

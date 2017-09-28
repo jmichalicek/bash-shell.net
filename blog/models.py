@@ -6,6 +6,7 @@ from django.utils.text import slugify
 
 from django.contrib.auth.models import User
 
+
 class Tag(models.Model):
     """Category which posts belong to"""
     # name indexed because we order on name
@@ -15,12 +16,12 @@ class Tag(models.Model):
     class Meta:
         ordering = ['name']
 
-    def __unicode__(self):
-        return u'%s' %(self.name)
+    def __str__(self):
+        return self.name
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(u'%s' % self.name.lower())
+            self.slug = slugify(self.name.lower())
         super(Tag, self).save(*args, **kwargs)
 
 
@@ -52,10 +53,10 @@ class Post(models.Model):
         # but create the url always as UTC
         return reverse('blog_post_detail', args=[self.slug])
 
-    def __unicode__(self):
-        return u'%s' %(self.title)
+    def __str__(self):
+        return self.title
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(u'%s' % self.title.lower())
+            self.slug = slugify(self.title.lower())
         super(Post, self).save(*args, **kwargs)

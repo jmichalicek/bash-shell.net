@@ -17,10 +17,10 @@ class HostingServiceTests(TestCase):
     def tearDown(self):
         self.hosting_service.delete()
 
-    def test_unicode(self):
-        """Test the __unicode__() method ouptut"""
+    def test_str(self):
+        """Test the __str__() method ouptut"""
 
-        self.assertEqual(self.hosting_service.name, self.hosting_service.__unicode__())
+        self.assertEqual(self.hosting_service.name, self.hosting_service.__str__())
 
 
 class LanguageTests(TestCase):
@@ -32,8 +32,8 @@ class LanguageTests(TestCase):
     def tearDown(self):
         self.language.delete()
 
-    def test_unicode(self):
-        self.assertEqual(self.language.name, self.language.__unicode__())
+    def test_str(self):
+        self.assertEqual(self.language.name, self.language.__str__())
 
     def test_name_unique_constraint(self):
         new_language = Language()
@@ -47,8 +47,8 @@ class ProjectTests(TestCase):
     def setUp(self):
         self.project = ProjectFactory()
 
-    def test_unicode(self):
-        self.assertEqual(self.project.name, self.project.__unicode__())
+    def test_str(self):
+        self.assertEqual(self.project.name, self.project.__str__())
 
     def test_get_absolute_url(self):
         self.assertEqual(self.project.get_absolute_url(), reverse('projects_project_detail', args=[self.project.slug]))
@@ -112,10 +112,10 @@ class ProjectNewsTest(TestCase):
     def setUp(self):
         self.project = ProjectFactory()
 
-    def test_unicode_method(self):
+    def test_str_method(self):
         news = ProjectNews(project=self.project)
         news.title = 'News Title'
-        self.assertEqual(news.__unicode__(), 'News Title')
+        self.assertEqual(news.__str__(), 'News Title')
 
     def test_published_default(self):
         """Default value of published should be False"""
