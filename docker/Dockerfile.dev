@@ -1,4 +1,4 @@
-FROM debian:jessie-backports
+FROM debian:stretch-backports
 MAINTAINER Justin Michalicek <jmichalicek@gmail.com>
 EXPOSE 8000
 
@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y --force-yes \
     daemontools \
     dnsutils \
     git \
+    inotify-tools \
     libbz2-dev \
     libcurl4-openssl-dev \
     libev-dev \
@@ -24,7 +25,7 @@ RUN apt-get update && apt-get install -y --force-yes \
     libreadline-dev \
     libsqlite3-dev \
     libssl-dev \
-    libuv-dev \
+    libuv1-dev \
     libxml2-dev \
     libxslt-dev \
     postgresql \
@@ -34,42 +35,42 @@ RUN apt-get update && apt-get install -y --force-yes \
     sudo \
     tar \
     telnet \
-    tmux \
     vim \
+    wget \
     zip \
     zlib1g-dev
 
 RUN useradd -ms /bin/bash developer && echo "developer ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 # set dev db to trust all local users
-RUN sed -i -e 's#^host\s\+all\s\+all\s\+127.0.0.1\/32\s\+md5$#host    all all 127.0.0.1/32    trust#' /etc/postgresql/9.4/main/pg_hba.conf
+RUN sed -i -e 's#^host\s\+all\s\+all\s\+127.0.0.1\/32\s\+md5$#host    all all 127.0.0.1/32    trust#' /etc/postgresql/9.6/main/pg_hba.conf
 
 USER developer
 ENV HOME /home/developer
 WORKDIR /home/developer
 RUN echo '. ~/.bashrc' >> ~/.bash_profile
 
-# could go simpler and just install desired python version without pyenv
-ENV PYENV_ROOT $HOME/.pyenv
-RUN curl -L https://raw.githubusercontent.com/yyuu/pyenv-installer/master/bin/pyenv-installer | /bin/bash
-ENV PATH $PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH
-RUN pyenv install 2.7.13 && pyenv local 2.7.13
-# this was just not working with &&
-RUN pyenv virtualenv bsdev
-RUN mkdir $HOME/docker_entrypoints
-RUN echo 'eval "$(pyenv init -)"' >> $HOME/.bashrc
-RUN echo 'eval "$(pyenv virtualenv-init -)"' >> $HOME/.bashrc
+# python install
+RUN wget https://www.python.org/ftp/python/3.6.2/Python-3.6.2.tgz
+RUN tar xvf Python-3.6.2.tgz
+WORKDIR Python-3.6.2
+RUN ./configure --prefix=/home/developer/python3 && make && make install
+RUN echo 'export PATH=/home/developer/python3/bin:$PATH' >> ~/.bashrc
+RUN PATH=/home/developer/python3/bin:$PATH pip3 install pipenv
+# end new stuff
 
 USER root
-COPY docker/dev_entrypoint.sh $HOME/docker_entrypoints/dev_entrypoint.sh
-RUN chown developer $HOME/docker_entrypoints/dev_entrypoint.sh && chmod 755 $HOME/docker_entrypoints/dev_entrypoint.sh
+RUN mkdir /home/developer/docker_entrypoints
+COPY docker/dev_entrypoint.sh /home/developer/docker_entrypoints/dev_entrypoint.sh
+RUN chown developer /home/developer/docker_entrypoints/dev_entrypoint.sh && chmod 755 /home/developer/docker_entrypoints/dev_entrypoint.sh
 
 USER developer
 
-VOLUME ["$HOME/.pyenv/"]
-# for now do not make postgres data permanent
-# VOLUME ["/var/lib/postgresql/9.4/main"]
-VOLUME ["$HOME/bash-shell.net/"]
+## for now do not make postgres data permanent
+## VOLUME ["/var/lib/postgresql/9.4/main"]
+VOLUME ["/home/developer/bash-shell.net/"]
+VOLUME ["/home/developer/.local/share/virtualenvs/"]
 
-ENV DJANGO_SETTINGS_MODULE bash_shell_net.settings.local
-CMD /bin/bash
+ENV LC_ALL=C.UTF-8 LANG=C.UTF-8 PYTHONIOENCODING=utf-8 DJANGO_SETTINGS_MODULE=bash_shell_net.settings.local
+ENV PATH=/home/developer/python3/bin:$PATH
+CMD ["/bin/bash"]
