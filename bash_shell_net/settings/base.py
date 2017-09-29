@@ -49,7 +49,6 @@ USE_TZ = True
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
 MEDIA_ROOT = os.environ.get('MEDIA_ROOT', os.path.join(PROJECT_ROOT, 'media'))
-#MEDIA_ROOT = '/home/justin/django/dev-media/'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -79,11 +78,12 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', '5@r3yfc1j@cyh*uya0w&lrx_eyjt((@^#k1%!r4$u)eus!9m6x') #it's probably a good idea to override this with the env variable
+# it's probably a good idea to override this with the env variable
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', '5@r3yfc1j@cyh*uya0w&lrx_eyjt((@^#k1%!r4$u)eus!9m6x')
 
 MIDDLEWARE = (
     'django.middleware.common.CommonMiddleware',
@@ -186,7 +186,6 @@ LOGGING = {
 # CACHING
 REDIS_HOST = os.environ.get('REDIS_HOST', '')
 
-
 # S3/DO spaces settings
 AWS_IS_GZIPPED = True
 AWS_ACCESS_KEY_ID = os.environ.get('DO_ACCESS_KEY_ID', '')
@@ -197,3 +196,10 @@ AWS_S3_OBJECT_PARAMETERS = {
 # This needs correctly set to work with digital ocean
 AWS_S3_ENDPOINT_URL = os.environ.get('AWS_S3_ENDPOINT_URL', 'https://nyc3.digitaloceanspaces.com')
 AWS_QUERYSTRING_AUTH = False
+
+# markdown extensions
+MARKDOWN_EXTENSIONS = [
+    'markdown.extensions.extra',
+    'markdown.extensions.toc',
+    'markdown.extensions.nl2br',
+]
