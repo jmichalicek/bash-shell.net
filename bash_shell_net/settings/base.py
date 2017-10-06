@@ -201,5 +201,4 @@ AWS_QUERYSTRING_AUTH = False
 MARKDOWN_EXTENSIONS = [
     'markdown.extensions.extra',
     'markdown.extensions.toc',
-    'markdown.extensions.nl2br',
 ]
