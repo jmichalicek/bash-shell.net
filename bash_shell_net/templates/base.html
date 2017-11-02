@@ -42,6 +42,16 @@
             <p>Etiam porta <em>sem malesuada magna</em> mollis euismod. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.</p>
           </div>
           <div class="sidebar-module">
+            <h4>Navigation</h4>
+            <ol class="list-unstyled">
+              <li><a href="{% url 'blog_post_list' %}#">Home</a></li>
+        		  <li><a href="{% url 'blog_post_archive' %}#">Archive</a></li>
+              <li><a href="{% url 'projects_project_list' %}">Projects</a></li>
+              <li><a href="/opensource/">Open Source</a></li>
+      	      <li><a href="/about/">About</a></li>
+            </ol>
+          </div>
+          <div class="sidebar-module">
             <h4>Archives</h4>
             <ol class="list-unstyled">
               <li><a href="#">March 2014</a></li>
