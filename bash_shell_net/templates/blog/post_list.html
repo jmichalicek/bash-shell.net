@@ -1,38 +1,22 @@
 {% extends 'base.html' %}
 {% load blog_tags %}
 {% block primary %}
-  <div class="row">
-    <div class="col-sm-12">
+    <div class="col-sm-9">
       {% for post in object_list %}
-        <div class="col-sm-12"> {# class="blog-post"  from example template? #}
-    	     <h2>{{ post.title }}</h2> {# class="blog-title"  from example template? #}
-           <em> by {{ post.user.username}} on {{ post.published_date|date:"N j, Y, P T" }}</em> {# class="blog-post-meta" and a p tag instead of em  from example template? #}
+        <div class="col-sm-12 blog-post">
+          <h2>{{ post.title }}</h2> {# class="blog-title"  from example template? #}
+          <p class="blog-post-meta"> by {{ post.user.first_name}} on {{ post.published_date|date:"N j, Y, P T" }}</p> {# class="blog-post-meta" and a p tag instead of em  from example template? #}
+
+          <hr />
+          {# markdown will properly wrap the following text in appropriate tags if needed #}
+          {{ post.content|render_markdown|truncatewords_html:"100"|safe }}
+          <span><a href="{{ post.get_absolute_url }}">&rarr; read more</a></span>
         </div>
-        <hr />
-        {# markdown will properly wrap the following text in appropriate tags if needed #}
-        {{ post.content|render_markdown|truncatewords_html:"100"|safe }}
-        <span><a href="{{ post.get_absolute_url }}">&rarr; read more</a></span>
       {% endfor %}
 
       <nav class="blog-pagination">
         <a class="btn btn-outline-primary {% if not page_obj.has_previous %}disabled{% endif %}" href="{% if page_obj.has_previous %}{% url 'blog_post_list' %}?page={{ page_obj.previous_page_number }}{% else %}#{% endif %}">Newer</a>
         <a class="btn btn-outline-primary {% if not page_obj.has_next %}disabled{% endif %}" href="{% if page_obj.has_next %}{% url 'blog_post_list' %}?page={{ page_obj.next_page_number }}{% else %}#{% endif %}">Older</a>
       </nav>
-    </div>
-  </div>
-
-  <div class="row">
-    <ul class="pager">
-      {% if page_obj.has_previous %}
-        <li class="previous">
-          <a href="{% url 'blog_post_list' %}?page={{ page_obj.previous_page_number }}">&larr; Newer</a>
-        </li>
-      {% endif %}
-      {% if page_obj.has_next %}
-        <li class="next">
-          <a href="{% url 'blog_post_list' %}?page={{ page_obj.next_page_number }}">Older &rarr;</a>
-        </li>
-      {% endif %}
-    </ul>
   </div>
 {% endblock%}
