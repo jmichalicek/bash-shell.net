@@ -21,7 +21,7 @@ class ProjectAdmin(admin.ModelAdmin):
     list_filter = ('primary_language',)
     fieldsets = (
         (None,{'fields': ['name', 'slug', 'description','primary_language',
-                          'other_languages', 'created_date','modified_date']}),
+                          'other_languages', 'created_date','modified_date', 'is_active']}),
     )
     readonly_fields = ['created_date', 'modified_date']
     prepopulated_fields = {"slug" : ['name']}
