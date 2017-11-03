@@ -124,7 +124,7 @@
     "primary_language": 1,
     "created_date": "2017-11-03T01:24:18.484Z",
     "modified_date": "2017-11-03T01:25:17.580Z",
-    "is_active": false,
+    "is_active": true,
     "slug": "dev-project-1",
     "other_languages": []
   }
@@ -138,7 +138,7 @@
     "primary_language": 2,
     "created_date": "2017-11-03T01:24:52.499Z",
     "modified_date": "2017-11-03T01:24:52.499Z",
-    "is_active": false,
+    "is_active": true,
     "slug": "dev-project-2",
     "other_languages": []
   }
