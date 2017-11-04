@@ -63,52 +63,6 @@
           {% block primary %}{% endblock %}
       </div>
     </main>
-    {% comment %}
-    {% block navbar %}
-    <div class="navbar navbar-fixed-top">
-      <div class="navbar-inner">
-	<div class="container">
-	  <a href="{% url 'blog_post_list' %}#" class="brand">Home</a>
-	  <button class="btn btn-navbar" data-target=".nav-collapse" data-toggle="collapse" type="button">
-	    <span class="icon-bar"></span>
-	    <span class="icon-bar"></span>
-	    <span class="icon-bar"></span>
-	  </button>
-	  <div class="nav-collapse collapse">
-	    <ul class="nav">
-	      <li class="dropdown" id="blog_menu"><a class="dropdown-toggle" data-toggle="dropdown" href="#blog_menu">Blog <b class="caret"></b></a>
-		<ul class="dropdown-menu">
-		  <li><a href="{% url 'blog_post_list' %}#">Home</a></li>
-		  <li><a href="{% url 'blog_post_archive' %}#">Archive</a></li>
-		</ul>
-	      </li>
-              <li class="dropdown" id="language_menu"><a class="dropdown-toggle" data-toggle="dropdown" href="#language_menu">Projects <b class="caret"></b></a>
-	      <ul class="dropdown-menu">
-		<li><a href="{% url 'projects_project_list' %}">Head</a></li>
-		{% get_project_languages as languages %}
-		{% for language in languages %}
-		<li><a href="{% url 'projects_project_list' %}#{{ language }}">{{ language }}</a></li>
-		{% endfor %}
-	      </ul>
-	      </li>
-	      <li><a href="/opensource/">Open Source</a></li>
-	      <li><a href="/about/">About</a></li>
-            </ul>
-	  </div>
-	</div>
-      </div>
-    </div>
-    {% endblock navbar %}
-    <div class="container">
-      {% block page_header %}
-	<div class="hero-unit">
-	  <h1>Bash-Shell.Net</h1>
-	  <p>I'm a developer, not a writer</p>
-	</div>
-      {% endblock page_header %}
-      {% block primary %}{% endblock %}
-    </div>
-    {% endcomment %}
     {% idl_footer_badge %}
     {% block javascript %}
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
