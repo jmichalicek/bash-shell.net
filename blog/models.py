@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.text import slugify
 
-from django.contrib.auth.models import User
+from .managers import PublishedPostQuerySet
 
 
 class Tag(models.Model):
@@ -44,6 +44,8 @@ class Post(models.Model):
         default='',
         max_length=100
     )
+
+    objects = PublishedPostQuerySet.as_manager()
 
     def get_absolute_url(self):
         # make sure the url date is utc.  If not, annoying things happen...
