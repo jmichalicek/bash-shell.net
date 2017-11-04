@@ -9,6 +9,10 @@
       </div>
       <hr />
       {{ post.content|render_markdown|safe }}
+      <nav class="blog-pagination">
+        <a class="btn btn-outline-primary {% if not next_post %}disabled{% endif %}" href="{% if next_post %}{{ next_post.get_absolute_url }}{% else %}#{% endif %}">Newer</a>
+        <a class="btn btn-outline-primary {% if not previous_post %}disabled{% endif %}" href="{% if previous_post %}{{ previous_post.get_absolute_url }}{% else %}#{% endif %}">Older</a>
+      </nav>
     </div>
 
 {% endblock %}
