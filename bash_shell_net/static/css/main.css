@@ -112,6 +112,14 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
  */
 
 /* Sidebar modules for boxing content */
+aside {
+  background-color: #E6ECF0;
+  padding-top: .5rem;
+  border-radius: .5rem;
+}
+aside a {
+  color: #1d548f;
+}
 .sidebar-module {
   padding: 0 1rem 1rem;
 }
@@ -163,9 +171,15 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
   text-align: center;
   background-color: #f9f9f9;
   border-top: .05rem solid #e5e5e5;
+  font-size: .7rem;
+  margin-top: .25rem;
 }
 .blog-footer p:last-child {
   margin-bottom: 0;
+}
+
+.blog-footer a {
+  color: #1d548f;
 }
 
 .gist pre {
