@@ -24,9 +24,9 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
  * Override Bootstrap's default container.
  */
 
-.container {
+/*.container {
   max-width: 60rem;
-}
+}*/
 
 
 /*
@@ -39,8 +39,17 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
   box-shadow: inset 0 -.1rem .25rem rgba(0,0,0,.1);
 }
 
+
+.nav-tabs .nav-link {
+  color: #cdddeb;
+}
+
+/* below nav stuff is from the bootstrap official blog demo
+ * but is really aimed at their colors and in the navbar.
+ * It was mucking with my nav tabs and I am not using the bar, though
+ */
 /* Nav links */
-.nav-link {
+/*.nav-link {
   position: relative;
   padding: 1rem;
   font-weight: 500;
@@ -50,13 +59,13 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
 .nav-link:focus {
   color: #fff;
   background-color: transparent;
-}
+}*/
 
 /* Active state gets a caret at the bottom */
-.nav-link.active {
+/*.nav-link.active {
   color: #fff;
-}
-.nav-link.active::after {
+}*/
+/*.nav-link.active::after {
   position: absolute;
   bottom: 0;
   left: 50%;
@@ -68,7 +77,7 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
   border-right: .3rem solid transparent;
   border-bottom: .3rem solid;
   border-left: .3rem solid transparent;
-}
+}*/
 
 
 /*
@@ -161,4 +170,11 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
 
 .gist pre {
     color: #000000;
+}
+
+/*
+ * project detail page
+ */
+.project_detail__nav_row {
+  margin-bottom: 1rem;
 }

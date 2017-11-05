@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block primary %}
   {% regroup object_list by primary_language as languages %}
-  <div class="col-sm-10" id="{{ language.grouper }}">
+  <div class="col" id="{{ language.grouper }}">
     {% for language in languages %}
       <div id="{{ language.grouper }}">
         <h3>{{ language.grouper }}</h3>
