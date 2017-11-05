@@ -1,12 +1,14 @@
 {% extends 'base.html' %}
 {% load blog_tags %}
 {% block primary %}
-<div class="col-sm-9">
+<div class="col-sm-10">
+  <div class=" col-sm-12">
   <ul class="nav nav-tabs">
-    <li class="active"><a href="#info" data-toggle="tab">Info</a></li>
-    <li><a href="#news" data-toggle="tab">News</a></li>
+    <li class="nav-item"><a class="nav-link active" href="#info" data-toggle="tab">Info</a></li>
+    <li class="nav-item"><a class="nav-link" href="#news" data-toggle="tab">News</a></li>
   </ul>
-  <div class="row">
+</div>
+  <div class="col-sm-12">
     <div class="tab-content col-sm-8">
       <div class="tab-pane active" id="info">
         {{ object.description|render_markdown|safe }}
@@ -22,7 +24,7 @@
         </dl>
       </div>
     </div>
-    <div class="span4">
+    <div class="col-sm-4">
       <div class="well">
         <h2>{{ object.name }}</h2>
         <dl class="dl-horizontal">

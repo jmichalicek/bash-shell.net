@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load blog_tags %}
 {% block primary %}
-    <div class="col-sm-9">
+    <div class="col-sm-10">
       <div class="page-header">
 	       <h2>{{ post.title }}</h2>
 	        <em>by {{ post.user.username}} on {{ post.published_date|date:"N j, Y, P T" }}</em>
