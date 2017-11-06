@@ -7,7 +7,13 @@
     <title>{% block title %}Bash-Shell.Net{% endblock %}</title>
     {% block stylesheets %}
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}" />
+    {% with theme='w' %}
+      {% if theme == 'w' %}
+      <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}" />
+      {% else %}
+      <link rel="stylesheet" type="text/css" href="{% static 'css/main_gray_bg.css' %}" />
+      {% endif %}
+    {% endwith %}
     {% endblock stylesheets %}
   </head>
   <body>

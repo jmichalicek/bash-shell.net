@@ -9,35 +9,19 @@
 }
 
 body {
-  	font-family: Calibri, Candara, Segoe, Segoe UI, Optima, Arial, sans-serif;
-  /*color: #FF8905;*/
-  /*color: #555;*/
-  color: #696765;
+  font-family: Calibri, Candara, Segoe, Segoe UI, Optima, Arial, sans-serif;
+  /*font-family: Georgia, "Times New Roman", Times, serif;*/
+  color: #555;
+  background-color: #696765;
 }
 
 h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
   font-family: Calibri, sans-serif
   /*font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;*/
   font-weight: 400;
-  /*color: #333;*/
-  color: #DEC062;  /* light orange */
+  color: #333;
 }
 
-.btn, .btn-outline-primary {
-  color: #FF8905;
-  border-color: #FF8905;
-}
-
-.btn-outline-primary.disabled {
-  color: #DEC062;
-  border-color: #DEC062;
-}
-
-.btn:hover, .btn-outline-primary:hover {
-  background-color: #FF8905;
-  color: #FFF;
-  border-color: #FF8905;
-}
 
 /*
  * Override Bootstrap's default container.
@@ -58,9 +42,6 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
   box-shadow: inset 0 -.1rem .25rem rgba(0,0,0,.1);
 }
 
-a {
-  color: #FF8905;
-}
 
 .nav-tabs .nav-link {
   color: #cdddeb;
@@ -122,10 +103,8 @@ a {
 }
 .blog-description {
   font-size: 1.1rem;
-  color: #DEC062;
   /*color: #999;*/
-  /*color: #d7d7d7;*/
-
+  color: #d7d7d7;
 }
 
 @media (min-width: 40em) {
@@ -147,9 +126,9 @@ aside {
   border-radius: .5rem;
 }
 aside a, aside a:hover, aside a:active {
+  /*color: #1d548f;*/
   color: #d7d7d7;
 }
-
 .sidebar-module {
   padding: 0 1rem 1rem;
 }
@@ -209,8 +188,7 @@ aside a, aside a:hover, aside a:active {
 }
 
 .blog-footer a {
-  /*color: #1d548f;*/
-  color: #FF8905;
+  color: #1d548f;
 }
 
 .gist pre {
