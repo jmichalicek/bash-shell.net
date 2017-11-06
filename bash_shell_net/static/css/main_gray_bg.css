@@ -11,15 +11,51 @@
 body {
   font-family: Calibri, Candara, Segoe, Segoe UI, Optima, Arial, sans-serif;
   /*font-family: Georgia, "Times New Roman", Times, serif;*/
-  color: #555;
-  background-color: #696765;
+  /*color: #555;*/
+  color: #4a0617;
+  /*background-color: #696765;*/
+  background-color: #999;
 }
 
 h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
   font-family: Calibri, sans-serif
   /*font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;*/
   font-weight: 400;
-  color: #333;
+  /*color: #333;*/
+  color: #893131
+}
+
+a {
+  color: #235978;
+}
+
+.card {
+  background-color: #d7d7d7;
+}
+
+.btn, .btn-outline-primary {
+  color: #4a0617;
+  border-color: #4a0617;
+}
+
+.btn-outline-primary.disabled {
+  color: #893131;
+  border-color: #893131;
+}
+
+.btn:hover, .btn-outline-primary:hover {
+  background-color: #4a0617;
+  color: #FFF;
+  border-color: #893131;
+}
+
+a:active.btn.btn-outline-primary {
+  border-color: #893131!important;
+  background-color: #893131!important;
+  color: #893131!important;
+  outline: none!important;
+  box-shadow: none !important;
+  /*box-shadow: #893131 !important;*/
 }
 
 
@@ -178,7 +214,8 @@ aside a, aside a:hover, aside a:active {
   padding: 2.5rem 0;
   color: #999;
   text-align: center;
-  background-color: #f9f9f9;
+  /*background-color: #f9f9f9;*/
+  background-color: #696765;
   border-top: .05rem solid #e5e5e5;
   font-size: .7rem;
   margin-top: .25rem;
@@ -188,7 +225,7 @@ aside a, aside a:hover, aside a:active {
 }
 
 .blog-footer a {
-  color: #1d548f;
+  color: #d7d7d7;
 }
 
 .gist pre {

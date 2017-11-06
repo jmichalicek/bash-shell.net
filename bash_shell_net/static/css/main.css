@@ -39,6 +39,15 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
   border-color: #FF8905;
 }
 
+a:active.btn.btn-outline-primary {
+  border-color: #FF8905!important;
+  background-color: #FF8905!important;
+  color: #FF8905!important;
+  outline: none!important;
+  box-shadow: none !important;
+  /*box-shadow: #FF8905 !important;*/
+}
+
 /*
  * Override Bootstrap's default container.
  */
