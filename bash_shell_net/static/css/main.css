@@ -232,3 +232,10 @@ aside a, aside a:hover, aside a:active {
 .project_detail__nav_row {
   margin-bottom: 1rem;
 }
+
+/*
+ * helper stuff
+ */
+#column-2.default {
+  overflow-x: auto;
+}

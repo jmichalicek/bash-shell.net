@@ -7,7 +7,7 @@
     <title>{% block title %}Bash-Shell.Net{% endblock %}</title>
     {% block stylesheets %}
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
-    {% with theme='w' %}
+    {% with theme='g' %}
       {% if theme == 'w' %}
       <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}" />
       {% else %}
@@ -58,7 +58,9 @@
               {% endcomment %}
             </aside><!-- /.blog-sidebar -->
         {% endblock sidebar %}
-        {% block primary %}{% endblock %}
+        {% block col2_default %}
+          <div id="column-2" class="col default">{% block primary %}{% endblock %}</div>
+        {% endblock col2_default %}
       </div>
     </main>
     <footer class="blog-footer row">
@@ -84,6 +86,7 @@
           <h6>Other</h6>
           <ul class="list-unstyled">
             <li>Hosted on <a href="https://m.do.co/c/d39bb8f7dd5d">Digital Ocean</a></li>
+            <li>Web and App Development @ <a href="https://mobelux.com/">Mobelux</a></li>
           </ul>
         </div>
         <div class="col-12"><p><a href="#">Back to top</a></p></div>

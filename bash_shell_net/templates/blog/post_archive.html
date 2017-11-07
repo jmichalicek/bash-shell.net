@@ -1,7 +1,5 @@
 {% extends 'base.html' %}
 {% block primary %}
-
-<div class="col">
 {% regroup latest by published_date.year as posts_by_year %}
   {% for year in posts_by_year reversed %}
     <h2>{{ year.grouper }}<i class="icon-arrow-down icon-white"></i></h2>
@@ -12,5 +10,4 @@
     </div>
       {% endfor %}
   {% endfor %}
-</div>
 {% endblock%}

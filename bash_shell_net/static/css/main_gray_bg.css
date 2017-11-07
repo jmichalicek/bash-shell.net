@@ -1,6 +1,34 @@
 /*
  * Globals
  */
+/* TODO: sass this up */
+/*
+ * light grey; d7d7d7
+ * dark grey: #696765
+ * medium grey: #999
+ * Darker grey: #212529 (text in pre)
+ * Brighter red: #893131 (h1, etc)
+ * darker red/maroon: #4a0617 (main text)
+ * bright blue: #0069ff
+ * light blue: #4F99C4
+ * White-ish: #d7d7d7 (links on blue)
+ */
+
+
+nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active{
+  background-color: #0069ff;
+  color: #d7d7d7;
+  border-color: #999;
+}
+
+nav-tabs .nav-item .nav-link, .nav-tabs .nav-link{
+  background-color: #696765;
+  color: #d7d7d7;
+}
+
+/*.nav-tabs .nav-item {
+  background-color: #696765;
+}*/
 
 @media (min-width: 48em) {
   html {
@@ -31,6 +59,10 @@ a {
 
 .card {
   background-color: #d7d7d7;
+}
+
+pre {
+  background-color: #696765;
 }
 
 .btn, .btn-outline-primary {
@@ -238,3 +270,10 @@ aside a, aside a:hover, aside a:active {
 .project_detail__nav_row {
   margin-bottom: 1rem;
 }
+
+/*
+ * helper stuff
+ */
+ #column-2.default {
+   overflow-x: auto;
+ }
