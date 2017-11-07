@@ -2,6 +2,12 @@
  * Globals
  */
 
+
+pre {
+ background-color: #d7d7d7;
+}
+
+
 @media (min-width: 48em) {
   html {
     font-size: 18px;
