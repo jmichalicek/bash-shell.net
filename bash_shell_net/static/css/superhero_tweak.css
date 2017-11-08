@@ -153,14 +153,20 @@ a:active.btn.btn-outline-primary {
   background-color: #45515f;
   border-color: rgb(223, 105, 26);
   border-bottom-color: #45515f;
-  border-radius: .25rem;
+  border-radius: .25rem .25rem 0 0;
   /*border-color: whitesmoke whitesmoke whitesmoke whitesmoke;*/
   /*border-color: #b9c0cb;
   border-bottom-collor: #b9c0cb;*/
 }
 
+.nav.nav-tabs, .nav-tabs .nav-link:hover:not(.active) {
+  border-color: rgb(223, 105, 26);
+  border-radius: .25rem .25rem 0 0;
+}
+
 .nav-tabs .nav-link {
   background-color: #45515f;
+  border-bottom-color: rgb(223, 105, 26);
 }
 
 .project_detail__content {
