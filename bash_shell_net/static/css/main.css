@@ -2,6 +2,10 @@
  * Globals
  */
 
+/*
+ * Dark blue (header): #0A2A41
+ * Pre: #D7D7D7;
+ */
 
 pre {
  background-color: #d7d7d7;
@@ -18,7 +22,10 @@ body {
   	font-family: Calibri, Candara, Segoe, Segoe UI, Optima, Arial, sans-serif;
   /*color: #FF8905;*/
   /*color: #555;*/
-  color: #696765;
+  /*color: #696765;*/
+  color: #0A2A41;
+  background-color: #f9f9f9;
+  /*background-color: #0A2A41;*/
 }
 
 h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
@@ -26,7 +33,8 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
   /*font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;*/
   font-weight: 400;
   /*color: #333;*/
-  color: #DEC062;  /* light orange */
+  /*color: #DEC062;  /* light orange */
+  color: #00365D;
 }
 
 .btn, .btn-outline-primary {
@@ -73,8 +81,12 @@ a:active.btn.btn-outline-primary {
   box-shadow: inset 0 -.1rem .25rem rgba(0,0,0,.1);
 }
 
-a {
+a, a:hover, a:active {
   color: #FF8905;
+}
+
+.nav-tabs .nav-item.show .nav-link, .nav-tabs {
+  background-color: #f9f9f9;
 }
 
 .nav-tabs .nav-link {
@@ -127,6 +139,7 @@ a {
   border-bottom: .05rem solid #eee;
   padding-top: 1.25rem;
   background-color: #0069ff;
+  /*background-color: #0A2A41;*/
   text-align: center;
 }
 .blog-title {
@@ -137,7 +150,8 @@ a {
 }
 .blog-description {
   font-size: 1.1rem;
-  color: #DEC062;
+  /*color: #DEC062;*/
+  color: #F8CA06;
   /*color: #999;*/
   /*color: #d7d7d7;*/
 
@@ -160,6 +174,11 @@ aside {
   background-color: #4F99C4;
   padding-top: .5rem;
   border-radius: .5rem;
+}
+
+aside h1, aside .h1, aside h2, aside .h2,
+aside h3, aside .h3, aside h4, aside .h4, aside h5, aside .h5, aside h6, aside .h6 {
+  color: #F8CA06;
 }
 aside a, aside a:hover, aside a:active {
   color: #d7d7d7;
@@ -212,9 +231,11 @@ aside a, aside a:hover, aside a:active {
 
 .blog-footer {
   padding: 2.5rem 0;
-  color: #999;
+  /*color: #999;*/
+  color: white;
   text-align: center;
-  background-color: #f9f9f9;
+  /*background-color: #f9f9f9;*/
+  background-color: #8a8585;
   border-top: .05rem solid #e5e5e5;
   font-size: .7rem;
   margin-top: .25rem;
@@ -225,7 +246,8 @@ aside a, aside a:hover, aside a:active {
 
 .blog-footer a {
   /*color: #1d548f;*/
-  color: #FF8905;
+  /*color: #FF8905;*/
+  color: whitesmoke;
 }
 
 .gist pre {
@@ -244,4 +266,5 @@ aside a, aside a:hover, aside a:active {
  */
 #column-2.default {
   overflow-x: auto;
+  border-radius: .5rem;
 }

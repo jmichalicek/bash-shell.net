@@ -11,7 +11,9 @@
       {% if theme == 'w' %}
       <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}" />
       {% else %}
-      <link rel="stylesheet" type="text/css" href="{% static 'css/main_gray_bg.css' %}" />
+      <link rel="stylesheet" type="text/css" href="https://bootswatch.com/4/superhero/bootstrap.min.css" />
+      <link rel="stylesheet" type="text/css" href="{% static 'css/superhero_tweak.css' %}" />
+      <!-- <link rel="stylesheet" type="text/css" href="{% static 'css/main_gray_bg.css' %}" /> -->
       {% endif %}
     {% endwith %}
     {% endblock stylesheets %}
