@@ -12,7 +12,9 @@ pre {
   background-color: #45515f;
   text-align: center;
   padding-bottom: 1.25rem;
-  margin-bottom: 2rem;
+  /*margin-bottom: 2rem;*/
+  margin-bottom: 0;
+  /*border-bottom: .05rem solid #eee;*/
   border-bottom: .05rem solid #eee;
   padding-top: 1.25rem;
 }
@@ -122,6 +124,8 @@ a:active.btn.btn-outline-primary {
   background-color: #45515f;
   /*background: linear-gradient(bottom right, #2B3E50, #566577);*/
   padding: .5rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
 }
 
 /* footer */
@@ -137,7 +141,9 @@ a:active.btn.btn-outline-primary {
   font-size: .7rem;
   margin-top: .5rem;
 
-  background: linear-gradient(#2B3E50, #566577);
+  /*background: linear-gradient(#2B3E50, #566577);*/
+  background: linear-gradient(#566577, #2B3E50);
+  min-height: 25rem;
 }
 .blog-footer p:last-child {
   margin-bottom: 0;

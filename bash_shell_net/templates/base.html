@@ -7,12 +7,17 @@
     <title>{% block title %}Bash-Shell.Net{% endblock %}</title>
     {% block stylesheets %}
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
-    {% with theme='g' %}
+    {% with theme='s' %}
       {% if theme == 'w' %}
       <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}" />
+      {% elif theme == 'w2' %}
+      <link rel="stylesheet" type="text/css" href="{% static 'css/blue_white2/main.css' %}" />
+      {% elif theme == 's2' %}
+      <link rel="stylesheet" type="text/css" href="https://bootswatch.com/4/superhero/bootstrap.min.css" />
+      <link rel="stylesheet" type="text/css" href="{% static 'css/superhero-fluid/main.css' %}" />
       {% else %}
       <link rel="stylesheet" type="text/css" href="https://bootswatch.com/4/superhero/bootstrap.min.css" />
-      <link rel="stylesheet" type="text/css" href="{% static 'css/superhero_tweak.css' %}" />
+      <link rel="stylesheet" type="text/css" href="{% static 'css/superhero/superhero_tweak.css' %}" />
       <!-- <link rel="stylesheet" type="text/css" href="{% static 'css/main_gray_bg.css' %}" /> -->
       {% endif %}
     {% endwith %}
@@ -65,7 +70,7 @@
         {% endblock col2_default %}
       </div>
     </main>
-    <footer class="blog-footer row">
+    <footer class="blog-footer">
       <div class="col-6 row offset-3 no-gutters">
         <div class="col">
           <h6>Sections</h6>
