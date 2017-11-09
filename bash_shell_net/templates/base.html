@@ -6,35 +6,35 @@
   <head>
     <title>{% block title %}Bash-Shell.Net{% endblock %}</title>
     {% block stylesheets %}
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
-    {% with theme='s' %}
-      {% if theme == 'w' %}
-      <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}" />
-      {% elif theme == 'w2' %}
-      <link rel="stylesheet" type="text/css" href="{% static 'css/blue_white2/main.css' %}" />
-      {% elif theme == 's2' %}
-      <link rel="stylesheet" type="text/css" href="https://bootswatch.com/4/superhero/bootstrap.min.css" />
-      <link rel="stylesheet" type="text/css" href="{% static 'css/superhero-fluid/main.css' %}" />
-      {% else %}
-      <link rel="stylesheet" type="text/css" href="https://bootswatch.com/4/superhero/bootstrap.min.css" />
+      {% comment %}<link rel="stylesheet" type="text/css" href="https://bootswatch.com/4/superhero/bootstrap.min.css" />{% endcomment %}
+      <link rel="stylesheet" type="text/css" href="{% static 'css/superhero/bootstrap.min.css' %}" />
       <link rel="stylesheet" type="text/css" href="{% static 'css/superhero/superhero_tweak.css' %}" />
       <!-- <link rel="stylesheet" type="text/css" href="{% static 'css/main_gray_bg.css' %}" /> -->
-      {% endif %}
-    {% endwith %}
     {% endblock stylesheets %}
   </head>
   <body>
     <header>
       <div class="blog-header">
         <div class="container">
-          <h1 class="blog-title">Bash-Shell.Net</h1>
-          <p class="lead blog-description">I'm a developer, not a writer.</p>
+          <div class="title">
+            <h1 class="blog-title">Bash-Shell.Net</h1>
+            <p class="lead blog-description">I'm a developer, not a writer.</p>
+          </div>
+
+            <ul class="nav">
+              <li class="nav-item"><a class="nav-link" href="{% url 'blog_post_list' %}#">Home</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'blog_post_archive' %}#">Archive</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'projects_project_list' %}">Projects</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'opensource' %}">Open Source</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
+            </ul>
         </div>
       </div>
     </header>
     <main role="main" class="container">
       <div class="row">
         {% block sidebar %}
+        {% comment %}
             <aside class="col-sm-12 col-md-3 col-lg-2 blog-sidebar mr-1 d-none d-md-block">
               {% block main_nav %}
                 <div class="sidebar-module">
@@ -57,13 +57,9 @@
                   </ol>
                 </div>
               {% endblock %}
-              {% comment %}
-              <div class="sidebar-module sidebar-module-inset">
-                <h4>Where Am I?</h4>
-                <p>Justin's rambling about software development, running, and dad stuff.</p>
-              </div>
-              {% endcomment %}
+
             </aside><!-- /.blog-sidebar -->
+            {% endcomment %}
         {% endblock sidebar %}
         {% block col2_default %}
           <div id="column-2" class="col default">{% block primary %}{% endblock %}</div>
