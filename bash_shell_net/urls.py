@@ -1,22 +1,19 @@
 from django.conf.urls import include, url
-
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
-admin.autodiscover()
-
 from django.contrib.flatpages.sitemaps import FlatPageSitemap
 from django.contrib.sitemaps import GenericSitemap
 from django.contrib.sitemaps.views import sitemap
 from django.views.generic import TemplateView
 
-from .sitemaps import *
 from .feeds import BlogFeedRss
+from .sitemaps import BlogSitemap, ProjectSiteMap, ProjectsSiteMap
 
-
+admin.autodiscover()
 
 sitemaps = {'blog': BlogSitemap,
             'project': ProjectSiteMap,
-            'projects': ProjectsSiteMap,}
+            'projects': ProjectsSiteMap}
 
 urlpatterns = [
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
@@ -27,5 +24,5 @@ urlpatterns = [
     url(r'^opensource/$', TemplateView.as_view(template_name="open_source.html"), name="opensource"),
     url(r'^blog/', include('blog.urls')),
     url(r'^projects/', include('projects.urls')),
-    url(r'^', include('blog.urls')),
+    url(r'^', include('blog.urls', namespace='default')),
 ]
