@@ -1,0 +1,175 @@
+[
+{
+  "model": "sites.site",
+  "pk": 1,
+  "fields": {
+    "domain": "example.com",
+    "name": "example.com"
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$36000$mgEnFmg1sKJF$wD/pCy8br1zaPg7f3TKmTuRBwJ9qv8dpPhIBLcCSJYs=",
+    "last_login": "2017-11-03T01:19:27.498Z",
+    "is_superuser": true,
+    "email": "user@example.com",
+    "first_name": "Dev",
+    "last_name": "McDevpants",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2017-11-03T01:19:11.178Z",
+    "username": "user@example.com",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "blog.tag",
+  "pk": 1,
+  "fields": {
+    "name": "tag1",
+    "slug": "tag1"
+  }
+},
+{
+  "model": "blog.tag",
+  "pk": 2,
+  "fields": {
+    "name": "tag2",
+    "slug": "tag2"
+  }
+},
+{
+  "model": "blog.post",
+  "pk": 1,
+  "fields": {
+    "title": "Dev Post 1",
+    "content": "This is a fake post for dev stuff",
+    "created_date": "2017-11-03T01:20:26.172Z",
+    "updated_date": "2017-11-03T01:20:26.172Z",
+    "is_published": true,
+    "published_date": "2017-11-03T01:20:20Z",
+    "user": 1,
+    "slug": "dev-post-1",
+    "tags": [
+      1
+    ]
+  }
+},
+{
+  "model": "blog.post",
+  "pk": 2,
+  "fields": {
+    "title": "Dev Post 2",
+    "content": "Another post for dev stuff",
+    "created_date": "2017-11-03T01:20:50.351Z",
+    "updated_date": "2017-11-03T01:20:50.351Z",
+    "is_published": true,
+    "published_date": "2017-11-03T01:20:46Z",
+    "user": 1,
+    "slug": "dev-post-2",
+    "tags": [
+      2
+    ]
+  }
+},
+{
+  "model": "blog.post",
+  "pk": 3,
+  "fields": {
+    "title": "Unpublished Post",
+    "content": "This post is not published, for easy testing",
+    "created_date": "2017-11-03T01:21:15.665Z",
+    "updated_date": "2017-11-03T01:21:15.665Z",
+    "is_published": false,
+    "published_date": null,
+    "user": 1,
+    "slug": "unpublished-post",
+    "tags": []
+  }
+},
+{
+  "model": "projects.hostingservice",
+  "pk": 1,
+  "fields": {
+    "name": "github",
+    "url": "https://github.com/",
+    "icon": ""
+  }
+},
+{
+  "model": "projects.language",
+  "pk": 1,
+  "fields": {
+    "name": "Python",
+    "description": "Python"
+  }
+},
+{
+  "model": "projects.language",
+  "pk": 2,
+  "fields": {
+    "name": "Go",
+    "description": "Golang"
+  }
+},
+{
+  "model": "projects.project",
+  "pk": 1,
+  "fields": {
+    "name": "Dev project 1",
+    "description": "Dev stuff",
+    "primary_language": 1,
+    "created_date": "2017-11-03T01:24:18.484Z",
+    "modified_date": "2017-11-03T01:25:17.580Z",
+    "is_active": true,
+    "slug": "dev-project-1",
+    "other_languages": []
+  }
+},
+{
+  "model": "projects.project",
+  "pk": 2,
+  "fields": {
+    "name": "Dev Project 2",
+    "description": "Another project",
+    "primary_language": 2,
+    "created_date": "2017-11-03T01:24:52.499Z",
+    "modified_date": "2017-11-03T01:24:52.499Z",
+    "is_active": true,
+    "slug": "dev-project-2",
+    "other_languages": []
+  }
+},
+{
+  "model": "projects.projecthostingservice",
+  "pk": 1,
+  "fields": {
+    "project": 1,
+    "hosting_service": 1,
+    "project_url": "https://example.com/",
+    "public_vcs_uri": "https://example.com/",
+    "vcs": 1
+  }
+},
+{
+  "model": "projects.projecthostingservice",
+  "pk": 2,
+  "fields": {
+    "project": 2,
+    "hosting_service": 1,
+    "project_url": "https://example.com/",
+    "public_vcs_uri": "https://example.com/",
+    "vcs": 1
+  }
+},
+{
+  "model": "projects.versioncontrolsystem",
+  "pk": 1,
+  "fields": {
+    "name": "git"
+  }
+}
+]

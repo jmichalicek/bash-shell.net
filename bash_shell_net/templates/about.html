@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load blog_tags %}
+
+{% block primary %}
+  <div class="page-header">
+    <h2>About</h2>
+  </div>
+  <hr />
+{% markdown %}
+This site started as my first Django project, more or less following along with a tutorial that walked through
+creating a super simple blogging site.  While it still acts as my blog, it is also a testbed for trying
+new ways of organizing Django, new apps, and new ways to handle hosting and deployment.
+{% endmarkdown %}
+{% endblock %}

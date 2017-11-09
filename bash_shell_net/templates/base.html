@@ -6,60 +6,103 @@
   <head>
     <title>{% block title %}Bash-Shell.Net{% endblock %}</title>
     {% block stylesheets %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/bootswatch-superhero.css' %}" />
-    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap-responsive.css' %}" />
-    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}" />
+      {% comment %}<link rel="stylesheet" type="text/css" href="https://bootswatch.com/4/superhero/bootstrap.min.css" />{% endcomment %}
+      <link rel="stylesheet" type="text/css" href="{% static 'css/superhero/bootstrap.min.css' %}" />
+      <link rel="stylesheet" type="text/css" href="{% static 'css/superhero/superhero_tweak.css' %}" />
+      <!-- <link rel="stylesheet" type="text/css" href="{% static 'css/main_gray_bg.css' %}" /> -->
     {% endblock stylesheets %}
   </head>
   <body>
-    {% block navbar %}
-    <div class="navbar navbar-fixed-top">
-      <div class="navbar-inner">
-	<div class="container">
-	  <a href="{% url 'blog_post_list' %}#" class="brand">Home</a>
-	  <button class="btn btn-navbar" data-target=".nav-collapse" data-toggle="collapse" type="button">
-	    <span class="icon-bar"></span>
-	    <span class="icon-bar"></span>
-	    <span class="icon-bar"></span>
-	  </button>
-	  <div class="nav-collapse collapse">
-	    <ul class="nav">
-	      <li class="dropdown" id="blog_menu"><a class="dropdown-toggle" data-toggle="dropdown" href="#blog_menu">Blog <b class="caret"></b></a>
-		<ul class="dropdown-menu">
-		  <li><a href="{% url 'blog_post_list' %}#">Home</a></li>
-		  <li><a href="{% url 'blog_post_archive' %}#">Archive</a></li>
-		</ul>
-	      </li>
-              <li class="dropdown" id="language_menu"><a class="dropdown-toggle" data-toggle="dropdown" href="#language_menu">Projects <b class="caret"></b></a>
-	      <ul class="dropdown-menu">
-		<li><a href="{% url 'projects_project_list' %}">Head</a></li>
-		{% get_project_languages as languages %}
-		{% for language in languages %}
-		<li><a href="{% url 'projects_project_list' %}#{{ language }}">{{ language }}</a></li>
-		{% endfor %}
-	      </ul>
-	      </li>
-	      <li><a href="/opensource/">Open Source</a></li>
-	      <li><a href="/about/">About</a></li>
+    <header>
+      <div class="blog-header">
+        <div class="container">
+          <div class="title">
+            <h1 class="blog-title">Bash-Shell.Net</h1>
+            <p class="lead blog-description">I'm a developer, not a writer.</p>
+          </div>
+
+            <ul class="nav">
+              <li class="nav-item"><a class="nav-link" href="{% url 'blog_post_list' %}#">Home</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'blog_post_archive' %}#">Archive</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'projects_project_list' %}">Projects</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'opensource' %}">Open Source</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
             </ul>
-	  </div>
-	</div>
+        </div>
       </div>
-    </div>
-    {% endblock navbar %}
-    <div class="container">
-      {% block page_header %}
-	<div class="hero-unit">
-	  <h1>Bash-Shell.Net</h1>
-	  <p>I'm a developer, not a writer</p>
-	</div>
-      {% endblock page_header %}
-      {% block primary %}{% endblock %}
-    </div>
-    {% idl_footer_badge %}
+    </header>
+    <main role="main" class="container">
+      <div class="row">
+        {% block sidebar %}
+        {% comment %}
+            <aside class="col-sm-12 col-md-3 col-lg-2 blog-sidebar mr-1 d-none d-md-block">
+              {% block main_nav %}
+                <div class="sidebar-module">
+                  <h4>Sections</h4>
+                  <ul class="nav flex-column">
+                    <li><a href="{% url 'blog_post_list' %}#">Home</a></li>
+                    <li><a href="{% url 'blog_post_archive' %}#">Archive</a></li>
+                    <li><a href="{% url 'projects_project_list' %}">Projects</a></li>
+                    <li><a href="{% url 'opensource' %}">Open Source</a></li>
+                    <li><a href="{% url 'about' %}">About</a></li>
+                  </ol>
+                </div>
+              {% endblock main_nav %}
+              {% block social_links %}
+                <div class="sidebar-module col">
+                  <h4>Social</h4>
+                  <ol class="list-unstyled">
+                    <li><a href="https://github.com/jmichalicek/">GitHub</a></li>
+                    <li><a href="https://twitter.com/zingaya">Twitter</a></li>
+                  </ol>
+                </div>
+              {% endblock %}
+
+            </aside><!-- /.blog-sidebar -->
+            {% endcomment %}
+        {% endblock sidebar %}
+        {% block col2_default %}
+          <div id="column-2" class="col default">{% block primary %}{% endblock %}</div>
+        {% endblock col2_default %}
+      </div>
+    </main>
+    <footer class="blog-footer">
+      <div class="col-6 row offset-3 no-gutters">
+        <div class="col">
+          <h6>Sections</h6>
+          <ul class="nav flex-column">
+            <li><a href="{% url 'blog_post_list' %}#">Home</a></li>
+            <li><a href="{% url 'blog_post_archive' %}#">Archive</a></li>
+            <li><a href="{% url 'projects_project_list' %}">Projects</a></li>
+            <li><a href="{% url 'opensource' %}">Open Source</a></li>
+            <li><a href="{% url 'about' %}">About</a></li>
+          </ul>
+        </div>
+        <div class="col">
+          <h6>Social</h6>
+          <ol class="list-unstyled">
+            <li><a href="https://github.com/jmichalicek/"><img type="image/svg+xml" src="{% static 'img/github.svg' %}" class="github-svg"></img> GitHub</a></li>
+            <li><a href="https://twitter.com/zingaya"><img type="image/svg+xml" src="{% static 'img/twitter.svg' %}" class="twitter-svg"></img> Twitter</a></li>
+          </ol>
+        </div>
+        <div class="col">
+          <h6>Other</h6>
+          <ul class="list-unstyled">
+            <li>Hosted on <a href="https://m.do.co/c/d39bb8f7dd5d">Digital Ocean&nbsp;&nbsp;<img type="image/svg+xml" src="{% static 'img/digitalocean.svg' %}" class="digitalocean-svg"></img></a>
+            </li>
+            <li>Web and App Development @ <a href="https://mobelux.com/">Mobelux</a></li>
+          </ul>
+        </div>
+        <div class="col-12"><p><a href="#">Back to top</a></p></div>
+        <div class="col-12">
+          {% idl_footer_badge %}
+        </div>
+      </div>
+    </footer>
     {% block javascript %}
-    <script src="//code.jquery.com/jquery-1.7.2.min.js"></script>
-    <script src="{% static 'js/vendor/bootstrap.js' %}"></script>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
         {% idl_popup "modal" %}
     {% endblock javascript %}
 

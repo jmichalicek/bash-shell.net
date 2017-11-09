@@ -1,11 +1,17 @@
 # bash-shell.net
 Main project for http://bash-shell.net/
 
-It's time to update.  This will be moving to Django 1.9 and getting mostly rewritten.
-The original code will live on in the `original-code` branch.
 
-# TODO:
+# Tools
 
-* Update to Django 1.9
-* Scrap all of the old code
-* Migrate data
+## Frameworks
+* Django
+* Bootstrap 4
+
+## Sites
+* https://colormind.io
+* https://www.cssfontstack.com/Calibri
+
+## CSS and Icons
+* https://simpleicons.org/
+* https://bootswatch.com/
