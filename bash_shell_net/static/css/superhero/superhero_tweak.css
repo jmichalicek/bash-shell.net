@@ -1,3 +1,15 @@
+/*html {
+  background-color: #000015;
+}*/
+
+.twitter-svg, .github-svg {
+  height: 1rem;
+}
+
+.digitalocean-svg {
+  height: .75rem;
+}
+
 pre {
   /*background-color: #7d8d9b;*/
   /*background-color: #45515f;*/
@@ -18,6 +30,7 @@ pre {
 
 body {
   background: linear-gradient(#2B3E50, #000015);
+  height: 100%;
   /*background: repeating-linear-gradient(#000020, #2B3E50);*/
 }
 
