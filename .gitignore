@@ -6,3 +6,4 @@ media
 *~
 *.sqlite
 src/
+.DS_Store
