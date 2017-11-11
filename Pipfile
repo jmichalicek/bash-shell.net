@@ -1,24 +1,28 @@
 [[source]]
+
 url = "https://pypi.python.org/simple"
 verify_ssl = true
 
+
 [packages]
 
-django = "==1.11.5"
-pillow = "==4.2.1"
-"dj-database-url" = "==0.4.2"
-"django-redis-cache" = "==1.7.1"
-"psycopg2" = "==2.7.3.1"
-pytz = "==2017.2"
+django = "<=1.12"
+pillow = "*"
+dj-database-url = "*"
+django-redis-cache = "*"
+"psycopg2" = "*"
+pytz = "*"
 gunicorn = "==19.7.1"
-"boto3" = "==1.4.6"
-"django-storages" = "==1.6.5"
+"boto3" = "*"
+django-storages = "*"
 markdown = "==2.6.9"
 requests = "*"
-"django-internetdefenseleague-master" = { git = "https://github.com/jmichalicek/django-internetdefenseleague.git", ref = "d9849b553885d36b3650d8f36c8a86f79b0cd37e" }
+django-internetdefenseleague-master = { git = "https://github.com/jmichalicek/django-internetdefenseleague.git", ref = "d9849b553885d36b3650d8f36c8a86f79b0cd37e" }
+raven = "*"
+
 
 [dev-packages]
 
-"django-coverage" = "==1.2.4"
-"django-debug-toolbar" = "==1.8"
-"factory-boy" = "*"
+django-coverage = "*"
+django-debug-toolbar = "*"
+factory-boy = "*"
