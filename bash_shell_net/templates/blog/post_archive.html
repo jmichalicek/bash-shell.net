@@ -6,7 +6,7 @@
     <div id="archive_{{ year.grouper }}">
       {% for post in year.list reversed %}
 	     <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
-	     <em>by {{ post.user_profile.user.username}} on {{ post.created_date|date:"N j, Y, P T" }}</em>
+	     <em>by {{ post.user_profile.user.username}} on {{ post.created_date|date:"N j, Y, P T" }}</em><br>
       {% endfor %}
     </div>
   {% endfor %}
