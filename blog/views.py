@@ -1,4 +1,4 @@
-from __future__ import unicode_literals, absolute_import, division
+from __future__ import absolute_import, division, unicode_literals
 
 from django.utils import timezone
 from django.views.generic import DetailView, ListView
@@ -49,11 +49,11 @@ class PostDetailView(DetailView):
 
         previous_post_q = Q(published_date=self.object.published_date, id__lt=self.object.id)
         previous_post_q = previous_post_q | Q(published_date__lt=self.object.published_date)
-        previous_post = Post.objects.published().filter(previous_post_q).exclude(pk=self.object.pk).first()
+        previous_post = Post.objects.published().filter(previous_post_q).exclude(pk=self.object.pk).order_by('-published_date', 'id').first()
 
         next_post_q = Q(published_date=self.object.published_date, id__gt=self.object.id)
         next_post_q = next_post_q | Q(published_date__gt=self.object.published_date)
-        next_post = Post.objects.published().filter(next_post_q).exclude(pk=self.object.pk).first()
+        next_post = Post.objects.published().filter(next_post_q).exclude(pk=self.object.pk).order_by('-published_date', 'id').first()
 
         return super(PostDetailView, self).get_context_data(next_post=next_post, previous_post=previous_post, tags=tags,
                                                             **kwargs)

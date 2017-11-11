@@ -3,11 +3,11 @@
 {% regroup latest by published_date.year as posts_by_year %}
   {% for year in posts_by_year reversed %}
     <h2>{{ year.grouper }}<i class="icon-arrow-down icon-white"></i></h2>
-    <div class="" id="archive_{{ year.grouper }}">
+    <div id="archive_{{ year.grouper }}">
       {% for post in year.list reversed %}
 	     <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
 	     <em>by {{ post.user_profile.user.username}} on {{ post.created_date|date:"N j, Y, P T" }}</em>
-    </div>
       {% endfor %}
+    </div>
   {% endfor %}
 {% endblock%}
