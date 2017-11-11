@@ -1,7 +1,11 @@
+import os
+
+import raven
+
 from .base import *
 
 DEBUG = False
-ALLOWED_HOSTS = ['bash-shell.net']
+ALLOWED_HOSTS = ['*']  # I am being lazy
 
 #CACHES = {
 #    'default': {
@@ -38,3 +42,11 @@ STATICFILES_LOCATION = 'static'
 STATICFILES_STORAGE = 'bash_shell_net.storages.StaticStorage'
 MEDIAFILES_LOCATION = 'uploads'
 DEFAULT_FILE_STORAGE = 'bash_shell_net.storages.MediaStorage'
+
+
+RAVEN_CONFIG = {
+    'dsn': os.environ.get('SENTRY_DSN', ''),
+    # If you are using git, you can also automatically configure the
+    # release based on the git info.
+    'release': raven.fetch_git_sha(os.path.abspath(os.pardir)),
+}
