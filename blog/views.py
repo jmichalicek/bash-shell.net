@@ -53,7 +53,7 @@ class PostDetailView(DetailView):
 
         next_post_q = Q(published_date=self.object.published_date, id__gt=self.object.id)
         next_post_q = next_post_q | Q(published_date__gt=self.object.published_date)
-        next_post = Post.objects.published().filter(next_post_q).exclude(pk=self.object.pk).order_by('-published_date', 'id').first()
+        next_post = Post.objects.published().filter(next_post_q).exclude(pk=self.object.pk).order_by('published_date', '-id').first()
 
         return super(PostDetailView, self).get_context_data(next_post=next_post, previous_post=previous_post, tags=tags,
                                                             **kwargs)
