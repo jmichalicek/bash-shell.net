@@ -1,6 +1,6 @@
 
 build_dev_container:
-	docker build --rm -f docker/Dockerfile.dev -t bash-shell-net:dev .
+	docker build --rm -f _docker/Dockerfile.dev -t bash-shell-net:dev .
 
 run:
 	docker run -ti --rm -v `pwd`:/home/developer/bash-shell.net/ \
