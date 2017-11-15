@@ -61,16 +61,15 @@ RUN PATH=/home/developer/python3/bin:$PATH pip3 install pipenv
 
 USER root
 RUN mkdir /home/developer/docker_entrypoints
-COPY docker/dev_entrypoint.sh /home/developer/docker_entrypoints/dev_entrypoint.sh
+COPY _docker/dev_entrypoint.sh /home/developer/docker_entrypoints/dev_entrypoint.sh
 RUN chown developer /home/developer/docker_entrypoints/dev_entrypoint.sh && chmod 755 /home/developer/docker_entrypoints/dev_entrypoint.sh
 
 USER developer
-
 ## for now do not make postgres data permanent
 ## VOLUME ["/var/lib/postgresql/9.4/main"]
 VOLUME ["/home/developer/bash-shell.net/"]
 VOLUME ["/home/developer/.local/share/virtualenvs/"]
 
-ENV LC_ALL=C.UTF-8 LANG=C.UTF-8 PYTHONIOENCODING=utf-8 DJANGO_SETTINGS_MODULE=bash_shell_net.settings.local
+ENV LC_ALL=C.UTF-8 LANG=C.UTF-8 PYTHONIOENCODING=utf-8 DJANGO_SETTINGS_MODULE=bash_shell_net.settings.local SHELL=/bin/bash
 ENV PATH=/home/developer/python3/bin:$PATH
 CMD ["/bin/bash"]
