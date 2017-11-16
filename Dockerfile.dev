@@ -51,25 +51,19 @@ WORKDIR /home/developer
 RUN echo '. ~/.bashrc' >> ~/.bash_profile
 
 # python install
-RUN wget https://www.python.org/ftp/python/3.6.2/Python-3.6.2.tgz
-RUN tar xvf Python-3.6.2.tgz
-WORKDIR Python-3.6.2
+ARG PYTHON_VERSION=3.6.3
+RUN wget https://www.python.org/ftp/python/3.6.3/Python-$PYTHON_VERSION.tgz
+RUN tar xvf Python-$PYTHON_VERSION.tgz
+WORKDIR Python-$PYTHON_VERSION
 RUN ./configure --prefix=/home/developer/python3 && make && make install
 RUN echo 'export PATH=/home/developer/python3/bin:$PATH' >> ~/.bashrc
 RUN PATH=/home/developer/python3/bin:$PATH pip3 install pipenv
-# end new stuff
 
-USER root
-RUN mkdir /home/developer/docker_entrypoints
-COPY _docker/dev_entrypoint.sh /home/developer/docker_entrypoints/dev_entrypoint.sh
-RUN chown developer /home/developer/docker_entrypoints/dev_entrypoint.sh && chmod 755 /home/developer/docker_entrypoints/dev_entrypoint.sh
-
-USER developer
 ## for now do not make postgres data permanent
-## VOLUME ["/var/lib/postgresql/9.4/main"]
 VOLUME ["/home/developer/bash-shell.net/"]
 VOLUME ["/home/developer/.local/share/virtualenvs/"]
 
 ENV LC_ALL=C.UTF-8 LANG=C.UTF-8 PYTHONIOENCODING=utf-8 DJANGO_SETTINGS_MODULE=bash_shell_net.settings.local SHELL=/bin/bash
 ENV PATH=/home/developer/python3/bin:$PATH
+ENTRYPOINT ["/bin/bash", "-c"]
 CMD ["/bin/bash"]

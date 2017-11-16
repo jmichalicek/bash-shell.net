@@ -17,10 +17,13 @@ services:
     image: bash-shell-net:dev
     stdin_open: true
     tty: true
-    command: /home/developer/docker_entrypoints/dev_entrypoint.sh
+    working_dir: /home/developer/bash-shell.net
+    # command: /home/developer/docker_entrypoints/dev_entrypoint.sh
     build:
       context: .
-      dockerfile: _docker/Dockerfile.dev
+      dockerfile: Dockerfile.dev
+      args:
+        PYTHON_VERSION: 3.6.3
     environment:
       DB_HOST: database
       DB_NAME: ${POSTGRES_DB:-bash_shell_net}
