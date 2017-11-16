@@ -1,5 +1,5 @@
 docker rm bsdev
-docker build --rm -f docker/Dockerfile.dev -t bash-shell-net:dev .
+docker build --rm -f Dockerfile.dev -t bash-shell-net:dev .
 
 set code_dir=%CD%
 

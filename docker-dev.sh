@@ -1,7 +1,7 @@
 #!/bin/sh
 
 docker rm bsdev
-docker build --rm -f docker/Dockerfile.dev -t bash-shell-net:dev .
+docker build --rm -f Dockerfile.dev -t bash-shell-net:dev .
 docker run -ti --rm -v `pwd`:/home/developer/bash-shell.net/ \
     -v bsdev_virtulaenvs:/home/developer/.local/share/virtualenvs \
     --name=bsdev \
