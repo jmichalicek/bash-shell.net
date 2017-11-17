@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
+from django.http import Http404
 from django.utils import timezone
 from django.views.generic import DetailView, ListView
 from django.views.generic.dates import ArchiveIndexView
@@ -71,8 +72,11 @@ class PostArchiveView(ArchiveIndexView):
 
 class PostPreviewView(LoginRequiredMixin, DetailView):
     """
-    Preview a post as an admin
+    Preview a post as a logged in user.
     """
     model = Post
     queryset = Post.objects.all().select_related('user')
     template_name = 'blog/post_detail.html'
+
+    def handle_no_permission(self):
+        raise Http404()
