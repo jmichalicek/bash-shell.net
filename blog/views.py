@@ -1,5 +1,6 @@
-from __future__ import absolute_import, division, unicode_literals
-
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
+from django.http import Http404
 from django.utils import timezone
 from django.views.generic import DetailView, ListView
 from django.views.generic.dates import ArchiveIndexView
@@ -44,16 +45,17 @@ class PostDetailView(DetailView):
         return queryset
 
     def get_context_data(self, **kwargs):
-        from django.db.models import Q
         tags = self.object.tags.all()
 
         previous_post_q = Q(published_date=self.object.published_date, id__lt=self.object.id)
         previous_post_q = previous_post_q | Q(published_date__lt=self.object.published_date)
-        previous_post = Post.objects.published().filter(previous_post_q).exclude(pk=self.object.pk).order_by('-published_date', 'id').first()
+        previous_post = Post.objects.published().filter(
+            previous_post_q).exclude(pk=self.object.pk).order_by('-published_date', 'id').first()
 
         next_post_q = Q(published_date=self.object.published_date, id__gt=self.object.id)
         next_post_q = next_post_q | Q(published_date__gt=self.object.published_date)
-        next_post = Post.objects.published().filter(next_post_q).exclude(pk=self.object.pk).order_by('published_date', '-id').first()
+        next_post = Post.objects.published().filter(
+            next_post_q).exclude(pk=self.object.pk).order_by('published_date', '-id').first()
 
         return super(PostDetailView, self).get_context_data(next_post=next_post, previous_post=previous_post, tags=tags,
                                                             **kwargs)
@@ -66,3 +68,15 @@ class PostArchiveView(ArchiveIndexView):
     model = Post
     date_field = 'published_date'
     template_name = 'blog/post_archive.html'
+
+
+class PostPreviewView(LoginRequiredMixin, DetailView):
+    """
+    Preview a post as a logged in user.
+    """
+    model = Post
+    queryset = Post.objects.all().select_related('user')
+    template_name = 'blog/post_detail.html'
+
+    def handle_no_permission(self):
+        raise Http404()

@@ -1,5 +1,3 @@
-from __future__ import unicode_literals, absolute_import, division
-
 from django.utils import timezone
 
 from datetime import timedelta
