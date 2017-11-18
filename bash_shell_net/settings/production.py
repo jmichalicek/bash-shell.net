@@ -1,18 +1,8 @@
 import os
-
-import raven
-
 from .base import *
 
 DEBUG = False
 ALLOWED_HOSTS = ['*']  # I am being lazy
-
-#CACHES = {
-#    'default': {
-#        'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
-#        'LOCATION': '127.0.0.1:11211',
-#    }
-#}
 
 CACHES = {
     'default': {
@@ -20,9 +10,9 @@ CACHES = {
         'LOCATION': '%s:6379' % REDIS_HOST,
         'OPTIONS': {
             'DB': 2,
-            },
         },
-    }
+    },
+}
 
 MIDDLEWARE = (
     'django.middleware.cache.UpdateCacheMiddleware',
@@ -42,7 +32,6 @@ STATICFILES_LOCATION = 'static'
 STATICFILES_STORAGE = 'bash_shell_net.storages.StaticStorage'
 MEDIAFILES_LOCATION = 'uploads'
 DEFAULT_FILE_STORAGE = 'bash_shell_net.storages.MediaStorage'
-
 
 RAVEN_CONFIG = {
     'dsn': os.environ.get('SENTRY_DSN', ''),
