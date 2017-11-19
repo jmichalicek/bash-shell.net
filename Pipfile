@@ -3,7 +3,9 @@
 url = "https://pypi.python.org/simple"
 verify_ssl = true
 
+
 [requires]
+
 python_version = '3.6.3'
 
 
@@ -22,6 +24,7 @@ markdown = "==2.6.9"
 requests = "*"
 django-internetdefenseleague-master = { git = "https://github.com/jmichalicek/django-internetdefenseleague.git", ref = "d9849b553885d36b3650d8f36c8a86f79b0cd37e" }
 raven = "*"
+pygments = "*"
 
 
 [dev-packages]
@@ -29,3 +32,4 @@ raven = "*"
 django-coverage = "*"
 django-debug-toolbar = "*"
 factory-boy = "*"
+pygments_solarized = {git = "https://github.com/jmichalicek/pygments-solarized.git", ref = "85e7597cb3a4ac51f2a7521fdb254e432b36c010"}

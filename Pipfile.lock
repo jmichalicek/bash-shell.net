@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "a416bb85488d96048394af0049eeed700c7479e12050cca553d63cd7f8448beb"
+            "sha256": "38afdebfb8155281887be3dce6f3f8b956cee8f62eadf9a0a801ce552fc6a3ab"
         },
         "host-environment-markers": {
             "implementation_name": "cpython",
@@ -11,7 +11,7 @@
             "platform_python_implementation": "CPython",
             "platform_release": "4.9.49-moby",
             "platform_system": "Linux",
-            "platform_version": "#1 SMP Wed Sep 27 23:17:17 UTC 2017",
+            "platform_version": "#1 SMP Wed Sep 27 00:36:29 UTC 2017",
             "python_full_version": "3.6.3",
             "python_version": "3.6",
             "sys_platform": "linux"
@@ -37,10 +37,10 @@
         },
         "botocore": {
             "hashes": [
-                "sha256:4f8b432463299c5b7718d1e32bcb48201d8e58761e3b7c9d7d17d62e42246c5d",
-                "sha256:73895086a6f42d8ee0a139b068f0b6f2a8d7da3bb06e65083f37a4c274c2c458"
+                "sha256:e1826662cfce2da41e8725d8e382a8684bc9dd1258c889a5e037208ba8daf91d",
+                "sha256:997bf5553fc92e276788f0a46adeb10d90240f72fe52bbd4fbc07df037281d2e"
             ],
-            "version": "==1.7.45"
+            "version": "==1.7.47"
         },
         "certifi": {
             "hashes": [
@@ -216,6 +216,13 @@
             ],
             "version": "==2.7.3.2"
         },
+        "pygments": {
+            "hashes": [
+                "sha256:78f3f434bcc5d6ee09020f92ba487f95ba50f1e3ef83ae96b9d5ffa1bab25c5d",
+                "sha256:dbae1046def0efb574852fab9e90209b23f556367b5a320c0bcb871c77c3e8cc"
+            ],
+            "version": "==2.2.0"
+        },
         "python-dateutil": {
             "hashes": [
                 "sha256:95511bae634d69bc7329ba55e646499a842bc4ec342ad54a8cdb65645a0aad3c",
@@ -314,6 +321,10 @@
                 "sha256:bf7dabcd6807c8829da28a4de491adf7998af506b8571db6a6eb58161157248a"
             ],
             "version": "==0.8.7"
+        },
+        "pygments-solarized": {
+            "git": "https://github.com/jmichalicek/pygments-solarized.git",
+            "ref": "85e7597cb3a4ac51f2a7521fdb254e432b36c010"
         },
         "python-dateutil": {
             "hashes": [
