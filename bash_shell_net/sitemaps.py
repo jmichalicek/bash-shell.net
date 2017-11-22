@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 from blog.models import Post
 from projects.models import Project
 
+
 class BlogSitemap(Sitemap):
     """Sitemap for posts"""
     changefreq = "never"
@@ -15,18 +16,19 @@ class BlogSitemap(Sitemap):
     def lastmod(self, obj):
         return obj.updated_date
 
+
 class ProjectSiteMap(Sitemap):
     """List the /blog/projects/ page"""
     changefreq = "weekly"
     priority = 0.5
 
     def items(self):
-        #return [self]
         return [reverse('projects_project_list')]
 
-    def location(self,obj):
+    def location(self, obj):
         # we overwrite this to stop it calling get_absolute_url
         return obj
+
 
 class ProjectsSiteMap(Sitemap):
     """Lists posts in the projects cateogry.  This is
@@ -39,4 +41,6 @@ class ProjectsSiteMap(Sitemap):
         return Project.objects.all()
 
     def lastmod(self, obj):
-        return obj.updated_date
+        # Who needs consistently named fields?  not me...
+        # I should fix that.
+        return obj.modified_date
