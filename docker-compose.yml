@@ -15,8 +15,12 @@ services:
     restart: on-failure
   django:
     image: bash-shell-net:dev
+    command: /bin/bash
     stdin_open: true
     tty: true
+    depends_on:
+      - database
+      - redis
     working_dir: /home/developer/bash-shell.net
     # command: /home/developer/docker_entrypoints/dev_entrypoint.sh
     build:

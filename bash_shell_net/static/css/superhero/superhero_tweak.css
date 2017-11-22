@@ -20,6 +20,9 @@ pre {
   color: white;
 }
 
+.codehilite pre {
+  background-color: #0b1025
+}
 .card {
   background-color: #45515f;
 }

@@ -9,7 +9,9 @@
       {% comment %}<link rel="stylesheet" type="text/css" href="https://bootswatch.com/4/superhero/bootstrap.min.css" />{% endcomment %}
       <link rel="stylesheet" type="text/css" href="{% static 'css/superhero/bootstrap.min.css' %}" />
       <link rel="stylesheet" type="text/css" href="{% static 'css/superhero/superhero_tweak.css' %}" />
+      <link rel="stylesheet" type="text/css" href="{% static 'css/pygments.css' %}" />
     {% endblock stylesheets %}
+    {% block page_stylesheets %}{% endblock page_stylesheets %}
   </head>
   <body>
     <header>

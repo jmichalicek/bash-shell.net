@@ -11,14 +11,12 @@ AUTH_USER_MODEL = 'accounts.User'
 
 DEBUG = True
 
-ADMINS = (
-    ('Justin Michalicek', 'jmichalicek@gmail.com'),
-)
+ADMINS = (('Justin Michalicek', 'jmichalicek@gmail.com'), )
 
 MANAGERS = ADMINS
 
-DATABASES = {'default': dj_database_url.config(
-        default='sqlite:////{0}'.format(os.path.join(PROJECT_ROOT, 'bs_net.sqlite'))),
+DATABASES = {
+    'default': dj_database_url.config(default='sqlite:////{0}'.format(os.path.join(PROJECT_ROOT, 'bs_net.sqlite'))),
 }
 
 # Local time zone for this installation. Choices can be found here:
@@ -71,8 +69,7 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static'),
-)
+    os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static'), )
 
 # List of finder classes that know how to find static files in
 # various locations.
@@ -95,9 +92,8 @@ MIDDLEWARE = (
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
-     'raven.contrib.django.raven_compat.middleware.SentryResponseErrorIdMiddleware',
+    'raven.contrib.django.raven_compat.middleware.SentryResponseErrorIdMiddleware',
 )
-
 
 ROOT_URLCONF = 'bash_shell_net.urls'
 
@@ -107,9 +103,7 @@ WSGI_APPLICATION = 'bash_shell_net.wsgi.application'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            os.path.join(os.path.dirname(os.path.dirname(__file__)), 'templates'),
-        ],
+        'DIRS': [os.path.join(os.path.dirname(os.path.dirname(__file__)), 'templates'), ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -151,55 +145,6 @@ COVERAGE_PATH_EXCLUDES = [r'.svn', r'.git', r'templates', r'static']
 
 ALLOWED_HOSTS = ['*']
 
-# A sample logging configuration. The only tangible logging
-# performed by this configuration is to send an email to
-# the site admins on every HTTP 500 error when DEBUG=False.
-# See http://docs.djangoproject.com/en/dev/topics/logging for
-# more details on how to customize your logging configuration.
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': True,
-    'root': {
-        'level': 'WARNING',
-        'handlers': ['sentry'],
-    },
-    'formatters': {
-        'verbose': {
-            'format': '%(levelname)s %(asctime)s %(module)s '
-                      '%(process)d %(thread)d %(message)s'
-        },
-    },
-    'handlers': {
-        'sentry': {
-            'level': 'ERROR',  # To capture more than ERROR, change to WARNING, INFO, etc.
-            'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
-            'tags': {'custom-tag': 'x'},
-        },
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-            'formatter': 'verbose'
-        }
-    },
-    'loggers': {
-        'django.db.backends': {
-            'level': 'ERROR',
-            'handlers': ['console'],
-            'propagate': False,
-        },
-        'raven': {
-            'level': 'DEBUG',
-            'handlers': ['console'],
-            'propagate': False,
-        },
-        'sentry.errors': {
-            'level': 'DEBUG',
-            'handlers': ['console'],
-            'propagate': False,
-        },
-    },
-}
-
 # CACHING
 REDIS_HOST = os.environ.get('REDIS_HOST', '')
 
@@ -207,15 +152,10 @@ REDIS_HOST = os.environ.get('REDIS_HOST', '')
 AWS_IS_GZIPPED = True
 AWS_ACCESS_KEY_ID = os.environ.get('DO_ACCESS_KEY_ID', '')
 AWS_SECRET_ACCESS_KEY = os.environ.get('DO_SECRET_ACCESS_KEY', '')
-AWS_S3_OBJECT_PARAMETERS = {
-    'CacheControl': 'max-age=604800'
-}
+AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=604800'}
 # This needs correctly set to work with digital ocean
 AWS_S3_ENDPOINT_URL = os.environ.get('AWS_S3_ENDPOINT_URL', 'https://nyc3.digitaloceanspaces.com')
 AWS_QUERYSTRING_AUTH = False
 
 # markdown extensions
-MARKDOWN_EXTENSIONS = [
-    'markdown.extensions.extra',
-    'markdown.extensions.toc',
-]
+MARKDOWN_EXTENSIONS = ['markdown.extensions.extra', 'markdown.extensions.toc', 'markdown.extensions.codehilite']
