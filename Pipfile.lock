@@ -1,20 +1,20 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "38afdebfb8155281887be3dce6f3f8b956cee8f62eadf9a0a801ce552fc6a3ab"
+            "sha256": "3e0ca5e3cd55c34d1ca1cc04e1ca470e6475aa8e972f5569e498676913c0a129"
         },
         "host-environment-markers": {
             "implementation_name": "cpython",
-            "implementation_version": "3.6.3",
+            "implementation_version": "3.6.2",
             "os_name": "posix",
             "platform_machine": "x86_64",
             "platform_python_implementation": "CPython",
-            "platform_release": "4.9.49-moby",
-            "platform_system": "Linux",
-            "platform_version": "#1 SMP Wed Sep 27 00:36:29 UTC 2017",
-            "python_full_version": "3.6.3",
+            "platform_release": "16.7.0",
+            "platform_system": "Darwin",
+            "platform_version": "Darwin Kernel Version 16.7.0: Wed Oct  4 00:17:00 PDT 2017; root:xnu-3789.71.6~1/RELEASE_X86_64",
+            "python_full_version": "3.6.2",
             "python_version": "3.6",
-            "sys_platform": "linux"
+            "sys_platform": "darwin"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -30,17 +30,17 @@
     "default": {
         "boto3": {
             "hashes": [
-                "sha256:38057b066990172ce6ebbf2a5e046a545503793581fcf14cab0e3821c6112eb0",
-                "sha256:f79f77dca2280f7780f39d72a5088f4cf2b626c0921e7185ed6ac17abfdd7e6c"
+                "sha256:edd35eb7cd8d56f08e65b112206936cf9f76bb406fb15f63075ff72331ef6f5f",
+                "sha256:332c6a17fd695581dd6f9ed825ce13c2d5ee3a6f5e1b079bed0ff7293809faf0"
             ],
-            "version": "==1.4.7"
+            "version": "==1.4.8"
         },
         "botocore": {
             "hashes": [
-                "sha256:e1826662cfce2da41e8725d8e382a8684bc9dd1258c889a5e037208ba8daf91d",
-                "sha256:997bf5553fc92e276788f0a46adeb10d90240f72fe52bbd4fbc07df037281d2e"
+                "sha256:00b86a0767409f470cfa60f549b9bc5b813f9e503de251c7a2c517d3a79b9efc",
+                "sha256:7f3e15054c0a2f71498ca5561c9edee7229678e2bc97a42dcb428e4dfde7b53f"
             ],
-            "version": "==1.7.47"
+            "version": "==1.8.0"
         },
         "certifi": {
             "hashes": [
@@ -322,9 +322,19 @@
             ],
             "version": "==0.8.7"
         },
+        "pygments": {
+            "hashes": [
+                "sha256:78f3f434bcc5d6ee09020f92ba487f95ba50f1e3ef83ae96b9d5ffa1bab25c5d",
+                "sha256:dbae1046def0efb574852fab9e90209b23f556367b5a320c0bcb871c77c3e8cc"
+            ],
+            "version": "==2.2.0"
+        },
         "pygments-solarized": {
-            "git": "https://github.com/jmichalicek/pygments-solarized.git",
-            "ref": "85e7597cb3a4ac51f2a7521fdb254e432b36c010"
+            "hashes": [
+                "sha256:70f54bf7a6cc26ab8401a9b75357eaca14a0a5d4ab0e3bce47ce9887dc6810d2",
+                "sha256:6b5cf1c6db86fe3cc57ebb4a8e35c05fc928d36441959d0bffa44c4f65081816"
+            ],
+            "version": "==0.0.3"
         },
         "python-dateutil": {
             "hashes": [

@@ -32,4 +32,4 @@ pygments = "*"
 django-coverage = "*"
 django-debug-toolbar = "*"
 factory-boy = "*"
-pygments_solarized = {git = "https://github.com/jmichalicek/pygments-solarized.git", ref = "85e7597cb3a4ac51f2a7521fdb254e432b36c010"}
+pygments_solarized = "==0.0.3"
