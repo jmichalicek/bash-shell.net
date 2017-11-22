@@ -1,9 +1,6 @@
 {% extends 'base.html' %}
 {% load blog_tags %}
 {% load static from staticfiles %}
-{% block page_stylesheets %}
-<link rel="stylesheet" type="text/css" href="{% static 'css/pygments.css' %}" />
-{% endblock page_stylesheets %}
 {% block primary %}
   <div class="page-header">
      <h2>{{ post.title }}</h2>
