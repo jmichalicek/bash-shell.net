@@ -1,12 +1,11 @@
-from __future__ import unicode_literals, absolute_import, division
-
 from django.test import TestCase
 from django.core.exceptions import ValidationError
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.test.client import Client
 
 from .factories import ProjectFactory, ActiveProjectFactory
 from .models import *
+
 
 class HostingServiceTests(TestCase):
     """Test the HostingService model"""

@@ -11,7 +11,7 @@ python_version = '3.6.3'
 
 [packages]
 
-django = ">=1.11,<=1.12"
+django = ">=2,<=2.1"
 pillow = "*"
 dj-database-url = "*"
 django-redis-cache = "*"
