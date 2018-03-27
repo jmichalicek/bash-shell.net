@@ -1,11 +1,11 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "2345a9ebbf0e5a76ff6a6be89f9078673fcbb792cb11bf5406f779c9d2743dd8"
+            "sha256": "22f42bfea6340a6284f0e31e0143bfe79f92eb6d829069e57ec9f0a67f96545f"
         },
         "pipfile-spec": 6,
         "requires": {
-            "python_version": "3.6.3"
+            "python_version": "3.6.4"
         },
         "sources": [
             {
@@ -17,17 +17,17 @@
     "default": {
         "boto3": {
             "hashes": [
-                "sha256:7de54e9f49d2f133ebf8036328f1c6895e2734b05ac3c5440ae4e286a7a4b0fa",
-                "sha256:99ec2df9c5a88bcf3ca67224303fab6df76479f560660df4900578b35ec0a5cd"
+                "sha256:7d080902079fc13f77ba33333c5a727495a21c95c59da374acbe85dbdb609dbf",
+                "sha256:cde5a52ef8b341a64dcb319cbb7e033d214ede7f25c07b11f7f5bd8c284787e6"
             ],
-            "version": "==1.6.16"
+            "version": "==1.6.17"
         },
         "botocore": {
             "hashes": [
-                "sha256:6ac11cee39676c1b45cb104a0f46f830f4b671e2475d1156a37c67e3fc9c85ee",
-                "sha256:cefff23efe7498420efc641f94e032db5fdc8c0884f273d28d83d558f8afd0bb"
+                "sha256:30765af07d549f097b8f4f568d7be63d8b3bb4416e4ee848a3fd0e6413343520",
+                "sha256:64688619a31b969571cf1822a7722e9be6c15fe2e8e9c31249e4096475cc17da"
             ],
-            "version": "==1.9.16"
+            "version": "==1.9.17"
         },
         "certifi": {
             "hashes": [
@@ -69,10 +69,10 @@
         },
         "django-storages": {
             "hashes": [
-                "sha256:ab6be1538cf29511400bce83d0e5ca74d2e935cad82086063bcf5e7edacc1661",
-                "sha256:bc8e4c1f483608c5dd1212072fd41042f3ef2d2a2896ec4fb12dbc62c82996a0"
+                "sha256:7339070cf0c8042f5a885783a0a909175a8dbb68e7f5697d597571c830a460c4",
+                "sha256:f1dd5668a4df9a23aff56c8321ea3aac3fda23d9d17473158d308d1b13e5363e"
             ],
-            "version": "==1.6.5"
+            "version": "==1.6.6"
         },
         "docutils": {
             "hashes": [
