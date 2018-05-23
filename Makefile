@@ -1,5 +1,16 @@
+setup-and-run:	setup migrate run
+
+run:
+	pipenv run python manage.py runserver 0.0.0.0:8000
+
+setup:
+	pipenv sync
+
+migrate:
+	pipenv run python manage.py migrate
+
 dev:
-	docker-compose run --service-ports django
+	docker-compose run --service-ports django /bin/bash -id 'pipenv shell'
 
 docker_build:
 	docker build --rm -f Dockerfile.dev -t bash-shell-net:dev .

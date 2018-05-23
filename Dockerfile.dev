@@ -2,49 +2,21 @@ FROM python:3.6.4-stretch
 MAINTAINER Justin Michalicek <jmichalicek@gmail.com>
 EXPOSE 8000
 
-RUN apt-get update && apt-get install -y --force-yes \
-    autoconf \
-    bind9-host \
-    bison \
-    build-essential \
-    coreutils \
-    curl \
-    daemontools \
-    dnsutils \
-    git \
-    inotify-tools \
-    libbz2-dev \
-    libcurl4-openssl-dev \
-    libev-dev \
-    libevent-dev \
-    libffi-dev \
-    libglib2.0-dev \
-    libjpeg-dev \
-    libpq-dev \
-    libpq5 \
-    libreadline-dev \
-    libsqlite3-dev \
-    libssl-dev \
-    libuv1-dev \
-    libxml2-dev \
-    libxslt-dev \
-    postgresql \
-    postgresql-client \
-    postgresql-server-dev-all \
-    python \
-    sudo \
-    tar \
-    telnet \
-    vim \
-    wget \
-    zip \
-    zlib1g-dev
+
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-unauthenticated \
+  inotify-tools \
+  software-properties-common \
+  sudo \
+  vim \
+  telnet \
+  zsh \
+  postgresql \
+  postgresql-client \
+  postgresql-server-dev-all \
+  && apt-get autoremove && apt-get clean
 
 RUN useradd -ms /bin/bash developer && echo "developer ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
-
-# set dev db to trust all local users
-# RUN sed -i -e 's#^host\s\+all\s\+all\s\+127.0.0.1\/32\s\+md5$#host    all all 127.0.0.1/32    trust#' /etc/postgresql/9.6/main/pg_hba.conf
-
+RUN pip install -U pip
 USER developer
 ENV HOME /home/developer
 WORKDIR /home/developer
@@ -53,6 +25,7 @@ VOLUME ["/home/developer/bash-shell.net/"]
 VOLUME ["/home/developer/.local/share/virtualenvs/"]
 RUN echo '. ~/.bashrc' >> ~/.bash_profile
 RUN echo 'export PATH=/home/developer/.local/bin:$PATH' >> ~/.bashrc
+RUN echo "export PATH=/home/developer/.local/bin:$PATH" >> ~/.zshenv
 ENV LC_ALL=C.UTF-8 LANG=C.UTF-8 PYTHONIOENCODING=utf-8 DJANGO_SETTINGS_MODULE=bash_shell_net.settings.local SHELL=/bin/bash
 ENTRYPOINT ["/bin/bash", "-c"]
 CMD ["/bin/bash"]

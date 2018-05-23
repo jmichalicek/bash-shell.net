@@ -13,9 +13,11 @@ services:
   redis:
     image: 'redis:latest'
     restart: on-failure
+    volumes:
+      - redis:/data
   django:
     image: bash-shell-net:dev
-    command: /bin/bash
+    # command: /bin/bash
     stdin_open: true
     tty: true
     depends_on:
@@ -23,27 +25,28 @@ services:
       - redis
     working_dir: /home/developer/bash-shell.net
     # command: /home/developer/docker_entrypoints/dev_entrypoint.sh
+    command: /bin/bash -ic 'pipenv run make setup-and-run'
     build:
       context: .
       dockerfile: Dockerfile.dev
-      args:
-        PYTHON_VERSION: 3.6.3
     environment:
-      DB_HOST: database
-      DB_NAME: ${POSTGRES_DB:-bash_shell_net}
-      DB_PASSWORD: ${POSTGRES_PASSWORD:-developer}
-      DB_USER: ${POSTGRES_USER:-developer}
-      REDIS_HOST: redis
-      PYTHONUNBUFFERED: 'true'
+      - DB_HOST=database
+      - DB_NAME=${POSTGRES_DB:-bash_shell_net}
+      - DB_PASSWORD=${POSTGRES_PASSWORD:-developer}
+      - DB_USER=${POSTGRES_USER:-developer}
+      - REDIS_HOST=redis
+      - PYTHONUNBUFFERED='true'
+      - PIPENV_VENV_IN_PROJECT=1
     ports:
       - "8000:8000"
     restart: on-failure
     volumes:
-      - .:/home/developer/bash-shell.net/
-      - $HOME/.gitconfig:/home/developer/.gitconfig:ro
-      - $HOME/.git-hooks:/home/developer/.git-hooks:ro
-      - $HOME/.ssh:/home/developer/.ssh:ro
-      - bsdev_virtulaenvs:/home/developer/.local/share/virtualenvs
+      # PWD plays nicely in windows WSL, but . does not
+      - ${PWD}:/home/developer/bash-shell.net/
+      # More WSL workarounds
+      - ${GITCONFIG_PATH:-$HOME/.gitconfig}:/home/developer/.gitconfig:ro
+      - ${GITHOOKS_PATH:-$HOME/.git-hooks}:/home/developer/.git-hooks:ro
+      - ${SSH_PATH:-$HOME/.ssh}:/home/developer/.ssh
 volumes:
   bash_shell_net_db:
-  bsdev_virtulaenvs:
+  redis:
