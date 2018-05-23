@@ -1,4 +1,5 @@
 from django.conf.urls import include, url
+from django.urls import path
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 from django.contrib.flatpages.sitemaps import FlatPageSitemap
@@ -17,12 +18,12 @@ sitemaps = {'blog': BlogSitemap,
 
 urlpatterns = [
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-    url(r'^admin/', include(admin.site.urls)),
+    path('admin/', admin.site.urls),
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}),
     url(r'^feeds/rss/', BlogFeedRss()),
     url(r'^about/$', TemplateView.as_view(template_name="about.html"), name="about"),
     url(r'^opensource/$', TemplateView.as_view(template_name="open_source.html"), name="opensource"),
     url(r'^blog/', include('blog.urls')),
     url(r'^projects/', include('projects.urls')),
-    url(r'^', include('blog.urls', namespace='default')),
+    url(r'^', include('blog.urls')),
 ]

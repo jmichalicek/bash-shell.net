@@ -39,7 +39,10 @@ services:
       - "8000:8000"
     restart: on-failure
     volumes:
-      - ${PWD}:/home/developer/bash-shell.net/
+      - .:/home/developer/bash-shell.net/
+      - $HOME/.gitconfig:/home/developer/.gitconfig:ro
+      - $HOME/.git-hooks:/home/developer/.git-hooks:ro
+      - $HOME/.ssh:/home/developer/.ssh:ro
       - bsdev_virtulaenvs:/home/developer/.local/share/virtualenvs
 volumes:
   bash_shell_net_db:

@@ -1,3 +1,5 @@
+dev:
+	docker-compose run --service-ports django
 
 docker_build:
 	docker build --rm -f Dockerfile.dev -t bash-shell-net:dev .

@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.utils.text import slugify
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from .factories import PublishedPostFactory
 from .models import Tag

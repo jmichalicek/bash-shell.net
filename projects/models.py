@@ -1,6 +1,4 @@
-from __future__ import absolute_import, unicode_literals, division, print_function
-
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db import models
 from django.utils.text import slugify
 
@@ -10,6 +8,7 @@ class HostingService(models.Model):
     name = models.CharField(max_length=50)
     url = models.URLField(max_length=100, blank=True)
     icon = models.ImageField(upload_to='projects/hostimages/', blank=True)
+
     # lib or django app for api calls/integration?
 
     class Meta:
@@ -41,8 +40,8 @@ class Project(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField(blank=True,
                                    help_text='A description of the project, history, reason for existence, etc.')
-    primary_language = models.ForeignKey('projects.Language',
-        blank=True, null=True, default=None, on_delete=models.SET_NULL, related_name='projects')
+    primary_language = models.ForeignKey('projects.Language', blank=True, null=True, default=None,
+                                         on_delete=models.SET_NULL, related_name='projects')
     other_languages = models.ManyToManyField('projects.Language', blank=True, related_name='other_language_projects')
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
@@ -63,7 +62,7 @@ class Project(models.Model):
             # duplicate slugs are not properly dealt with anywhere!
             self.slug = slugify(self.name.lower().strip())
 
-        super(Project,self).save(*args, **kwargs)
+        super(Project, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
         return reverse('projects_project_detail', args=[self.slug])
@@ -87,20 +86,19 @@ class ProjectHostingService(models.Model):
         (VersionControlSystems.CVS, 'CVS'),
     )
 
-    project = models.ForeignKey('projects.Project', related_name='project_hosting_services')
+    project = models.ForeignKey('projects.Project', related_name='project_hosting_services', on_delete=models.CASCADE)
     hosting_service = models.ForeignKey('projects.HostingService', null=True, on_delete=models.SET_NULL, default=None,
                                         related_name='project_hosting_services')
     project_url = models.URLField(blank=True, help_text='The website URL for the project')
     public_vcs_uri = models.URLField(blank=True,
                                      help_text='The URI that can be used to clone, checkout, etc. the project')
-    #vcs = models.ForeignKey('VersionControlSystem', null=True, blank=True, on_delete=models.SET_NULL, default=None)
     vcs = models.IntegerField(choices=VCS_CHOICES)
 
     class Meta:
         ordering = ('project', 'hosting_service')
 
     def __str__(self):
-        return '%s: %s' %(self.project, self.hosting_service)
+        return '%s: %s' % (self.project, self.hosting_service)
 
 
 class ProjectNews(models.Model):
@@ -108,7 +106,7 @@ class ProjectNews(models.Model):
     News/blog post related to a project
     """
 
-    project = models.ForeignKey('projects.Project', related_name='project_news')
+    project = models.ForeignKey('projects.Project', related_name='project_news', on_delete=models.CASCADE)
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
     title = models.CharField(max_length=100)
