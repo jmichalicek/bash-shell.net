@@ -10,7 +10,7 @@ migrate:
 	pipenv run python manage.py migrate
 
 dev:
-	docker-compose run --service-ports django /bin/bash -id 'pipenv shell'
+	docker-compose run --service-ports django /usr/bin/zsh -ic 'pipenv shell'
 
 docker_build:
 	docker build --rm -f Dockerfile.dev -t bash-shell-net:dev .
