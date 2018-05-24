@@ -1,3 +1,4 @@
+.venv/
 .envrc
 *.pyc
 .python-version
