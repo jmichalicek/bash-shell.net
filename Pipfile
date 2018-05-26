@@ -26,9 +26,6 @@ django-internetdefenseleague-master = { git = "https://github.com/jmichalicek/dj
 raven = "*"
 pygments = "*"
 
-
-[dev-packages]
-
 django-coverage = "*"
 django-debug-toolbar = "*"
 factory-boy = "*"
