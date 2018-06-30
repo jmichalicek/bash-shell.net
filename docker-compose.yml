@@ -9,7 +9,7 @@ services:
         - PGDATA=${PGDATA:-/var/lib/postgresql/data/pgdata}
     privileged: true
     volumes:
-      - bash_shell_net_db:/var/lib/postgresql/data
+      - db:/var/lib/postgresql/data
   redis:
     image: 'redis:latest'
     restart: on-failure
@@ -42,12 +42,10 @@ services:
       - "8000:8000"
     restart: on-failure
     volumes:
-      # PWD plays nicely in windows WSL, but . does not
-      - ${PWD}:/home/developer/bash-shell.net/
-      # More WSL workarounds
-      - ${GITCONFIG_PATH:-$HOME/.gitconfig}:/home/developer/.gitconfig:ro
-      - ${GITHOOKS_PATH:-$HOME/.git-hooks}:/home/developer/.git-hooks:ro
-      - ${SSH_PATH:-$HOME/.ssh}:/home/developer/.ssh
+      - .:/home/developer/bash-shell.net/
+      - ~/.gitconfig:/home/developer/.gitconfig:ro
+      - ~/.git-hooks:/home/developer/.git-hooks:ro
+      - ~/.ssh:/home/developer/.ssh:ro
 volumes:
-  bash_shell_net_db:
+  db:
   redis:
