@@ -6,8 +6,8 @@ verify_ssl = true
 
 [requires]
 
-python_version = '3.6'
-python_full_version = '3.6.5'
+python_version = '3.7'
+python_full_version = '3.7.0'
 
 
 [packages]
