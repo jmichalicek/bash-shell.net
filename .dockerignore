@@ -1,2 +1,5 @@
 docker-dev.bat
 docker-dev.sh
+# this will be a problem, need different dockerignore files for dev and prod builds
+.git*
+.venv*
