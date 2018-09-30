@@ -1,5 +1,6 @@
-docker-dev.bat
-docker-dev.sh
-# this will be a problem, need different dockerignore files for dev and prod builds
+develop.bat
+# docker doesn't support multiple .dockerignore files.  Fortunately since we mount
+# the whole dir in for dev, these following lines do not seem to mess with the dev container
+# but keep the production build container smaller
 .git*
 .venv*
