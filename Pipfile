@@ -6,22 +6,22 @@ verify_ssl = true
 
 [requires]
 
-python_version = '3.6'
-python_full_version = '3.6.5'
+python_version = '3.7'
+python_full_version = '3.7.0'
 
 
 [packages]
 
-django = ">=2,<=2.1"
+django = ">=2.1,<=2.2"
 pillow = "*"
 dj-database-url = "*"
 django-redis-cache = "*"
 "psycopg2" = "*"
 pytz = "*"
-gunicorn = "==19.7.1"
+gunicorn = "*"
 "boto3" = "*"
 django-storages = "*"
-markdown = "==2.6.9"
+markdown = "*"
 requests = "*"
 django-internetdefenseleague-master = { git = "https://github.com/jmichalicek/django-internetdefenseleague.git", ref = "d9849b553885d36b3650d8f36c8a86f79b0cd37e" }
 raven = "*"
