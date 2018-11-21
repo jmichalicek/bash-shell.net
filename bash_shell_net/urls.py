@@ -1,17 +1,15 @@
+from django.conf import settings
 from django.conf.urls import include, url
-from django.urls import path
+from django.conf.urls.static import static
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
-from django.contrib.flatpages.sitemaps import FlatPageSitemap
-from django.contrib.sitemaps import GenericSitemap
 from django.contrib.sitemaps.views import sitemap
+from django.urls import path, re_path
 from django.views.generic import TemplateView
 
-from django.urls import path, re_path, include
-
 from wagtail.admin import urls as wagtailadmin_urls
-from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.core import urls as wagtail_urls
+from wagtail.documents import urls as wagtaildocs_urls
 
 from .feeds import BlogFeedRss
 from .sitemaps import BlogSitemap, ProjectSiteMap, ProjectsSiteMap
@@ -19,8 +17,6 @@ from .sitemaps import BlogSitemap, ProjectSiteMap, ProjectsSiteMap
 admin.autodiscover()
 
 sitemaps = {'blog': BlogSitemap, 'project': ProjectSiteMap, 'projects': ProjectsSiteMap}
-from django.conf import settings
-from django.conf.urls.static import static
 
 urlpatterns = [
     re_path(r'^cms/', include(wagtailadmin_urls)),
