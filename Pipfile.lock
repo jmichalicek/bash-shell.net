@@ -1,11 +1,10 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "3acd2d618acc354c938440ebe198ed43fa335a0f2387ccc85e1feb20c0ce3c13"
+            "sha256": "a592519c41c8088ba4a5220e7501ff31b88c4320dad5515b0e5fa7a028a511e3"
         },
         "pipfile-spec": 6,
         "requires": {
-            "python_full_version": "3.7.0",
             "python_version": "3.7"
         },
         "sources": [
@@ -26,17 +25,17 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:5675516a3d818df222c5964645ebc649536fbdd2f5090b27fc7b3dddff3d3e3a",
-                "sha256:8796418580007d328ebf93d3688c915f8b8217b81dea675ba3e0c421ea78d854"
+                "sha256:177e9dd53db5028bb43050da20cc7956287889fc172e5e6275a634e42a10beeb",
+                "sha256:8c63e616b91907037ab19236afbcf0057efb31411faf38b46f4590e634dc17ea"
             ],
-            "version": "==1.9.49"
+            "version": "==1.9.50"
         },
         "botocore": {
             "hashes": [
-                "sha256:98c8268a00e4aedebf5ea2db1ad912e352354bfc008d7eb29522c746ada74987",
-                "sha256:b9cdee093ce362076eea5e1a463b7aa64ef12b7a95d4266eff1ace9377ba6737"
+                "sha256:07fae5a2b8cfb5a92c1dbee3f2feb4da7c471bcead7e18ce735babe5f39e270f",
+                "sha256:eeaa190f50ee05a56225ee78c64cb8bf0c3bf090ec605ca6c2f325aa3826a347"
             ],
-            "version": "==1.12.49"
+            "version": "==1.12.50"
         },
         "certifi": {
             "hashes": [
@@ -121,7 +120,6 @@
                 "sha256:607865b0bb1598b153793892101d881466bd5a991de12bd6229abb18b1c86136",
                 "sha256:63f76cbe1e7d12b94c357d7e54401103b2e52aef0f7c1650d6c820ad708776e5"
             ],
-            "markers": "python_version != '3.0.*' and python_version != '3.1.*' and python_version != '3.2.*' and python_version != '3.3.*' and python_version >= '2.7'",
             "version": "==3.9.0"
         },
         "docutils": {
@@ -150,7 +148,6 @@
                 "sha256:c61a41d0dab8865b850bd00454fb11e90f3fd2a092d8bc90120d1e1c01cff906",
                 "sha256:f909ff9133ce0625ca388b6838190630ad7a593f87eaf058d872338a76241d5d"
             ],
-            "markers": "python_version != '3.1.*' and python_version != '3.2.*' and python_version >= '2.7' and python_version != '3.0.*'",
             "version": "==1.0.0"
         },
         "gunicorn": {
@@ -340,11 +337,6 @@
             "hashes": [
                 "sha256:61bf29cada3fc2fbefad4fdf059ea4bd1b4a86d2b6d15e1c7c0b582b9752fe39",
                 "sha256:de9529817c93f27c8ccbfead6985011db27bd0ddfcdb2d86f3f663385c6a9c22"
-<<<<<<< HEAD
-            ],
-            "markers": "python_version != '3.2.*' and python_version < '4' and python_version >= '2.7' and python_version != '3.1.*' and python_version != '3.3.*' and python_version != '3.0.*'",
-            "version": "==1.24.1"
-=======
             ],
             "markers": "python_version >= '3.4'",
             "version": "==1.24.1"
@@ -369,7 +361,6 @@
                 "sha256:818ee11803c90a0a6d49c94b0453d6266be1ef83ae00de72731c45fae4d3e78c"
             ],
             "version": "==1.1"
->>>>>>> initial wagtail config
         }
     },
     "develop": {}
