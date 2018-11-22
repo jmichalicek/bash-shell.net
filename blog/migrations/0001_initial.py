@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
                 ('content', models.TextField(blank=True)),
                 ('created_date', models.DateTimeField(auto_now_add=True)),
                 ('updated_date', models.DateTimeField(auto_now=True)),
-                ('is_published', models.BooleanField(db_index=True, default=False)),
+                ('is_published', models.BooleanField(db_index=True, default=False, blank=True)),
                 ('published_date', models.DateTimeField(blank=True, db_index=True, default=None, null=True)),
                 ('slug', models.SlugField(blank=True, default='', help_text='Automatically built from the title.')),
             ],

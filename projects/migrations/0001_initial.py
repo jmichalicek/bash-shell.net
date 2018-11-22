@@ -45,7 +45,7 @@ class Migration(migrations.Migration):
                 ('description', models.TextField(blank=True, help_text='A description of the project, history, reason for existence, etc.')),
                 ('created_date', models.DateTimeField(auto_now_add=True)),
                 ('modified_date', models.DateTimeField(auto_now=True)),
-                ('is_active', models.BooleanField(default=False)),
+                ('is_active', models.BooleanField(default=False, blank=True)),
                 ('slug', models.SlugField(blank=True, default='')),
             ],
             options={
@@ -74,7 +74,7 @@ class Migration(migrations.Migration):
                 ('modified_date', models.DateTimeField(auto_now=True)),
                 ('title', models.CharField(max_length=100)),
                 ('content', models.TextField(blank=True)),
-                ('is_published', models.BooleanField(db_index=True, default=False)),
+                ('is_published', models.BooleanField(db_index=True, default=False, blank=True)),
                 ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='project_news', to='projects.Project')),
             ],
             options={
