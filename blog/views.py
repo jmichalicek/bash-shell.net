@@ -20,8 +20,7 @@ class PostListView(ListView):
 
     def get_queryset(self):
         queryset = super(PostListView, self).get_queryset()
-        queryset = queryset.filter(published_date__isnull=False,
-                                   published_date__lte=timezone.now())
+        queryset = queryset.filter(published_date__isnull=False, published_date__lte=timezone.now())
         queryset = queryset.prefetch_related('tags')
         return queryset.order_by('-published_date')
 
@@ -38,8 +37,7 @@ class PostDetailView(DetailView):
         queryset = super(PostDetailView, self).get_queryset()
 
         if not self.request.user.is_superuser:
-            queryset = queryset.filter(is_published=True,
-                                       published_date__isnull=False,
+            queryset = queryset.filter(is_published=True, published_date__isnull=False,
                                        published_date__lte=timezone.now())
 
         return queryset
@@ -49,13 +47,13 @@ class PostDetailView(DetailView):
 
         previous_post_q = Q(published_date=self.object.published_date, id__lt=self.object.id)
         previous_post_q = previous_post_q | Q(published_date__lt=self.object.published_date)
-        previous_post = Post.objects.published().filter(
-            previous_post_q).exclude(pk=self.object.pk).order_by('-published_date', 'id').first()
+        previous_post = Post.objects.published().filter(previous_post_q).exclude(pk=self.object.pk).order_by(
+            '-published_date', 'id').first()
 
         next_post_q = Q(published_date=self.object.published_date, id__gt=self.object.id)
         next_post_q = next_post_q | Q(published_date__gt=self.object.published_date)
-        next_post = Post.objects.published().filter(
-            next_post_q).exclude(pk=self.object.pk).order_by('published_date', '-id').first()
+        next_post = Post.objects.published().filter(next_post_q).exclude(pk=self.object.pk).order_by(
+            'published_date', '-id').first()
 
         return super(PostDetailView, self).get_context_data(next_post=next_post, previous_post=previous_post, tags=tags,
                                                             **kwargs)
