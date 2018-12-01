@@ -13,13 +13,13 @@ class PostListView(ListView):
     List of published posts
     """
     model = Post
-    queryset = Post.objects.all().select_related('user')
+    #queryset = Post.objects.all().select_related('user')
     paginate_by = 15
     template_name = 'blog/post_list.html'
     ordering = '-published_date'
 
     def get_queryset(self):
-        queryset = super(PostListView, self).get_queryset()
+        queryset = super().get_queryset().select_related('user')
         queryset = queryset.filter(published_date__isnull=False, published_date__lte=timezone.now())
         queryset = queryset.prefetch_related('tags')
         return queryset.order_by('-published_date')
@@ -30,11 +30,11 @@ class PostDetailView(DetailView):
     Public view of a single Post
     """
     model = Post
-    queryset = Post.objects.all().select_related('user')
+    # queryset = Post.objects.all().select_related('user')
     template_name = 'blog/post_detail.html'
 
     def get_queryset(self):
-        queryset = super(PostDetailView, self).get_queryset()
+        queryset = super().get_queryset().select_related('user')
 
         if not self.request.user.is_superuser:
             queryset = queryset.filter(is_published=True, published_date__isnull=False,
@@ -73,8 +73,13 @@ class PostPreviewView(LoginRequiredMixin, DetailView):
     Preview a post as a logged in user.
     """
     model = Post
-    queryset = Post.objects.all().select_related('user')
+    # queryset = Post.objects.all().select_related('user')
     template_name = 'blog/post_detail.html'
 
     def handle_no_permission(self):
         raise Http404()
+
+    def get_queryset(self):
+        # wagtail is not playing nicely with queryset as a view attribute
+        queryset = super().get_queryset().select_related('user')
+        return queryset

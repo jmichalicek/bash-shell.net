@@ -1,7 +1,20 @@
-from django.urls import reverse
 from django.db import models
+from django.db.models import QuerySet
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
+
+from modelcluster.contrib.taggit import ClusterTaggableManager
+from modelcluster.fields import ParentalKey
+from taggit.models import TaggedItemBase
+from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, StreamFieldPanel
+from wagtail.core import blocks
+from wagtail.core.fields import StreamField
+from wagtail.core.models import Page, PageManager, PageQuerySet
+# from wagtail.snippets.blocks import SnippetChooserBlock
+from wagtail.documents.blocks import DocumentChooserBlock
+from wagtail.embeds.blocks import EmbedBlock
+from wagtail.images.blocks import ImageChooserBlock
 
 from .managers import PublishedPostQuerySet
 
@@ -57,3 +70,53 @@ class Post(models.Model):
         if not self.slug:
             self.slug = slugify(self.title.lower())
         super(Post, self).save(*args, **kwargs)
+
+
+class BlogPostTag(TaggedItemBase):
+    content_object = ParentalKey('blog.BlogPost', on_delete=models.CASCADE, related_name='tagged_items')
+
+
+class BlogPost(Page):
+
+    template = 'wagtail_templates/blog/post_detail.html'
+
+    #body = StreamField(BaseStreamBlock(), verbose_name="Page body", blank=True)
+
+    tags = ClusterTaggableManager(through=BlogPostTag, blank=True)
+    body = StreamField(
+        [
+            ('heading', blocks.CharBlock(classname="full title")),
+            ('paragraph', blocks.RichTextBlock()),
+            ('raw_html', blocks.RawHTMLBlock()),
+            ('quote', blocks.BlockQuoteBlock()),
+            ('email', blocks.EmailBlock()),
+            ('other_page', blocks.PageChooserBlock()),
+            ('document', DocumentChooserBlock()),
+            ('image', ImageChooserBlock()),
+            # ('snippet', SnippetChooserBlock()),
+            ('embed', EmbedBlock()),
+
+            # just testing these... no idea how useful
+            ('single_line', blocks.CharBlock()),
+            ('text', blocks.TextBlock()),
+            ('integer', blocks.IntegerBlock()),
+            ('float', blocks.FloatBlock()),
+            ('decimal', blocks.DecimalBlock()),
+            ('url', blocks.URLBlock()),
+            ('boolean', blocks.BooleanBlock()),
+            ('date', blocks.DateBlock()),
+            ('time', blocks.TimeBlock()),
+            ('datetime', blocks.DateTimeBlock()),
+        ],
+        null=True,
+        blank=True,
+        default=None,
+    )
+
+    content_panels = Page.content_panels + [StreamFieldPanel('body')]
+    promote_panels = Page.promote_panels + [
+        FieldPanel('tags'),
+    ]
+
+    def __str__(self):
+        return self.title
