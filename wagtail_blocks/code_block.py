@@ -1,3 +1,9 @@
+"""
+Code block with pygments based code highlighting for wagtail
+
+This originally comes from https://www.nathanworkman.me/syntax-highlighting-pygments-wagtails/
+
+"""
 from django.utils.safestring import mark_safe
 
 from pygments import highlight
