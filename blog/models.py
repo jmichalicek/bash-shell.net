@@ -76,11 +76,24 @@ class BlogPostTag(TaggedItemBase):
     content_object = ParentalKey('blog.BlogPost', on_delete=models.CASCADE, related_name='tagged_items')
 
 
+
+# class BlogPostIndex(Page):
+#     """
+#     Index page to list blog posts
+#     """
+
+
 class BlogPost(Page):
 
     template = 'wagtail_templates/blog/post_detail.html'
 
     #body = StreamField(BaseStreamBlock(), verbose_name="Page body", blank=True)
+
+    # https://github.com/wagtail/bakerydemo/blob/master/bakerydemo/blog/models.py#L75
+    # Do I need this and then add it to contentfields?
+    # date_published = models.DateField(
+    #     "Date article published", blank=True, null=True
+    # )
 
     tags = ClusterTaggableManager(through=BlogPostTag, blank=True)
     body = StreamField(
