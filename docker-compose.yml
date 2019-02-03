@@ -38,6 +38,7 @@ services:
       - PIPENV_VENV_IN_PROJECT=1
       - DJANGO_SETTINGS_MODULE=bash_shell_net.settings.local
       - SHELL=/usr/bin/zsh
+      - DATABASE_URL=postgres://developer:developer@database:5432/bash_shell_net
     ports:
       - "8000:8000"
     restart: on-failure
