@@ -1,0 +1,53 @@
+from django.db import models
+
+from blog.models import BlogPost
+from wagtail.admin.edit_handlers import StreamFieldPanel
+from wagtail.core.models import Page
+from wagtail.search import index
+from wagtail_blocks.fields import StandardPageBodyStreamField
+
+
+class Homepage(Page):
+    """
+    Base homepage for the root of the site
+    """
+
+    template = 'wagtail_templates/base/homepage.html'
+
+    # subpage_types = ['BlogPost']
+
+    # Defines a method to access the children of the page (e.g. BlogPage
+    # objects). On the demo site we use this on the HomePage
+    def children(self):
+        return self.get_children().specific().live()
+
+    # Overrides the context to list all child items, that are live, by the
+    # date that they were published
+    # http://docs.wagtail.io/en/latest/getting_started/tutorial.html#overriding-context
+    def get_context(self, request):
+        context = super().get_context(request)
+        # this way because the children will be post index, etc.
+        context['posts'] = BlogPost.objects.descendant_of(self).live().order_by('-last_published_at')
+        return context
+
+
+class StandardPage(Page):
+    """
+    A generic content page. Useful for about page, etc. where it's not part of another
+    app or browsing tree.
+    """
+    template = 'wagtail_templates/base/standard_page.html'
+
+    introduction = models.TextField(help_text='Text to describe the page', blank=True)
+
+    image = models.ForeignKey('wagtailimages.Image', null=True, blank=True, on_delete=models.SET_NULL, related_name='+',
+                              help_text='Landscape mode only; horizontal width between 1000px and 3000px.')
+    body = StandardPageBodyStreamField(blank=True, null=True, default=None)
+
+    content_panels = Page.content_panels + [
+        StreamFieldPanel('body'),
+    ]
+
+    search_fields = Page.search_fields + [
+        index.SearchField('body'),
+    ]
