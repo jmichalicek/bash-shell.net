@@ -1,3 +1,4 @@
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
@@ -12,6 +13,7 @@ from wagtail.search import index
 from wagtail_blocks.fields import StandardPageBodyStreamField
 
 from .managers import PublishedPostQuerySet
+from django.db.models import Q
 
 
 class Tag(models.Model):
@@ -90,8 +92,29 @@ class BlogPostIndex(Page):
     # date that they were published
     # http://docs.wagtail.io/en/latest/getting_started/tutorial.html#overriding-context
     def get_context(self, request):
-        context = super(BlogPostIndex, self).get_context(request)
-        context['posts'] = BlogPost.objects.descendant_of(self).live().order_by('-last_published_at')
+        # not paginated
+        # context = super().get_context(request)
+        # context['posts'] = BlogPost.objects.descendant_of(self).live().order_by('-last_published_at')
+
+        # TODO: move this to a mixin similar to django's ListView.  WagtailListView or something.
+        # try with pagination
+        context = super().get_context(request)
+        posts = BlogPost.objects.descendant_of(self).live().order_by('-last_published_at')
+        paginator = Paginator(posts, 1)  # Show 5 resources per page
+        page_number = request.GET.get('page')
+        try:
+            page = paginator.page(page_number)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            page = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            page = paginator.page(paginator.num_pages)
+
+        # make the variable 'resources' available on the template
+        context['paginator'] = paginator
+        context['posts'] = page.object_list
+        context['page_obj'] = page
         return context
 
 
@@ -101,7 +124,7 @@ class BlogPost(Page):
     parent_page_types = ['BlogPostIndex']
     subpage_types = []
 
-    #body = StreamField(BaseStreamBlock(), verbose_name="Page body", blank=True)
+    # body = StreamField(BaseStreamBlock(), verbose_name="Page body", blank=True)
 
     # https://github.com/wagtail/bakerydemo/blob/master/bakerydemo/blog/models.py#L75
     # Do I need this and then add it to contentfields?
@@ -156,3 +179,18 @@ class BlogPost(Page):
 
     def __str__(self):
         return self.title
+
+    def get_context(self, request):
+        context = super().get_context(request)
+        previous_post_q = Q(first_published_at=self.first_published_at, id__lt=self.id)
+        previous_post_q = previous_post_q | Q(first_published_at__lt=self.first_published_at)
+        previous_post = BlogPost.objects.live().filter(previous_post_q).exclude(pk=self.pk).order_by(
+            '-first_published_at', 'id').first()
+
+        next_post_q = Q(first_published_at=self.first_published_at, id__gt=self.id)
+        next_post_q = next_post_q | Q(first_published_at__gt=self.first_published_at)
+        next_post = BlogPost.objects.live().filter(next_post_q).exclude(pk=self.pk).order_by(
+            'first_published_at', '-id').first()
+        context['previous_post'] = previous_post
+        context['next_post'] = next_post
+        return context
