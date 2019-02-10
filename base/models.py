@@ -1,11 +1,12 @@
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db import models
 
-from blog.models import BlogPost
+from blog.models import BlogPage
 from wagtail.admin.edit_handlers import StreamFieldPanel
+from wagtail.core.fields import StreamField
 from wagtail.core.models import Page
 from wagtail.search import index
-from wagtail_blocks.fields import StandardPageBodyStreamField
-from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from wagtail_blocks.fields import STANDARD_STREAMFIELD_FIELDS
 
 
 class Homepage(Page):
@@ -33,8 +34,8 @@ class Homepage(Page):
         # TODO: move this to a mixin similar to django's ListView.  WagtailListView or something.
         # try with pagination
         context = super().get_context(request)
-        posts = BlogPost.objects.descendant_of(self).live().order_by('-last_published_at')
-        paginator = Paginator(posts, 1)  # Show 5 resources per page
+        posts = BlogPage.objects.descendant_of(self).live().order_by('-last_published_at')
+        paginator = Paginator(posts, 15)  # Show 5 resources per page
         page_number = request.GET.get('page')
         try:
             page = paginator.page(page_number)
@@ -63,7 +64,7 @@ class StandardPage(Page):
 
     image = models.ForeignKey('wagtailimages.Image', null=True, blank=True, on_delete=models.SET_NULL, related_name='+',
                               help_text='Landscape mode only; horizontal width between 1000px and 3000px.')
-    body = StandardPageBodyStreamField(blank=True, null=True, default=None)
+    body = StreamField(STANDARD_STREAMFIELD_FIELDS, blank=True, null=True, default=None)
 
     content_panels = Page.content_panels + [
         StreamFieldPanel('body'),
