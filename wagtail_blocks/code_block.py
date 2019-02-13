@@ -97,6 +97,8 @@ class CodeBlock(blocks.StructBlock):
 
     language = blocks.ChoiceBlock(choices=LANGUAGE_CHOICES, required=False, blank=True,
                                   default=CodeHighlightLanguage.AUTO)
+    filename = blocks.CharBlock(required=False, default='')
+    display_filename = blocks.BooleanBlock(required=False, default=True)
     code = blocks.TextBlock(required=False, default='')
     line_numbers = blocks.ChoiceBlock(choices=LINE_NUMBER_CHOICES, default=LineNumberStyle.NONE, required=False)
 
@@ -105,9 +107,10 @@ class CodeBlock(blocks.StructBlock):
         Set streamfield icon.
         """
         icon = 'code'
+        template = 'wagtail_blocks/codeblock.html'
 
-    def render(self, value, context=None):
-        """Render codeblock."""
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context=parent_context)
         src = value.get('code') or ''
         src = src.strip('\n')
         lang = value.get('language') or ''
@@ -124,4 +127,33 @@ class CodeBlock(blocks.StructBlock):
             style='default',
             noclasses=False,
         )
-        return mark_safe(highlight(src, lexer, formatter))
+        context.update({
+            'filename': value.get('filename'),
+            'display_filename': value.get('display_filename'),
+            'language': value.get('lang'),
+            'code': mark_safe(highlight(src, lexer, formatter))
+        })
+        return context
+
+    # def render(self, value, context=None):
+    #     """Render codeblock."""
+    #     # TODO: Update, possibly just using the standard template rendering and add a method
+    #     # or @property for the rendered code html which this currently does.
+    #     # See https://docs.wagtail.io/en/v2.4/topics/streamfield.html#example-personblock
+    #     src = value.get('code') or ''
+    #     src = src.strip('\n')
+    #     lang = value.get('language') or ''
+    #     line_numbers = value['line_numbers']
+    #
+    #     if lang:
+    #         lexer = get_lexer_by_name(lang)
+    #     else:
+    #         lexer = guess_lexer(src)
+    #     formatter = get_formatter_by_name(
+    #         'html',
+    #         linenos=line_numbers,
+    #         cssclass='codehilite',
+    #         style='default',
+    #         noclasses=False,
+    #     )
+    #     return mark_safe(highlight(src, lexer, formatter))
