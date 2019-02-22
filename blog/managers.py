@@ -1,6 +1,8 @@
 from django.utils import timezone
 from django.db.models import QuerySet
 
+from wagtail.core.models import Page, PageManager, PageQuerySet
+
 
 class PublishedPostQuerySet(QuerySet):
     """

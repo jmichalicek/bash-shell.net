@@ -10,6 +10,5 @@ media
 src/
 .DS_Store
 __pycache__
-bash-shell.net.code-workspace
-docker-compose.debug.yml
-.vscode/settings.json
+.vscode
+*.code-workspace

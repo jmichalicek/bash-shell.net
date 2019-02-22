@@ -1,18 +1,13 @@
 [[source]]
-
 url = "https://pypi.python.org/simple"
 verify_ssl = true
 
-
 [requires]
-
 python_version = '3.7'
-python_full_version = '3.7.0'
-
 
 [packages]
 
-django = ">=2.1.2,<=2.2"
+django = "==2.1.7"
 pillow = "*"
 dj-database-url = "*"
 django-redis-cache = "*"
@@ -29,3 +24,4 @@ pygments = "*"
 django-coverage = "*"
 django-debug-toolbar = "*"
 factory-boy = "*"
+wagtail = "*"

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load blog_tags wagtailcore_tags %}
+{% block primary %}
+  <div class="page-header">
+    <h2>Posts</h2>
+  </div>
+  <hr />
+  {% for post in posts %}
+    <div class="blog-post">
+      <h2>{{ post.title }}</h2>
+      <p class="blog-post-meta"> by {{ post.owner.first_name }} on {{ post.first_published_at|date:"N j, Y, P T" }}</p>
+      {# add updated if last_published_at is different from first_published_at? #}
+
+      <hr />
+      {# markdown will properly wrap the following text in appropriate tags if needed #}
+      {{ post.body|truncatewords_html:"100"|safe }}
+      <span><a href="{% pageurl post %}">&rarr; read more</a></span>
+    </div>
+  {% endfor %}
+
+  <nav class="blog-pagination">
+    {{ page_obj.page.has_next }}
+    <a class="btn btn-outline-primary {% if not page_obj.has_previous %}disabled{% endif %}" href="{% if page_obj.has_previous %}{% slugurl 'blog' %}?page={{ page_obj.previous_page_number }}{% else %}#{% endif %}">Newer</a>
+    <a class="btn btn-outline-primary {% if not page_obj.has_next %}disabled{% endif %}" href="{% if page_obj.has_next %}{% slugurl 'blog' %}?page={{ page_obj.next_page_number }}{% else %}#{% endif %}">Older</a>
+  </nav>
+{% endblock%}
