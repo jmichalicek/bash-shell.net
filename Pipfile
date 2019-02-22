@@ -7,7 +7,7 @@ python_version = '3.7'
 
 [packages]
 
-django = ">=2.1.2,<=2.3"
+django = "==2.1.7"
 pillow = "*"
 dj-database-url = "*"
 django-redis-cache = "*"
