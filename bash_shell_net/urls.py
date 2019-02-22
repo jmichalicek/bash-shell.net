@@ -31,7 +31,8 @@ urlpatterns = [
     url(r'^feeds/rss/', BlogFeedRss()),
     url(r'^about/$', TemplateView.as_view(template_name="about.html"), name="about"),
     url(r'^opensource/$', TemplateView.as_view(template_name="open_source.html"), name="opensource"),
-    url(r'^oldblog/', include('blog.urls')),
+    # url(r'^oldblog/', include('blog.urls')),
+    url(r'^archives/', include('blog.urls')),
     url(r'^projects/', include('projects.urls')),
 
     url(r'^', include(wagtail_urls)),

@@ -34,7 +34,7 @@ class Homepage(Page):
         # TODO: move this to a mixin similar to django's ListView.  WagtailListView or something.
         # try with pagination
         context = super().get_context(request)
-        posts = BlogPage.objects.descendant_of(self).live().order_by('-last_published_at')
+        posts = BlogPage.objects.live().order_by('-last_published_at')
         paginator = Paginator(posts, 15)  # Show 5 resources per page
         page_number = request.GET.get('page')
         try:
