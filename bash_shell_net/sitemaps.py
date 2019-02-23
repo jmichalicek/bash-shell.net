@@ -1,7 +1,7 @@
 from django.contrib.sitemaps import Sitemap
 from django.urls import reverse
 
-from blog.models import Post
+from blog.models import BlogPage
 from projects.models import Project
 
 
@@ -11,10 +11,10 @@ class BlogSitemap(Sitemap):
     priority = 0.5
 
     def items(self):
-        return Post.objects.filter(is_published=True)
+        return BlogPage.objects.live().order_by('first_published_at')
 
     def lastmod(self, obj):
-        return obj.updated_date
+        return obj.last_published_at
 
 
 class ProjectSiteMap(Sitemap):
