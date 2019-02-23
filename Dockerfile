@@ -22,7 +22,6 @@ ENV HOME=/home/django PATH=/home/django/.local/bin:$PATH
 RUN pip install pipenv --user
 RUN mkdir /home/django/bash-shell.net/
 COPY --chown=django ./Pipfile ./Pipfile.lock /home/django/bash-shell.net/
-COPY --chown=django . /home/django/bash-shell.net/
 WORKDIR /home/django/bash-shell.net/
 ENV PIPENV_VENV_IN_PROJECT=1 PIPENV_NOSPIN=1 PIPENV_DONT_USE_PYENV=1 PIPENV_HIDE_EMOJIS=1 PIP_CONFIG_FILE=/home/django/pip.conf
 RUN echo "[global]\n# This actually enables --no-cache-dir\nno-cache-dir = false" >> /home/django/pip.conf
