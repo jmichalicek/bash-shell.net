@@ -180,6 +180,7 @@ AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=604800'}
 # This needs correctly set to work with digital ocean
 AWS_S3_ENDPOINT_URL = os.environ.get('AWS_S3_ENDPOINT_URL', 'https://nyc3.digitaloceanspaces.com')
 AWS_QUERYSTRING_AUTH = False
+AWS_S3_CUSTOM_DOMAIN = os.environ.get('AWS_S3_CUSTOM_DOMAIN', None)
 
 # markdown extensions
 MARKDOWN_EXTENSIONS = ['markdown.extensions.extra', 'markdown.extensions.toc', 'markdown.extensions.codehilite']
