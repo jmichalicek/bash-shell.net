@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 {% load blog_tags wagtailcore_tags %}
 {% block primary %}
-{% regroup latest by published_date.year as posts_by_year %}
-  {% for year in posts_by_year reversed %}
+{% regroup latest by first_published_at.year as posts_by_year %}
+  {% for year in posts_by_year %}
     <h2>{{ year.grouper }}<i class="icon-arrow-down icon-white"></i></h2>
     <div id="archive_{{ year.grouper }}">
       {% for post in year.list reversed %}

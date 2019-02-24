@@ -3,9 +3,10 @@ from django.urls import reverse
 
 from blog.models import BlogPage
 from projects.models import Project
+from wagtail.contrib.sitemaps import Sitemap as WagtailSitemap
 
 
-class BlogSitemap(Sitemap):
+class BlogSitemap(WagtailSitemap):
     """Sitemap for posts"""
     changefreq = "never"
     priority = 0.5

@@ -1,6 +1,7 @@
+from datetime import timedelta
+
 from django.utils import timezone
 
-from datetime import timedelta
 import factory
 from factory.django import DjangoModelFactory
 

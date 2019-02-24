@@ -2,7 +2,6 @@ from django.conf.urls import url
 
 from . import views
 
-
 urlpatterns = [
     # legacy url.
     # url(r'^archive/$', views.PostArchiveView.as_view(), name='blog_post_archive'),
@@ -12,4 +11,4 @@ urlpatterns = [
     # url(r'^preview/(?P<slug>[\w_-]+)/$', views.PostPreviewView.as_view(), name='blog_post_preview'),
     # url(r'^(?P<slug>[\w_-]+)/$', views.PostDetailView.as_view(), name='blog_post_detail'),
     # url(r'^$', views.PostListView.as_view(), name='blog_post_list'),
-    ]
+]
