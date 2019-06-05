@@ -8,9 +8,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteract
 #  sudo \
   vim \
   telnet \
-#  postgresql \
-#  postgresql-client \
-#  postgresql-server-dev-all \
   && apt-get autoremove && apt-get clean
 
 RUN pip install pip --upgrade

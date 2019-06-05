@@ -1,16 +1,15 @@
 FROM python:3.7.2-stretch
 MAINTAINER Justin Michalicek <jmichalicek@gmail.com>
 
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+  --allow-unauthenticated apt-transport-https && apt-get autoremove && apt-get clean
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-unauthenticated \
+  --no-install-recommends \
   inotify-tools \
   software-properties-common \
   sudo \
   vim \
   telnet \
-  zsh \
-  postgresql \
-  postgresql-client \
-  postgresql-server-dev-all \
   && apt-get autoremove && apt-get clean
 
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main" > /etc/apt/sources.list.d/pgdb.list
@@ -32,6 +31,5 @@ RUN pip install pipenv --user
 RUN mkdir /home/developer/bash-shell.net/
 RUN echo '. ~/.bashrc' >> ~/.bash_profile
 RUN echo 'export PATH=/home/developer/.local/bin:$PATH' >> ~/.bashrc
-RUN echo "export PATH=/home/developer/.local/bin:$PATH" >> ~/.zshenv
 ENV LC_ALL=C.UTF-8 LANG=C.UTF-8 PYTHONIOENCODING=utf-8 DJANGO_SETTINGS_MODULE=bash_shell_net.settings.local
 EXPOSE 8000
