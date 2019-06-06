@@ -6,7 +6,10 @@ from wagtail_blocks.code_block import CodeBlock
 
 STANDARD_STREAMFIELD_FIELDS = [
     ('heading', blocks.CharBlock(classname="full title")),
-    ('paragraph', blocks.RichTextBlock()),
+    ('paragraph', blocks.RichTextBlock(features=[
+        'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ol', 'ul', 'bold', 'italic', 'code', 'superscript', 'subscript',
+        'strikethrough', 'blockquote', 'link', 'documentlink', 'image', 'embed'
+    ])),
     ('code', CodeBlock()),
     ('quote', blocks.BlockQuoteBlock()),
     ('other_page', blocks.PageChooserBlock()),
