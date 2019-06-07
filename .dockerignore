@@ -4,3 +4,7 @@ develop.bat
 # but keep the production build container smaller
 .git*
 .venv*
+.vscode*
+tmp/
+*.code-workspace
+.python-version
