@@ -27,3 +27,7 @@ RUN pipenv install --deploy --ignore-pipfile
 # Too bad there's no way to exclude the files which were already copied
 COPY --chown=django . /home/django/bash-shell.net
 EXPOSE 8000
+
+# TODO: use this as a base on codeship and then
+# have a separate 2 step dockerfile which pulls in the image made from this
+# and then step 2 will use the code and a much smaller base image
