@@ -1,0 +1,25 @@
+cms:
+  build:
+    dockerfile: Dockerfile
+  cached: true
+  depends_on:
+    - database
+  environment:
+    # Should we just use DATABASE_URL here?
+    # AWS_SECRET_ACCESS_KEY and AWS_ACCESS_KEY_ID need to match MINIO_ACCESS_KEY and MINIO_SECRET_KEY
+    - DB_HOST=database
+    - DB_USER=developer
+    - DB_PASSWORD=developer
+    - DB_NAME=bash_shell_net
+    - SHELL=/bin/bash
+    # - PIPENV_VENV_IN_PROJECT=1
+    - DJANGO_SETTINGS_MODULE=bash_shell_net.settings.local
+    - CI_COMMIT_ID
+  volumes:
+    - ./:/tmp
+database:
+  image: "postgres:11.2"
+  environment:
+      - POSTGRES_PASSWORD=developer
+      - POSTGRES_USER=developer
+      - POSTGRES_DB=bash_shell_net

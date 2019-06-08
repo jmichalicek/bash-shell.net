@@ -184,6 +184,7 @@ AWS_S3_CUSTOM_DOMAIN = os.environ.get('AWS_S3_CUSTOM_DOMAIN', None)
 AWS_PRELOAD_METADATA = True
 
 # markdown extensions
+# Not using markdown anymore... not sure I need this. may still be using it in the projects pages, though.
 MARKDOWN_EXTENSIONS = ['markdown.extensions.extra', 'markdown.extensions.toc', 'markdown.extensions.codehilite']
 
 # wagtail settings
