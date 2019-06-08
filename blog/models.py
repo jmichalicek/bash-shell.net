@@ -18,7 +18,11 @@ from .managers import PublishedPostQuerySet
 
 
 class Tag(models.Model):
-    """Category which posts belong to"""
+    """
+    Category which posts belong to
+
+    Legacy model from old, pre-wagtail blog
+    """
     # name indexed because we order on name
     name = models.CharField(max_length=50, unique=True, db_index=True)
     slug = models.SlugField(max_length=50)
@@ -36,7 +40,11 @@ class Tag(models.Model):
 
 
 class Post(models.Model):
-    """Model for each separate post"""
+    """
+    Model for each separate post
+
+    Legacy model from old, pre-wagtail blog
+    """
     title = models.CharField(max_length=100)
     content = models.TextField(blank=True)
     created_date = models.DateTimeField(auto_now_add=True)

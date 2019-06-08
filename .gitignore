@@ -12,3 +12,4 @@ src/
 __pycache__
 .vscode
 *.code-workspace
+tmp/
