@@ -13,6 +13,7 @@
 
       <hr />
       {# markdown will properly wrap the following text in appropriate tags if needed #}
+      {# how to us include_block here with the truncatewords_html? #}
       {{ post.body|truncatewords_html:"100"|safe }}
       <span><a href="{% pageurl post %}">&rarr; read more</a></span>
     </div>

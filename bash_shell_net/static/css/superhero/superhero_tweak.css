@@ -193,3 +193,89 @@ a:active.btn.btn-outline-primary {
 .project_detail__content {
   padding: .5rem;
 }
+
+/*
+ * Image gallery blocks - it's approaching time for some sass I think.
+ */
+ /* .image-gallery__link {
+   height: 250px;
+ } */
+
+ /* .image-gallery__image {
+   max-height: 250px;
+ } */
+
+/* merge a bunch of rules from how wagtail does its image gallery */
+/* probably a ul */
+.image-gallery .image-gallery__list {
+  border-left: 1px solid #DF691A;
+  margin-bottom: 2em;
+  list-style-type: none;
+  font-style: normal;
+  padding: 0;
+  margin-top: 0;
+  font-size: .95em;
+}
+
+.image-gallery .image-gallery__list::before, .image-gallery__list::after {
+  content: " ";
+  display: table;
+}
+
+.image-gallery .image-gallery__list::after {
+  clear: both;
+}
+
+/* probably an li */
+.image-gallery .image-gallery__list-item {
+  padding: 1.5em;
+  height: 275px;
+  text-align: center;
+  margin-top: -1px;
+  border: 1px solid #DF691A; /* #e6e6e6; */
+  border-left: 0;
+  float: left;
+  list-style-type: none;
+}
+
+/* the <a> may want to rename this to something more generic? */
+.image-gallery .image-gallery__link {
+  color: inherit;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+.image-gallery .image-gallery__link:hover {
+  color: #DF691A;
+}
+
+.image-gallery .image-gallery__wrapper {
+  text-align: center;
+  max-width: 250px;
+  max-height: 250px;
+  height: 200px;
+  display: inline-block;
+  line-height: 200px;
+}
+
+.image-gallery .image-gallery__image::before {
+  display: inline-block;
+  vertical-align: middle;
+  content: "";
+  height: 100%;
+  margin-right: -.25em;
+}
+.image-gallery .image-gallery__image {
+  max-width: 100%;
+  height: auto;
+  display: inline-block;
+  vertical-align: middle;
+  transition: border-color .2s ease;
+  border: 3px solid #fff;
+  /* not sure I need the background here */
+  /* background: url("../../wagtailadmin/images/transparency.3c218ccc676a.svg"); */
+}
+
+.image-gallery .image-gallery__image:hover {
+    border: 3px solid #DF691A;
+}
