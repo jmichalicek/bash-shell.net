@@ -139,6 +139,7 @@ INSTALLED_APPS = (
     'django.contrib.flatpages',
     'django.contrib.sitemaps',
     'raven.contrib.django.raven_compat',
+    'wagtailfontawesome',
 
     # Wagtail
     'wagtail.contrib.forms',

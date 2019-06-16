@@ -1,16 +1,13 @@
 """
-Code block with pygments based code highlighting for wagtail
-
-This originally comes from https://www.nathanworkman.me/syntax-highlighting-pygments-wagtails/
-
+Extra wagtail blocks for the site.
 """
 from django.utils.safestring import mark_safe
 
 from pygments import highlight
 from pygments.formatters import get_formatter_by_name
 from pygments.lexers import get_lexer_by_name, guess_lexer
-
 from wagtail.core import blocks
+from wagtail.images.blocks import ImageChooserBlock
 
 
 class LineNumberStyle:
@@ -55,7 +52,9 @@ class CodeHighlightLanguage:
 
 class CodeBlock(blocks.StructBlock):
     """
-    Code Highlighting Block.
+    Code block with pygments based code highlighting for wagtail
+
+    This originally comes from https://www.nathanworkman.me/syntax-highlighting-pygments-wagtails/
     """
 
     LANGUAGE_CHOICES = (
@@ -135,25 +134,40 @@ class CodeBlock(blocks.StructBlock):
         })
         return context
 
-    # def render(self, value, context=None):
-    #     """Render codeblock."""
-    #     # TODO: Update, possibly just using the standard template rendering and add a method
-    #     # or @property for the rendered code html which this currently does.
-    #     # See https://docs.wagtail.io/en/v2.4/topics/streamfield.html#example-personblock
-    #     src = value.get('code') or ''
-    #     src = src.strip('\n')
-    #     lang = value.get('language') or ''
-    #     line_numbers = value['line_numbers']
-    #
-    #     if lang:
-    #         lexer = get_lexer_by_name(lang)
-    #     else:
-    #         lexer = guess_lexer(src)
-    #     formatter = get_formatter_by_name(
-    #         'html',
-    #         linenos=line_numbers,
-    #         cssclass='codehilite',
-    #         style='default',
-    #         noclasses=False,
-    #     )
-    #     return mark_safe(highlight(src, lexer, formatter))
+
+class DetailImageChooserBlock(blocks.StructBlock):
+    """
+    ImageBlock with more meta details
+    """
+    image = ImageChooserBlock()
+    caption = blocks.CharBlock(label='Caption', max_length=200, required=False)
+    attribution = blocks.CharBlock(required=False)
+    license_url = blocks.URLBlock(required=False)
+    license_name = blocks.CharBlock(required=False)
+
+    class Meta:
+        icon = 'image'
+        template = 'wagtail_blocks/detail_image_block.html'
+
+    @property
+    def title(self):
+        return self.image.title
+
+    def url(self):
+        if self.image and self.image.file:
+            # tempting to try/except this for the rare occasion where the file does not exist
+            # even though the path is set. That raises an exception and in templates this will be
+            # the last place it can be caught.
+            return self.image.file.url
+        print('no image or no url?')
+        return ''
+
+
+class ImageGalleryBlock(blocks.StructBlock):
+    image_items = blocks.ListBlock(
+        DetailImageChooserBlock(), label="Image",
+    )
+
+    class Meta:
+        template = 'wagtail_blocks/image_gallery.html'
+        icon = 'fa-th'
