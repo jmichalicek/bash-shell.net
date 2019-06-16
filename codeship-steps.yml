@@ -1,12 +1,28 @@
 - name: tests
-  # we could SKIP this on master because our rules say that it should run before we can merge anyway.
+  # could SKIP this on master because our rules say that it should run before we can merge anyway.
   service: cms
   command: /bin/bash -ic 'pipenv run python manage.py test'
-# - name: Push Latest Tag To Repository
-#   service: cms
-#   type: push
-#   image_name: registry.gitlab.com/jmichalicek/bash-shell.net
-#   registry: https://registry.gitlab.com
-#   image_tag: latest
-#   encrypted_dockercfg_path: dockercfg.encrypted
-#   tag: master
+- name: Push Latest Tag To Repository
+  service: cms
+  type: push
+  image_name: registry.gitlab.com/jmichalicek/bash-shell.net
+  registry: https://registry.gitlab.com
+  image_tag: latest
+  encrypted_dockercfg_path: dockercfg.encrypted
+  tag: master
+- name: Push Branch Latest Tag To Repository
+  service: cms
+  type: push
+  image_name: registry.gitlab.com/jmichalicek/bash-shell.net
+  registry: https://registry.gitlab.com
+  image_tag: "{{ .Branch }}_latest"
+  encrypted_dockercfg_path: dockercfg.encrypted
+  tag: master
+- name: Push Branch/SHA Tag To Repository
+  service: cms
+  type: push
+  image_name: registry.gitlab.com/jmichalicek/bash-shell.net
+  registry: https://registry.gitlab.com
+  image_tag: "{{ .Branch }}_{{ .CommitID }}"
+  encrypted_dockercfg_path: dockercfg.encrypted
+  tag: master

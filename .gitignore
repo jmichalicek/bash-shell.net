@@ -13,3 +13,4 @@ __pycache__
 .vscode
 *.code-workspace
 tmp/
+codeship.aes
