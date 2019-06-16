@@ -166,9 +166,6 @@ a:active.btn.btn-outline-primary {
   font-size: .7rem;
   margin-top: .5rem;
   background-color: rgba(0,0,0,0);
-
-  /*background: linear-gradient(#2B3E50, #566577);*/
-  min-height: 25rem;
 }
 .blog-footer p:last-child {
   margin-bottom: 0;
