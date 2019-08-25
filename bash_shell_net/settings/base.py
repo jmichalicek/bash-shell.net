@@ -139,7 +139,7 @@ INSTALLED_APPS = (
     'django.contrib.flatpages',
     'django.contrib.sitemaps',
     'raven.contrib.django.raven_compat',
-    'wagtailfontawesome',
+    'collectfast',
 
     # Wagtail
     'wagtail.contrib.forms',
@@ -157,6 +157,7 @@ INSTALLED_APPS = (
     # Wagtail extra deps
     'modelcluster',
     'taggit',
+    'wagtailfontawesome',
 
     # My stuff
     'internetdefenseleague',
@@ -183,6 +184,7 @@ AWS_S3_ENDPOINT_URL = os.environ.get('AWS_S3_ENDPOINT_URL', 'https://nyc3.digita
 AWS_QUERYSTRING_AUTH = False
 AWS_S3_CUSTOM_DOMAIN = os.environ.get('AWS_S3_CUSTOM_DOMAIN', None)
 AWS_PRELOAD_METADATA = True
+AWS_DEFAULT_ACL = 'public-read'
 
 # markdown extensions
 # Not using markdown anymore... not sure I need this. may still be using it in the projects pages, though.
