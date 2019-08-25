@@ -1,4 +1,4 @@
-FROM python:3.7.2-stretch
+FROM python:3.7.4-stretch
 MAINTAINER Justin Michalicek <jmichalicek@gmail.com>
 ENV PYTHONUNBUFFERED 1
 
