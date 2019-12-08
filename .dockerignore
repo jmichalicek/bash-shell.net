@@ -1,6 +1,6 @@
 develop.bat
 .git*
-.venv*
+**/.venv*
 .vscode*
 tmp/
 *.code-workspace

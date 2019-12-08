@@ -1,4 +1,4 @@
-version: '3'
+version: '3.7'
 services:
   database:
     image: "postgres:11.2"
@@ -23,17 +23,18 @@ services:
     depends_on:
       - database
       - redis
-    working_dir: /home/developer/bash-shell.net
+    working_dir: /django/bash-shell.net
     # command: /home/developer/docker_entrypoints/dev_entrypoint.sh
-    command: /usr/bin/zsh -ic 'pipenv run make setup-and-run'
+    command: /bin/bash -ic 'make setup-and-run'
     build:
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
+      target: dev
     environment:
       - DB_HOST=database
-      - DB_NAME=${POSTGRES_DB:-bash_shell_net}
-      - DB_PASSWORD=${POSTGRES_PASSWORD:-developer}
-      - DB_USER=${POSTGRES_USER:-developer}
+      # - DB_NAME=${POSTGRES_DB:-bash_shell_net}
+      # - DB_PASSWORD=${POSTGRES_PASSWORD:-developer}
+      # - DB_USER=${POSTGRES_USER:-developer}
       - REDIS_HOST=redis
       - PIPENV_VENV_IN_PROJECT=1
       - DJANGO_SETTINGS_MODULE=bash_shell_net.settings.local
@@ -43,10 +44,10 @@ services:
       - "8000:8000"
     restart: on-failure
     volumes:
-      - .:/home/developer/bash-shell.net/
-      - ~/.gitconfig:/home/developer/.gitconfig:ro
-      - ~/.git-hooks:/home/developer/.git-hooks:ro
-      - ~/.ssh:/home/developer/.ssh:ro
+      - .:/django/bash-shell.net/
+      - ~/.git-hooks:/django/.git-hooks:ro
+      - ~/.gitconfig:/django/.gitconfig:ro
+      - ~/.ssh:/django/.ssh:ro
 volumes:
   db:
   redis:

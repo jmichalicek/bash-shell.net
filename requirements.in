@@ -1,0 +1,22 @@
+django>=2.2,<2.3
+pillow
+dj-database-url
+django-redis-cache
+psycopg2-binary
+pytz
+gunicorn
+boto3
+django-storages
+markdown
+requests
+https://github.com/jmichalicek/django-internetdefenseleague/archive/master.zip
+# django-internetdefenseleague-master = {git = "https://github.com/jmichalicek/django-internetdefenseleague.git",ref = "d9849b553885d36b3650d8f36c8a86f79b0cd37e"}
+raven
+pygments
+django-coverage
+django-debug-toolbar
+factory-boy
+wagtail
+wagtailfontawesome
+collectfast
+setuptools==41.6.0        # via gunicorn, markdown

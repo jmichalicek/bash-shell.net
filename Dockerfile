@@ -1,33 +1,40 @@
-FROM python:3.7.4-stretch
-MAINTAINER Justin Michalicek <jmichalicek@gmail.com>
+FROM python:3.8-buster AS dev
+LABEL maintainer="Justin Michalicek <jmichalicek@gmail.com>"
 ENV PYTHONUNBUFFERED 1
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-unauthenticated \
   inotify-tools \
   software-properties-common \
-#  sudo \
+  sudo \
   vim \
   telnet \
   && apt-get autoremove && apt-get clean
 
-RUN pip install pip --upgrade
-RUN useradd -ms /bin/bash django
-# && echo "django ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
-
+RUN pip install pip==19.3.1
+RUN useradd -ms /bin/bash -d /django django && echo "django ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 USER django
-ENV HOME=/home/django PATH=/home/django/.local/bin:$PATH
-RUN pip install pipenv --user
-RUN mkdir /home/django/bash-shell.net/
-COPY --chown=django ./Pipfile ./Pipfile.lock /home/django/bash-shell.net/
-WORKDIR /home/django/bash-shell.net/
-ENV PIPENV_VENV_IN_PROJECT=1 PIPENV_NOSPIN=1 PIPENV_DONT_USE_PYENV=1 PIPENV_HIDE_EMOJIS=1 PIP_CONFIG_FILE=/home/django/pip.conf
-RUN echo "[global]\n# This actually enables --no-cache-dir\nno-cache-dir = false" >> /home/django/pip.conf
-ENV LC_ALL=C.UTF-8 LANG=C.UTF-8 PYTHONIOENCODING=utf-8 DJANGO_SETTINGS_MODULE=bash_shell_net.settings.local
-RUN pipenv install --deploy --ignore-pipfile
-# Too bad there's no way to exclude the files which were already copied
-COPY --chown=django . /home/django/bash-shell.net
+ENV HOME=/django PATH=/django/bash-shell.net/.venv/bin:/django/.local/bin:$PATH LC_ALL=C.UTF-8 LANG=C.UTF-8 PYTHONIOENCODING=utf-8
 EXPOSE 8000
 
-# TODO: use this as a base on codeship and then
-# have a separate 2 step dockerfile which pulls in the image made from this
-# and then step 2 will use the code and a much smaller base image
+FROM dev AS build
+RUN mkdir /django/bash-shell.net/ && python -m venv /django/bash-shell.net/.venv
+# https://stackoverflow.com/a/28210626
+# python -m venv only copies the bundled pip, even if you've done a pip install -U pip to get
+# a newer version installed, so update it in the virtualenv
+RUN pip install pip==19.3.1
+RUN pip install pip-tools
+COPY --chown=django ./requirements.txt /django/bash-shell.net/
+WORKDIR /django/bash-shell.net/
+RUN pip-sync
+ENV PIP_CONFIG_FILE=/django/pip.conf
+RUN echo "[global]\n# This actually enables --no-cache-dir\nno-cache-dir = false" >> /django/pip.conf
+ENV DJANGO_SETTINGS_MODULE=bash_shell_net.settings.local
+# Too bad there's no way to exclude the files which were already copied
+COPY --chown=django . /django/bash-shell.net
+
+FROM python:3.8-slim-buster AS prod
+RUN useradd -ms /bin/bash -d /django django && echo "django ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+COPY --from=build /django/bash-shell.net /django/bash-shell.net
+ENV HOME=/django PATH=/django/bash-shell.net/.venv/bin:/django/.local/bin:$PATH LC_ALL=C.UTF-8 LANG=C.UTF-8 PYTHONIOENCODING=utf-8
+WORKDIR /django/bash-shell.net/
+EXPOSE 8000
