@@ -17,9 +17,6 @@ migrate:
 dev:
 	docker-compose run --service-ports django //bin/bash
 
-docker_build:
-	docker build --rm -f Dockerfile.dev -t bash-shell-net:dev .
-
 docker_django:
 	docker-compose exec django python manage.py runserver 0.0.0.0:8000
 

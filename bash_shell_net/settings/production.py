@@ -14,26 +14,9 @@ CACHES = {
     },
 }
 
-MIDDLEWARE = (
-    'django.middleware.cache.UpdateCacheMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.cache.FetchFromCacheMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    # Uncomment the next line for simple clickjacking protection:
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
-    'raven.contrib.django.raven_compat.middleware.SentryResponseErrorIdMiddleware',
-    'wagtail.core.middleware.SiteMiddleware',
-    'wagtail.contrib.redirects.middleware.RedirectMiddleware',
-)
-
 AWS_STORAGE_BUCKET_NAME = 'bash-shell-net'
-STATICFILES_LOCATION = 'static'
-STATICFILES_STORAGE = 'bash_shell_net.storages.StaticStorage'
+STATICFILES_LOCATION = 'static'  # this is an s3/boto thing and shouldn't be needed now
+#STATICFILES_STORAGE = 'bash_shell_net.storages.StaticStorage'
 MEDIAFILES_LOCATION = 'uploads'
 DEFAULT_FILE_STORAGE = 'bash_shell_net.storages.MediaStorage'
 
@@ -44,9 +27,11 @@ RAVEN_CONFIG = {
     # 'release': raven.fetch_git_sha(os.path.abspath(os.pardir)),
 }
 
+# TODO: This doesn't seem quite right.
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': True,
+    # 'disable_existing_loggers': True,
+    'disable_existing_loggers': False,
     'root': {
         'level': 'WARNING',
         'handlers': ['sentry'],

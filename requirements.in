@@ -2,6 +2,7 @@ django>=2.2,<2.3
 pillow
 dj-database-url
 django-redis-cache
+whitenoise
 psycopg2-binary
 pytz
 gunicorn
@@ -18,5 +19,4 @@ django-debug-toolbar
 factory-boy
 wagtail
 wagtailfontawesome
-collectfast
 setuptools==41.6.0        # via gunicorn, markdown
