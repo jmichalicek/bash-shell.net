@@ -269,8 +269,6 @@ a:active.btn.btn-outline-primary {
   vertical-align: middle;
   transition: border-color .2s ease;
   border: 3px solid #fff;
-  /* not sure I need the background here */
-  /* background: url("../../wagtailadmin/images/transparency.3c218ccc676a.svg"); */
 }
 
 .image-gallery .image-gallery__image:hover {
