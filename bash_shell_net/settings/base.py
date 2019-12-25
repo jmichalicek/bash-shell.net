@@ -58,6 +58,7 @@ MEDIA_URL = os.environ.get('MEDIA_URL', '/media/')
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
+# since I'm now doing collectstatic in the docker image build, allowing this setting to vary is not so good.
 STATIC_ROOT = os.environ.get('STATIC_ROOT', os.path.join(PROJECT_ROOT, 'static_collected'))
 
 # URL prefix for static files.
