@@ -29,12 +29,11 @@ COPY --chown=django ./requirements.txt /django/bash-shell.net/
 WORKDIR /django/bash-shell.net/
 RUN pip-sync
 COPY --chown=django ./ /django/bash-shell.net
-ENV DJANGO_SETTINGS_MODULE=bash_shell_net.settings.local
 RUN DJANGO_SETTINGS_MODULE=bash_shell_net.settings.production python manage.py collectstatic -l --noinput -i *.scss
 
 FROM python:3.8-slim-buster AS prod
 RUN useradd -ms /bin/bash -d /django django
 COPY --from=build /django/bash-shell.net /django/bash-shell.net
-ENV HOME=/django PATH=/django/bash-shell.net/.venv/bin:/django/.local/bin:$PATH LC_ALL=C.UTF-8 LANG=C.UTF-8 PYTHONIOENCODING=utf-8
+ENV DJANGO_SETTINGS_MODULE=bash_shell_net.settings.production HOME=/django PATH=/django/bash-shell.net/.venv/bin:/django/.local/bin:$PATH LC_ALL=C.UTF-8 LANG=C.UTF-8 PYTHONIOENCODING=utf-8
 WORKDIR /django/bash-shell.net/
 EXPOSE 8000
