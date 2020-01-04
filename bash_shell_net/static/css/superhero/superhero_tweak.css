@@ -29,6 +29,8 @@ pre {
 
 .page-header {
   padding: 1rem;
+  background-color: #2B3E50;
+  margin-bottom: .25rem;
 }
 
 body {
@@ -37,7 +39,7 @@ body {
   /*background: repeating-linear-gradient(#000020, #2B3E50);*/
 }
 
-.blog-header {
+header.blog-header {
   /*background-color: #45515f;*/
   /*text-align: center;*/
   padding-bottom: 1.25rem;
@@ -49,21 +51,23 @@ body {
   background-color: 0;
 }
 
-.blog-header .title {
+header.blog-header .title {
   text-align: left;
 }
 
-.blog-header .nav {
+header.blog-header .nav {
   justify-content: flex-end
 }
 
 .blog-title {
+  /* TODO: is this used? */
   margin-bottom: 0;
   font-size: 2rem;
   font-weight: 400;
   color: white;
 }
 .blog-description {
+    /* TODO: is this used? */
   font-size: 1.1rem;
   /*color: #DEC062;*/
   color: #DF691A;
@@ -145,10 +149,12 @@ a:active.btn.btn-outline-primary {
   padding: 1rem;
 }
 .blog-post-title {
+  /* TODO: used on post list views, but not the actual post... can probably get rid of it.*/
   margin-bottom: .25rem;
   font-size: 2.5rem;
 }
 .blog-post-meta {
+    /* TODO: used on post list views, but not the actual post... can probably get rid of it.*/
   margin-bottom: 1.25rem;
   color: #999;
 }
