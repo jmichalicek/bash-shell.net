@@ -10,7 +10,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteract
   telnet \
   && apt-get autoremove && apt-get clean
 
-RUN pip install pip==19.3.1
+RUN pip install pip==20.0.2
 RUN useradd -ms /bin/bash -d /django django && echo "django ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 USER django
 ENV HOME=/django PATH=/django/bash-shell.net/.venv/bin:/django/.local/bin:$PATH LC_ALL=C.UTF-8 LANG=C.UTF-8 PYTHONIOENCODING=utf-8
@@ -23,7 +23,7 @@ RUN echo "[global]\n# This actually enables --no-cache-dir\nno-cache-dir = false
 # https://stackoverflow.com/a/28210626
 # python -m venv only copies the bundled pip, even if you've done a pip install -U pip to get
 # a newer version installed, so update it in the virtualenv
-RUN pip install pip==19.3.1
+RUN pip install pip==20.0.2
 RUN pip install pip-tools
 COPY --chown=django ./requirements.txt /django/bash-shell.net/
 WORKDIR /django/bash-shell.net/
