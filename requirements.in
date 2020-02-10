@@ -1,4 +1,4 @@
-django>=2.2,<2.3
+django>=3.0,<4.0
 pillow
 dj-database-url
 django-redis-cache
@@ -19,4 +19,4 @@ django-debug-toolbar
 factory-boy
 wagtail
 wagtailfontawesome
-setuptools==41.6.0        # via gunicorn, markdown
+#setuptools==41.6.0        # via gunicorn, markdown

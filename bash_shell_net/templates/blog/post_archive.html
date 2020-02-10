@@ -1,14 +1,19 @@
 {% extends 'base.html' %}
 {% load blog_tags wagtailcore_tags %}
 {% block primary %}
+<div class="page-header">
+  <h2>Archive</h2>
+</div>
 {% regroup latest by first_published_at.year as posts_by_year %}
   {% for year in posts_by_year %}
-    <h2>{{ year.grouper }}<i class="icon-arrow-down icon-white"></i></h2>
-    <div id="archive_{{ year.grouper }}">
-      {% for post in year.list reversed %}
-	     <a href="{% pageurl post %}">{{ post.title }}</a>
-	     <em>by {{ post.owner.first_name }} on {{ post.first_published_at|date:"N j, Y, P T" }}</em><br>
-      {% endfor %}
+    <div class="blog-post">
+      <h2>{{ year.grouper }}<i class="icon-arrow-down icon-white"></i></h2>
+      <div id="archive_{{ year.grouper }}">
+        {% for post in year.list reversed %}
+  	     <a href="{% pageurl post %}">{{ post.title }}</a>
+  	     <em>by {{ post.owner.first_name }} on {{ post.first_published_at|date:"N j, Y, P T" }}</em><br>
+        {% endfor %}
+      </div>
     </div>
   {% endfor %}
 {% endblock%}
