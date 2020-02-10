@@ -36,36 +36,17 @@
     </header>
     <main role="main" class="container">
       <div class="row">
-        {% block sidebar %}
-        {% comment %}
-            <aside class="col-sm-12 col-md-3 col-lg-2 blog-sidebar mr-1 d-none d-md-block">
-              {% block main_nav %}
-                <div class="sidebar-module">
-                  <h4>Sections</h4>
-                  <ul class="nav flex-column">
-                    <li><a href="/#">Home</a></li>
-                    <li><a href="/archives/#">Archive</a></li>
-                    <li><a href="{% url 'projects_project_list' %}">Projects</a></li>
-                    <li><a href="{% url 'opensource' %}">Open Source</a></li>
-                    <li><a href="{% url 'about' %}">About</a></li>
-                  </ol>
-                </div>
-              {% endblock main_nav %}
-              {% block social_links %}
-                <div class="sidebar-module col">
-                  <h4>Social</h4>
-                  <ol class="list-unstyled">
-                    <li><a href="https://github.com/jmichalicek/">GitHub</a></li>
-                    <li><a href="https://twitter.com/zingaya">Twitter</a></li>
-                  </ol>
-                </div>
-              {% endblock %}
-
-            </aside><!-- /.blog-sidebar -->
-            {% endcomment %}
-        {% endblock sidebar %}
+        {% block sidebar %}{% endblock sidebar %}
         {% block col2_default %}
-          <div id="column-2" class="col default">{% block primary %}{% endblock %}</div>
+          <div id="column-2" class="col default">
+            {% block primary %}
+              {% block page_header %}
+              <div class="page-header">
+                <h2>{{ page_title }}</h2>
+              </div>
+              {% endblock %}
+            {% endblock %}
+          </div>
         {% endblock col2_default %}
       </div>
     </main>
