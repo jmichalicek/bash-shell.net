@@ -6,3 +6,8 @@ tmp/
 *.code-workspace
 .python-version
 codeship.aes
+media
+.envrc
+.python-version
+*.sql
+src/
