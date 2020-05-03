@@ -11,7 +11,7 @@ AUTH_USER_MODEL = 'accounts.User'
 
 DEBUG = True
 
-ADMINS = (('Justin Michalicek', 'jmichalicek@gmail.com'), )
+ADMINS = (('Justin Michalicek', 'jmichalicek@gmail.com'),)
 
 MANAGERS = ADMINS
 
@@ -70,7 +70,8 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static'), )
+    os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static'),
+)
 
 # List of finder classes that know how to find static files in
 # various locations.
@@ -128,7 +129,7 @@ WSGI_APPLICATION = 'bash_shell_net.wsgi.application'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(os.path.dirname(os.path.dirname(__file__)), 'templates'), ],
+        'DIRS': [os.path.join(os.path.dirname(os.path.dirname(__file__)), 'templates'),],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -141,7 +142,7 @@ TEMPLATES = [
                 'django.template.context_processors.static',
                 'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
-                'django.template.context_processors.request'
+                'django.template.context_processors.request',
             ],
         },
     },
@@ -162,7 +163,6 @@ INSTALLED_APPS = (
     'django.contrib.flatpages',
     'django.contrib.sitemaps',
     'raven.contrib.django.raven_compat',
-
     # Wagtail
     'wagtail.contrib.forms',
     'wagtail.contrib.redirects',
@@ -175,18 +175,17 @@ INSTALLED_APPS = (
     'wagtail.search',
     'wagtail.admin',
     'wagtail.core',
-
     # Wagtail extra deps
     'modelcluster',
     'taggit',
     'wagtailfontawesome',
-
     # My stuff
     'internetdefenseleague',
     'accounts',
     'blog',
     'projects',
     'base',
+    'ontap',
 )
 
 COVERAGE_PATH_EXCLUDES = [r'.svn', r'.git', r'templates', r'static']
