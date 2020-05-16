@@ -1,11 +1,15 @@
 from decimal import Decimal
+from typing import List
 
 from django.contrib.postgres.fields import CICharField
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db import models
+from django.db.models.query import QuerySet
+from django.http import HttpRequest, HttpResponse
 
 from modelcluster.fields import ParentalKey
 from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, MultiFieldPanel, PageChooserPanel
-from wagtail.core.fields import StreamField, RichTextField
+from wagtail.core.fields import RichTextField, StreamField
 from wagtail.core.models import Orderable, Page
 from wagtail.search import index
 from wagtail.snippets.edit_handlers import SnippetChooserPanel
@@ -63,6 +67,8 @@ class RecipeHop(Orderable, models.Model):
     # type = models.CharField(max_length=10, choices=TYPE_CHOICES)
     form = models.CharField(max_length=10, choices=FORM_CHOICES)
     beta_acid_percent = models.DecimalField(blank=True, default=None, max_digits=6, decimal_places=3)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     panels = [
         FieldPanel('name'),
@@ -131,6 +137,8 @@ class RecipeFermentable(Orderable, models.Model):
         default=None,  # assuming sugars may have no Lovibond or SRM value
         help_text='The color of the item in Lovibond Units (SRM for liquid extracts).',
     )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     panels = [
         FieldPanel('name'),
@@ -178,6 +186,8 @@ class RecipeYeast(Orderable, models.Model):
         features=['superscript', 'subscript', 'strikethrough', 'bold', 'italic', 'ul', 'ol', 'link'],
     )
     add_to_secondary = models.BooleanField(blank=True, default=False, null=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         # sort_order is on Orderable
@@ -260,6 +270,8 @@ class RecipeYeast(Orderable, models.Model):
         name = CICharField(max_length=100, blank=False)
         type = models.CharField(max_length=20, choices=TYPE_CHOICES, blank=False)
         use_step = models.CharField(max_length=20, choices=USE_STEP_CHOICES, blank=False)
+        created_at = models.DateTimeField(auto_now_add=True)
+        updated_at = models.DateTimeField(auto_now=True)
 
         def __str__(self) -> str:
             return self.name
@@ -491,6 +503,9 @@ class RecipePage(Page):
     # This will come after the recipe
     conclusion = StreamField(STANDARD_STREAMFIELD_FIELDS, blank=True, null=True, default=None)
 
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
     content_panels = Page.content_panels + [
         SnippetChooserPanel('style', 'ontap.BeverageStyle'),
         InlinePanel('fermentables', label="Fermentables"),
@@ -504,13 +519,12 @@ class RecipePage(Page):
         index.SearchField('notes', partial=True),
         index.SearchField('introduction', partial=True),
         index.SearchField('conclusion', partial=True),
-        index.SearchField('brewer'),
-        index.SearchField('assistant_brewer'),
+        index.SearchField('brewer', partial=True),
         index.SearchField('style'),
         index.RelatedFields('hops', index.SearchField('name', partial_match=True)),
-        index.RelatedFields('yeast', index.SearchField('name', partial_match=True)),
+        index.RelatedFields('yeasts', index.SearchField('name', partial_match=True)),
         index.RelatedFields('fermentables', index.SearchField('name', partial_match=True)),
-        index.RelatedFields('style', index.SearchField('name', partial_match=True), index.FilterField('name'),),
+        index.RelatedFields('style', (index.SearchField('name', partial_match=True), index.FilterField('name')),),
         index.FilterField('recipe_type'),
     ]
 
@@ -531,6 +545,8 @@ class BatchLogPage(models.Model):
     A homebrew batch intended for use within Wagtail
 
     possibly should make a Page for this? Then it can act like a log
+
+    TODO: what if I brew one batch, but split it across 2 fermenters with differences at that point?
     """
 
     template = 'on_tap/batch_log.html'
@@ -539,13 +555,10 @@ class BatchLogPage(models.Model):
         'ontap.RecipePage', on_delete=models.CASCADE, related_name='batch_log_pages', blank=False, null=False
     )
 
-    ontap_page = ParentalKey(
-        'ontap.OnTapPage', on_delete=models.CASCADE, related_name='batch_log_pages', blank=False, null=False
-    )
-
     recipe = models.ForeignKey('ontap.RecipePage', blank=True, null=True, default=None, on_delete=models.SET_NULL)
     is_on_tap = models.BooleanField(blank=True, default=False)
     status = models.CharField(
+        max_length=25,
         blank=False,
         choices=(
             ('planned', 'Planned'),
@@ -561,6 +574,8 @@ class BatchLogPage(models.Model):
     original_gravity = models.DecimalField(max_digits=4, decimal_places=3, blank=True, null=True, default=None)
     final_gravity = models.DecimalField(max_digits=4, decimal_places=3, blank=True, null=True, default=None)
     body = StreamField(STANDARD_STREAMFIELD_FIELDS, blank=True, null=True, default=None)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     search_fields = Page.search_fields + [
         index.SearchField('recipe'),
@@ -574,6 +589,12 @@ class BatchLogPage(models.Model):
     ]
 
     # log multiple gravity checks?
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['is_on_tap']),
+            models.Index(fields=['status']),
+        ]
 
     def __str__(self):
         return f'{self.recipe} brewed {self.brewed_date}'
@@ -592,21 +613,30 @@ class OnTapPage(Page):
 
     template = 'on_tap/on_tap.html'
 
-    def children(self) -> List[Page]:
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def children(self: 'OnTapPage') -> 'QuerySet[Page]':
         return self.get_children().specific().live()
 
-    def get_context(self, request) -> dict:
-
-        context = super().get_context(request)
+    def get_on_tap_batches(self: 'OnTapPage') -> 'QuerySet[BatchLogPage]':
+        """
+        Returns the currently on tap batches
+        """
         currently_on_tap = BatchLogPage.objects.descendant_of(self).live()
         currently_on_tap = currently_on_tap.filter(is_on_tap=True).order_by('-on_tap_date')
+        return currently_on_tap
 
-        # paginate this
+    def get_batches(self: 'OnTapPage') -> 'QuerySet[BatchLogPage]':
+        """
+        Returns the batches which are not currently on tap ordered from newest to oldest.
+        """
         batches = BatchLogPage.objects.descendant_of(self).live()
-        batches = batches.filter(is_on_tap=False).order_by('brewed_date', 'last_published_at')
+        batches = batches.filter(is_on_tap=False).order_by('-brewed_date', '-last_published_at')
+        return batches
 
+    def paginate(self: 'OnTapPage', queryset: 'QuerySet', page_number: int = 1) -> (Paginator, 'QuerySet[Page]'):
         paginator = Paginator(batches, 25)
-        page_number = request.GET.get('page')
         try:
             page = paginator.page(page_number)
         except PageNotAnInteger:
@@ -616,6 +646,17 @@ class OnTapPage(Page):
             # If page is out of range (e.g. 9999), deliver last page of results.
             page = paginator.page(paginator.num_pages)
 
+        return (paginator, page)
+
+    def get_context(self: 'OnTapPage', request: HttpRequest) -> dict:
+
+        context = super().get_context(request)
+        currently_on_tap = self.get_on_tap_batches()
+
+        # paginate this
+        batches = self.get_batches()
+        page_number = request.GET.get('page', 1)
+        paginator, page = self.paginate(batches, page_number)
         context.update(
             {
                 'currently_on_tap': currently_on_tap,
