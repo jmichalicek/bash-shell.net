@@ -292,6 +292,7 @@ class BeverageStyle(models.Model):
     <NOTES>Famous Irish Stout.  Dry, roasted, almost coffee like flavor.  Often soured with pasteurized sour beer.  Full body perception due to flaked barley, though starting gravity may be low.  Dry roasted flavor.</NOTES>
     """
 
+    template = 'on_tap/style_detail.html'
     TYPE_CHOICES = (
         ('ale', 'Ale'),
         ('lager', 'Lager'),
@@ -376,6 +377,24 @@ class BeverageStyle(models.Model):
         FieldPanel('notes'),
     ]
 
+    search_fields = Page.search_fields + [
+        index.SearchField('name', partial_match=True),
+        index.SearchField('style_guide', partial_match=True),
+        index.SearchField('notes', partial_match=True),
+        index.SearchField('category', partial_match=True),
+        index.FilterField('style_guide'),
+        index.FilterField('color_min'),
+        index.FilterField('color_max'),
+        index.FilterField('original_gravity_min'),
+        index.FilterField('original_gravity_max'),
+        index.FilterField('final_gravity_min'),
+        index.FilterField('final_gravity_max'),
+        index.FilterField('abv_min'),
+        index.FilterField('abv_max'),
+        index.FilterField('beverage_type'),
+        index.FilterField('bjcp_category'),
+    ]
+
     class Meta:
         ordering = ('name',)
         indexes = [
@@ -386,6 +405,9 @@ class BeverageStyle(models.Model):
 
     def __str__(self):
         return self.name
+
+    def bjcp_category(self):
+        return f'{self.style_number}{self.style_letter}'
 
 
 class RecipeType:
@@ -406,6 +428,7 @@ class RecipePage(Page):
     Most of the details come from http://www.beerxml.com/beerxml.htm
     """
 
+    template = 'on_tap/recipe.html'
     RECIPE_TYPE_CHOICES = (
         (RecipeType.ALL_GRAIN, 'All Grain'),
         (RecipeType.EXTRACT, 'Extract'),
@@ -477,17 +500,18 @@ class RecipePage(Page):
     ]
 
     search_fields = Page.search_fields + [
-        index.SearchField('name'),
-        index.SearchField('notes'),
-        index.SearchField('introduction'),
-        index.SearchField('conclusion'),
+        index.SearchField('name', partial=True, boost=2),  # should this just be Page.title?
+        index.SearchField('notes', partial=True),
+        index.SearchField('introduction', partial=True),
+        index.SearchField('conclusion', partial=True),
         index.SearchField('brewer'),
         index.SearchField('assistant_brewer'),
         index.SearchField('style'),
-        index.SearchField('hops'),
-        index.SearchField('fermentables'),
+        index.RelatedFields('hops', index.SearchField('name', partial_match=True)),
+        index.RelatedFields('yeast', index.SearchField('name', partial_match=True)),
+        index.RelatedFields('fermentables', index.SearchField('name', partial_match=True)),
+        index.RelatedFields('style', index.SearchField('name', partial_match=True), index.FilterField('name'),),
         index.FilterField('recipe_type'),
-        index.FilterField('style'),
     ]
 
     class Meta:
@@ -500,3 +524,104 @@ class RecipePage(Page):
 
     def __str__(self):
         return self.name
+
+
+class BatchLogPage(models.Model):
+    """
+    A homebrew batch intended for use within Wagtail
+
+    possibly should make a Page for this? Then it can act like a log
+    """
+
+    template = 'on_tap/batch_log.html'
+
+    recipe_page = ParentalKey(
+        'ontap.RecipePage', on_delete=models.CASCADE, related_name='batch_log_pages', blank=False, null=False
+    )
+
+    ontap_page = ParentalKey(
+        'ontap.OnTapPage', on_delete=models.CASCADE, related_name='batch_log_pages', blank=False, null=False
+    )
+
+    recipe = models.ForeignKey('ontap.RecipePage', blank=True, null=True, default=None, on_delete=models.SET_NULL)
+    is_on_tap = models.BooleanField(blank=True, default=False)
+    status = models.CharField(
+        blank=False,
+        choices=(
+            ('planned', 'Planned'),
+            ('brewing', 'Brewing'),
+            ('fermenting', 'Fermenting'),
+            ('complete', 'Complete'),
+        ),
+        default='planned',
+    )
+    brewed_date = models.DateField(blank=True, null=True, default=None)
+    packaged_date = models.DateField(blank=True, null=True, default=None)
+    on_tap_date = models.DateField(blank=True, null=True, default=None)
+    original_gravity = models.DecimalField(max_digits=4, decimal_places=3, blank=True, null=True, default=None)
+    final_gravity = models.DecimalField(max_digits=4, decimal_places=3, blank=True, null=True, default=None)
+    body = StreamField(STANDARD_STREAMFIELD_FIELDS, blank=True, null=True, default=None)
+
+    search_fields = Page.search_fields + [
+        index.SearchField('recipe'),
+        index.SearchField('body', partial_match=True),
+        index.RelatedFields('recipe_page', RecipePage.search_fields,),
+        index.FilterField('is_on_tap'),
+        index.FilterField('status'),
+        index.FilterField('brewed_date'),
+        index.FilterField('packaged_date'),
+        index.FilterField('on_tap_date'),
+    ]
+
+    # log multiple gravity checks?
+
+    def __str__(self):
+        return f'{self.recipe} brewed {self.brewed_date}'
+
+    def get_abv(self) -> Decimal:
+        """
+        Returns the calculated ABV from gravity readings using the formula (OG-FG) x 131.25 = ABV
+        """
+        return (self.original_gravity - self.final_gravity) * Decimal('131.25')
+
+
+class OnTapPage(Page):
+    """
+    The main On Tap index
+    """
+
+    template = 'on_tap/on_tap.html'
+
+    def children(self) -> List[Page]:
+        return self.get_children().specific().live()
+
+    def get_context(self, request) -> dict:
+
+        context = super().get_context(request)
+        currently_on_tap = BatchLogPage.objects.descendant_of(self).live()
+        currently_on_tap = currently_on_tap.filter(is_on_tap=True).order_by('-on_tap_date')
+
+        # paginate this
+        batches = BatchLogPage.objects.descendant_of(self).live()
+        batches = batches.filter(is_on_tap=False).order_by('brewed_date', 'last_published_at')
+
+        paginator = Paginator(batches, 25)
+        page_number = request.GET.get('page')
+        try:
+            page = paginator.page(page_number)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            page = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            page = paginator.page(paginator.num_pages)
+
+        context.update(
+            {
+                'currently_on_tap': currently_on_tap,
+                'batches': page.object_list,
+                'page_obj': page,
+                'paginator': paginator,
+            }
+        )
+        return context
