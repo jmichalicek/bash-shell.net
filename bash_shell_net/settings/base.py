@@ -185,7 +185,7 @@ INSTALLED_APPS = (
     'blog',
     'projects',
     'base',
-    'ontap',
+    'on_tap',
 )
 
 COVERAGE_PATH_EXCLUDES = [r'.svn', r'.git', r'templates', r'static']

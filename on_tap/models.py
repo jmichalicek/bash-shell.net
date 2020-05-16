@@ -45,7 +45,7 @@ class RecipeHop(Orderable, models.Model):
     # Might FK this to a set of hops
     # would be good for name, type, substitutes, and origin
     recipe_page = ParentalKey(
-        'ontap.RecipePage', on_delete=models.CASCADE, related_name='hops', blank=False, null=False
+        'on_tap.RecipePage', on_delete=models.CASCADE, related_name='hops', blank=False, null=False,
     )
     name = CICharField(max_length=100, blank=False)
     # A couple extra digits and decimal places to play it safe
@@ -113,7 +113,7 @@ class RecipeFermentable(Orderable, models.Model):
         ('adjunct', 'Adjunct'),
     )
     recipe_page = ParentalKey(
-        'ontap.RecipePage', on_delete=models.CASCADE, related_name='fermentables', blank=False, null=False
+        'on_tap.RecipePage', on_delete=models.CASCADE, blank=False, null=False, related_name='fermentables',
     )
     amount = models.DecimalField(max_digits=6, decimal_places=3, blank=False, null=False)
     amount_units = models.CharField(max_length=5, blank=False, choices=UNIT_CHOICES,)
@@ -172,7 +172,7 @@ class RecipeYeast(Orderable, models.Model):
         ('Volume', (('tsp', 'Teaspoons'), ('tbsp', 'Tablespoons'), ('fl_oz', 'Fluid Oz'), ('l', 'Liters'),),),
     )
     recipe_page = ParentalKey(
-        'ontap.RecipePage', on_delete=models.CASCADE, related_name='yeasts', blank=False, null=False
+        'on_tap.RecipePage', on_delete=models.CASCADE, related_name='yeasts', blank=False, null=False
     )
     # like hops, may be good FKd to a separate Fermentable with stats which don't change.
     # name and many other details which I am not storing now
@@ -239,7 +239,7 @@ class RecipeYeast(Orderable, models.Model):
             ('bottling', 'Bottling'),
         )
         recipe_page = ParentalKey(
-            'ontap.RecipePage',
+            'on_tap.RecipePage',
             on_delete=models.CASCADE,
             related_name='miscellaneous_ingredients',
             blank=False,
@@ -459,7 +459,7 @@ class RecipePage(Page):
     # or use a snippet rather than Page for style?
     # or just enter the text and match up to the page by text in code?
     style = models.ForeignKey(
-        'ontap.BeverageStyle', null=True, default=None, on_delete=models.SET_NULL, related_name='recipe_pages',
+        'on_tap.BeverageStyle', null=True, default=None, on_delete=models.SET_NULL, related_name='recipe_pages',
     )
     brewer = models.CharField(max_length=250, blank=False)
     assistant_brewer = models.CharField(max_length=250, blank=True, default='')
@@ -507,7 +507,7 @@ class RecipePage(Page):
     updated_at = models.DateTimeField(auto_now=True)
 
     content_panels = Page.content_panels + [
-        SnippetChooserPanel('style', 'ontap.BeverageStyle'),
+        SnippetChooserPanel('style', 'on_tap.BeverageStyle'),
         InlinePanel('fermentables', label="Fermentables"),
         InlinePanel('hops', label="Hops"),
         InlinePanel('yeasts', label="Yeasts"),
@@ -521,9 +521,9 @@ class RecipePage(Page):
         index.SearchField('conclusion', partial=True),
         index.SearchField('brewer', partial=True),
         index.SearchField('style'),
-        index.RelatedFields('hops', index.SearchField('name', partial_match=True)),
-        index.RelatedFields('yeasts', index.SearchField('name', partial_match=True)),
-        index.RelatedFields('fermentables', index.SearchField('name', partial_match=True)),
+        index.RelatedFields('hops', [index.SearchField('name', partial_match=True)]),
+        index.RelatedFields('yeasts', [index.SearchField('name', partial_match=True)]),
+        index.RelatedFields('fermentables', [index.SearchField('name', partial_match=True)]),
         index.RelatedFields('style', (index.SearchField('name', partial_match=True), index.FilterField('name')),),
         index.FilterField('recipe_type'),
     ]
@@ -540,7 +540,7 @@ class RecipePage(Page):
         return self.name
 
 
-class BatchLogPage(models.Model):
+class BatchLogPage(Page):
     """
     A homebrew batch intended for use within Wagtail
 
@@ -552,10 +552,8 @@ class BatchLogPage(models.Model):
     template = 'on_tap/batch_log.html'
 
     recipe_page = ParentalKey(
-        'ontap.RecipePage', on_delete=models.CASCADE, related_name='batch_log_pages', blank=False, null=False
+        'on_tap.RecipePage', on_delete=models.PROTECT, related_name='batch_log_pages', blank=False, null=False,
     )
-
-    recipe = models.ForeignKey('ontap.RecipePage', blank=True, null=True, default=None, on_delete=models.SET_NULL)
     is_on_tap = models.BooleanField(blank=True, default=False)
     status = models.CharField(
         max_length=25,
@@ -578,7 +576,7 @@ class BatchLogPage(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     search_fields = Page.search_fields + [
-        index.SearchField('recipe'),
+        index.SearchField('recipe_page'),
         index.SearchField('body', partial_match=True),
         index.RelatedFields('recipe_page', RecipePage.search_fields,),
         index.FilterField('is_on_tap'),
