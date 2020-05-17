@@ -1,1 +1,18 @@
 {% extends 'base.html' %}
+{% load blog_tags wagtailcore_tags %}
+{% block 'primary' %}
+  <div class="page-header">
+    <h2>On Tap</h2>
+  </div>
+  <div>
+    {% for batch in currently_on_tap %}
+      {{ batch }}
+    {% endfor %}
+  </div>
+
+  <div>
+    {% for batch in batches %}
+      {{ batch }}
+    {% endfor %}
+  </div>
+{% endblock 'primary' %}

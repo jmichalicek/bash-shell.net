@@ -66,7 +66,7 @@ class RecipeHop(Orderable, models.Model):
 
     # type = models.CharField(max_length=10, choices=TYPE_CHOICES)
     form = models.CharField(max_length=10, choices=FORM_CHOICES)
-    beta_acid_percent = models.DecimalField(blank=True, default=None, max_digits=6, decimal_places=3)
+    beta_acid_percent = models.DecimalField(blank=True, default=None, max_digits=6, decimal_places=3, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -155,6 +155,32 @@ class RecipeFermentable(Orderable, models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+    def weight_in_pounds(self) -> Decimal:
+        """
+        Returns the weight in Pounds
+        """
+        # Keep it dumb and simple for now
+        if self.units == 'lb':
+            return self.amount
+        elif self.units == 'kg':
+            return self.amount * Decimal('2.20462262')
+        elif self.units == 'oz':
+            return self.amount / Decimal('16.0')
+        elif self.units == 'g':
+            # grams to kilograms then kilograms to pounds
+            return (self.amount / Decimal('1000')) * Decimal('2.2042262')
+
+    def calculate_mcu(self, gallons: Decimal) -> Decimal:
+        """
+        Calculate the Malt Color Units for use in Morey's equation to calculate beer SRM.
+
+        MCU is the weight of the grain in (pounds * color lovibond) / gallons
+        """
+        if gallons <= Decimal('0'):
+            raise ValueError('gallons must be a positive number greater than 0')
+        # Ensuring we have gallons as Decimal
+        return (self.weight_in_pounds() * self.color) / Decimal(gallons)
 
 
 class RecipeYeast(Orderable, models.Model):
@@ -320,7 +346,7 @@ class BeverageStyle(models.Model):
     category = models.CharField(max_length=100, blank=True, default='')
     category_number = models.SmallIntegerField(blank=True, null=True, default=None)
     style_letter = models.CharField(max_length=1, blank=True, default='')
-    beverage_type = models.CharField(max_length=25, blank=True, default='', db_index=True)
+    beverage_type = models.CharField(choices=TYPE_CHOICES, max_length=25, blank=True, default='', db_index=True)
     original_gravity_min = models.DecimalField(blank=True, null=True, default=None, max_digits=4, decimal_places=3)
     original_gravity_max = models.DecimalField(blank=True, null=True, default=None, max_digits=4, decimal_places=3)
     final_gravity_min = models.DecimalField(blank=True, null=True, default=None, max_digits=4, decimal_places=3)
@@ -358,7 +384,7 @@ class BeverageStyle(models.Model):
                 FieldPanel('style_guide'),
                 FieldPanel('category'),
                 FieldPanel('category_number'),
-                FieldPanel('style_number'),
+                FieldPanel('style_letter'),
             ],
             heading='Style Guide Categorization',
             classname='collapsible collapsed',
@@ -419,7 +445,7 @@ class BeverageStyle(models.Model):
         return self.name
 
     def bjcp_category(self):
-        return f'{self.style_number}{self.style_letter}'
+        return f'{self.category_number}{self.style_letter}'
 
 
 class RecipeType:
@@ -433,6 +459,13 @@ class RecipeType:
     PARTIAL_MASH = 'partial_mash'
 
 
+class VolumeUnit:
+    FLUID_OZ = 'fl_oz'
+    LITER = 'l'
+    GALLON = 'gal'
+    QUART = 'quart'
+
+
 class RecipePage(Page):
     """
     Page for a beer recipe
@@ -440,11 +473,18 @@ class RecipePage(Page):
     Most of the details come from http://www.beerxml.com/beerxml.htm
     """
 
-    template = 'on_tap/recipe.html'
+    template = 'on_tap/recipe_detail.html'
     RECIPE_TYPE_CHOICES = (
         (RecipeType.ALL_GRAIN, 'All Grain'),
         (RecipeType.EXTRACT, 'Extract'),
         (RecipeType.PARTIAL_MASH, 'Partial Mash'),
+    )
+
+    VOLUME_UNIT_CHOICES = (
+        (VolumeUnit.FLUID_OZ, 'Fluid Oz.'),
+        (VolumeUnit.LITER, 'Liters'),
+        (VolumeUnit.GALLON, 'Gallons'),
+        (VolumeUnit.QUART, 'Quarts'),
     )
 
     # Do I need a separate recipe name and page title?
@@ -461,9 +501,10 @@ class RecipePage(Page):
     style = models.ForeignKey(
         'on_tap.BeverageStyle', null=True, default=None, on_delete=models.SET_NULL, related_name='recipe_pages',
     )
-    brewer = models.CharField(max_length=250, blank=False)
+    brewer = models.CharField(max_length=250, blank=True, default='')  # or fk to a user?
     assistant_brewer = models.CharField(max_length=250, blank=True, default='')
 
+    volume_units = models.CharField(max_length=10, choices=VOLUME_UNIT_CHOICES, blank=False)
     batch_size = models.DecimalField(
         blank=False,
         null=False,
@@ -507,11 +548,29 @@ class RecipePage(Page):
     updated_at = models.DateTimeField(auto_now=True)
 
     content_panels = Page.content_panels + [
+        FieldPanel('name'),
         SnippetChooserPanel('style', 'on_tap.BeverageStyle'),
+        FieldPanel('recipe_type'),
+        FieldPanel('brewer'),
+        FieldPanel('assistant_brewer'),
+        MultiFieldPanel(
+            [
+                FieldPanel('volume_units'),
+                FieldPanel('batch_size'),
+                FieldPanel('boil_size'),
+                FieldPanel('boil_time'),
+                FieldPanel('efficiency'),
+            ],
+            heading='Volume Information',
+            classname='collapsible collapsed',
+        ),
         InlinePanel('fermentables', label="Fermentables"),
         InlinePanel('hops', label="Hops"),
-        InlinePanel('yeasts', label="Yeasts"),
+        InlinePanel('yeasts', label="Yeast"),
         InlinePanel('miscellaneous_ingredients', label="Miscellaneous Ingredients"),
+        FieldPanel('notes'),
+        FieldPanel('introduction'),
+        FieldPanel('conclusion'),
     ]
 
     search_fields = Page.search_fields + [
@@ -538,6 +597,31 @@ class RecipePage(Page):
 
     def __str__(self):
         return self.name
+
+    def batch_volume_in_gallons(self) -> Decimal:
+        """
+        Converts the batch volume to gallons for use in SRM estimation using Morey's equation
+        """
+        if self.volume_units == VolumeUnit.GALLON:
+            return self.batch_volume
+        elif self.volume_units == VolumeUnit.FLUID_OZ:
+            return self.batch_volume * Decimal('0.0078125')
+        elif self.volume_units == VolumeUnit.QUART:
+            return self.batch_volume * Decimal('0.25')
+        elif self.volume_units == VolumeUnit.LITER:
+            return self.batch_volume * Decimal('0.26417287')
+
+    def calculate_color_srm(self) -> int:
+        """
+        Returns the estimated color in SRM using Morey's equation of SRM = 1.4922 * (MCU ^ 0.6859).
+        """
+        total_mcu = Decimal('0')
+
+        for fermentable in self.fermentables.all():
+            total_mcu += fermenatable.calculate_mcu(self.batch_volume_in_gallons())
+
+        srm = Decimal('1.4922') * (total_mcu ** Decimal('0.6859'))
+        return int(srm.quantize(Decimal('1')))
 
 
 class BatchLogPage(Page):
@@ -609,10 +693,23 @@ class OnTapPage(Page):
     The main On Tap index
     """
 
+    # TODO: wondering about having per use OnTapPage and an index of OnTapPages - I do not need that currently
+    # but seems like a generally interesting idea.
+
     template = 'on_tap/on_tap.html'
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    subpage_types = ['on_tap.RecipePageIndex', 'on_tap.BatchLogPage']
+    # or reverse this and use parent_page_types on these other pages?
+
+    # @classmethod
+    # def can_create_at(cls, parent):
+    #     # You can only create one of these!
+    #     return super().can_create_at(parent) \
+    #         and not cls.objects.exists()  # I really want one per parent, I think
+    #         and parent.get_children().type(OnTapPage).count() == 0  # may be more correct... or .exists()
 
     def children(self: 'OnTapPage') -> 'QuerySet[Page]':
         return self.get_children().specific().live()
@@ -664,3 +761,19 @@ class OnTapPage(Page):
             }
         )
         return context
+
+
+class RecipePageIndex(Page):
+    """
+    Root index for recipes
+    """
+
+    template = 'on_tap/recipe_index.html'
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    subpage_types = ['on_tap.RecipePage']
+
+    def children(self: 'RecipeIndexPage') -> 'QuerySet[RecipePage]':
+        return self.get_children().specific().live()

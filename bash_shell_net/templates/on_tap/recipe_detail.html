@@ -1,1 +1,68 @@
 {% extends 'base.html' %}
+{% load wagtailcore_tags %}
+
+{% block primary %}
+  {% with page_title=page.title %}
+    {{ block.super }}
+  {% endwith %}
+
+  <p>
+    {{ page.introduction }}
+  </p>
+  <p>
+    Recipe Name: {{ page.name }}<br>
+    Style: <span>{{ page.get_style_display }}</span><br>
+    Type: <span>{{ page.get_recipe_type_display }}</span><br>
+    Batch Size (In Fermenter): <span>{{ page.batch_size }} {{ page.get_volume_units_display }}</span><br>
+    Boil Size (Pre-boil): <span>{{ page.boil_size }} {{ page.get_volume_units_display }}</span><br>
+    Boil Time: <span>{{ page.boil_time }} Minutes</span><br>
+    Estimated Efficiency: <span>{{ page.efficiency }}</span><br>
+  </p>
+
+  <h3>Fermentables</h3>
+  <table>
+    <thead><tr><td></td></tr></thead>
+    <tbody>
+    {% for fermentable in page.fermentables.all %}
+      <tr>
+        <td>{{ fermentable }}</td>
+      <tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+  <h3>Hops</h3>
+  <table>
+    <thead>
+      <tr><th>Name</th><th>Amount</th><th>Form</th><th>Step</th><th>Time</th></tr>
+    </thead>
+    <tbody>
+      {% for hop in page.hops.all %}
+        <tr>
+          <td>{{ hop.name }}</td>
+          <td>{{ hop.amount }}{{ hop.units }}</td>
+          <td>{{ hop.form }}</td>
+          <td>{{ hop.use_step }}<td>
+          <td>{{ hop.time }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h3>Yeast</h3>
+  <table>
+    <thead><tr><td></td></tr></thead>
+    <tbody>
+    {% for yeast in page.yeasts.all %}
+      <tr>
+        <td>{{ yeast }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+  <p>
+    {{ page.conclusion }}
+  </p>
+
+{% endblock primary %}
