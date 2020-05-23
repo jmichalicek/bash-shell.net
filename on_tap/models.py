@@ -98,6 +98,8 @@ class RecipeFermentable(Orderable, models.Model):
     extracts, grains, sugars, honey, fruits.
     """
 
+    # TODO: usage? such as mash, vorlauf, or steep?
+
     UNIT_CHOICES = (
         ('g', 'Grams',),
         ('oz', 'Ounces'),
@@ -197,6 +199,11 @@ class RecipeYeast(Orderable, models.Model):
         ('Weight', (('g', 'Grams',), ('oz', 'Ounces'),),),
         ('Volume', (('tsp', 'Teaspoons'), ('tbsp', 'Tablespoons'), ('fl_oz', 'Fluid Oz'), ('l', 'Liters'),),),
     )
+
+    YEAST_TYPE_CHOICES = (
+        ('dry', 'Dry'),
+        ('liquid', 'Liquid'),
+    )
     recipe_page = ParentalKey(
         'on_tap.RecipePage', on_delete=models.CASCADE, related_name='yeasts', blank=False, null=False
     )
@@ -212,6 +219,7 @@ class RecipeYeast(Orderable, models.Model):
         features=['superscript', 'subscript', 'strikethrough', 'bold', 'italic', 'ul', 'ol', 'link'],
     )
     add_to_secondary = models.BooleanField(blank=True, default=False, null=False)
+    yeast_type = models.CharField(max_length=25, choices=YEAST_TYPE_CHOICES, blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
