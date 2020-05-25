@@ -12,6 +12,13 @@
         background-image: linear-gradient(to right, {{ page.style.color_min|floatformat:"0"|srm_to_hex }}, {{ page.style.color_max|floatformat:"0"|srm_to_hex }});
         padding: .25rem .75rem;
       }
+
+      .recipe-stats__srm {
+        background-color: {{ page.calculate_color_srm|floatformat:"0"|srm_to_hex }};
+        padding: .25rem .75rem;
+        {# When srm is less than 7-10, the white text gets hard to read #}
+        {% if page.calculate_color_srm < 10 %}color: #2B3E50;{% endif %}
+      }
     </style>
   {% endif %}
 {% endblock page_stylesheets %}
@@ -23,11 +30,13 @@
   <p>
     {{ page.introduction }}
   </p>
-  <h2>{{ page.name }}<br><span class="small">{{ page.style }}</span></h2>
-  <h3>Style Guide</h3>
+  <h2>{{ page.name }}</h2>
+  <h4>{{ page.style }}</h4>
+  <br>
+  <h3>Style Details</h3>
   <table class="table">
     <thead class="table-active">
-      <tr><th scope="col">O.G.</th><th scope="col">F.G.</th><th scope="col">IBU</th><th scope="col">SRM</th></tr>
+      <tr><th scope="col">O.G.</th><th scope="col">F.G.</th><th scope="col">IBU</th><th scope="col">Color</th></tr>
     </thead>
     <tbody class="table-secondary">
       <tr>
@@ -35,16 +44,16 @@
         <td>{% if page.style.final_gravity_min and page.style.final_gravity_max %}{{ page.style.final_gravity_min|floatformat:"3" }} - {{ page.style.final_gravity_max|floatformat:"3" }}{% endif %}</td>
         <td>{% if page.style.ibu_min and page.style.ibu_max %}{{ page.style.ibu_min|floatformat:"0" }} - {{ page.style.ibu_max|floatformat:"0" }}{% endif %}</td>
         {# bootstrap popover with popper.js seems like overkill here. Maybe just a hidden div and a css hover to show it? #}
-        <td class="beer-style-guide__srm">{% if page.style.color_min and page.style.color_max %}<div class="text-center beer-style-guide__srm-gradient">{{ page.style.color_min|floatformat:"0" }} - {{ page.style.color_max|floatformat:"0" }}</div>{% endif %}</td>
+        <td class="beer-style-guide__srm">{% if page.style.color_min and page.style.color_max %}<div class="text-center beer-style-guide__srm-gradient">{{ page.style.color_min|floatformat:"0" }} - {{ page.style.color_max|floatformat:"0" }} srm</div>{% endif %}</td>
       </tr>
     </tbody>
   </table>
-
-  <h3>Recipe Information</h3>
-  <h4>Statistics</h4>
+  <br>
+  <h3>Recipe Details</h3>
+  <h4>Beer Profile</h4>
   <table class="table">
     <thead class="table-active">
-      <tr><th scope="col">Type</th><th scope="col">Boil Volume</th><th scope="col">Volume in Fermenter</th><th scope="col">Boil Time</th><th scope="col">Efficiency</th></tr>
+      <tr><th scope="col">Type</th><th scope="col">Boil Volume</th><th scope="col">Volume in Fermenter</th><th scope="col">Boil Time</th><th scope="col">Efficiency</th><th>Color</th></tr>
     </thead>
     <tbody class="table-secondary">
       <tr>
@@ -53,6 +62,7 @@
         <td>{{ page.batch_size|floatformat:"2" }} {{ page.get_volume_units_display }}</td>
         <td>{{ page.boil_time }} Minutes</td>
         <td>{{ page.efficiency }}%</td>
+        <td class="beer-style-guide__srm"><div class="text-center recipe-stats__srm">{{ page.calculate_color_srm|floatformat:"0" }} srm</div></td>
       </tr>
     </tbody>
   </table>
@@ -154,15 +164,3 @@
   </p>
 </div>
 {% endblock primary %}
-{% block javascript %}
-  {{ block.super }}
-  <!-- <script>
-    // let srmDataElement = document.querySelector('data[srm-min]');
-    // let minSrm = srmDataElement.dataset.srmMin;
-    // let maxSrm = srmDataElement.dataset.srmMax;
-    $('#table-srm').popover({
-      template: '<div class="popover recipe--srm--popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>'
-    });
-    $('#table-srm').popover('show');
-  </script> -->
-{% endblock javascript %}

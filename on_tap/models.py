@@ -8,7 +8,7 @@ from django.db.models.query import QuerySet
 from django.http import HttpRequest, HttpResponse
 
 from modelcluster.fields import ParentalKey
-from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, MultiFieldPanel, PageChooserPanel
+from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, MultiFieldPanel, PageChooserPanel, StreamFieldPanel
 from wagtail.core.fields import RichTextField, StreamField
 from wagtail.core.models import Orderable, Page
 from wagtail.search import index
@@ -55,7 +55,7 @@ class RecipeHop(Orderable, models.Model):
     amount_units = models.CharField(max_length=5, choices=(('g', 'Grams'), ('oz', 'Ounces')))
     # use_step maps to BeerXML <USE>
     use_step = models.CharField(choices=USE_STEP_CHOICES, max_length=15, blank=False)
-    use_time = models.DurationField(
+    use_time = models.IntegerField(
         blank=False, null=False, help_text='Time in minutes. Specific meaning varies by use type.'
     )
     notes = RichTextField(
@@ -163,13 +163,13 @@ class RecipeFermentable(Orderable, models.Model):
         Returns the weight in Pounds
         """
         # Keep it dumb and simple for now
-        if self.units == 'lb':
+        if self.amount_units == 'lb':
             return self.amount
-        elif self.units == 'kg':
+        elif self.amount_units == 'kg':
             return self.amount * Decimal('2.20462262')
-        elif self.units == 'oz':
+        elif self.amount_units == 'oz':
             return self.amount / Decimal('16.0')
-        elif self.units == 'g':
+        elif self.amount_units == 'g':
             # grams to kilograms then kilograms to pounds
             return (self.amount / Decimal('1000')) * Decimal('2.2042262')
 
@@ -281,7 +281,7 @@ class RecipeYeast(Orderable, models.Model):
         )
         amount = models.DecimalField(max_digits=6, decimal_places=3, blank=True, null=True, default=None)
         amount_units = models.CharField(max_length=5, choices=UNIT_CHOICES, blank=False)
-        use_time = models.DurationField(
+        use_time = models.IntegerField(
             blank=False, null=False, help_text='Amount of time the misc was boiled, steeped, mashed, etc in minutes.'
         )
 
@@ -306,6 +306,17 @@ class RecipeYeast(Orderable, models.Model):
         use_step = models.CharField(max_length=20, choices=USE_STEP_CHOICES, blank=False)
         created_at = models.DateTimeField(auto_now_add=True)
         updated_at = models.DateTimeField(auto_now=True)
+
+        panels = [
+            FieldPanel('name'),
+            FieldPanel('type'),
+            FieldPanel('amount'),
+            FieldPanel('amount_units'),
+            FieldPanel('use_step'),
+            FieldPanel('use_time'),
+            FieldPanel('use_for'),
+            FieldPanel('notes'),
+        ]
 
         def __str__(self) -> str:
             return self.name
@@ -530,7 +541,7 @@ class RecipePage(Page):
         decimal_places=2,
         help_text='Starting size for the main boil of the wort in liters.',
     )
-    boil_time = models.DurationField(blank=False, null=False, help_text='Total time to boil the wort in minutes.')
+    boil_time = models.IntegerField(blank=False, null=False, help_text='Total time to boil the wort in minutes.')
     efficiency = models.SmallIntegerField(
         blank=True,
         null=True,
@@ -547,10 +558,22 @@ class RecipePage(Page):
     # Mash Info Blocks
 
     # This will come before the recipe, keep it short
-    introduction = StreamField(STANDARD_STREAMFIELD_FIELDS, blank=True, null=True, default=None)
+    introduction = StreamField(
+        STANDARD_STREAMFIELD_FIELDS,
+        blank=True,
+        null=True,
+        default=None,
+        help_text='This will be displayed before the recipe information.',
+    )
 
     # This will come after the recipe
-    conclusion = StreamField(STANDARD_STREAMFIELD_FIELDS, blank=True, null=True, default=None)
+    conclusion = StreamField(
+        STANDARD_STREAMFIELD_FIELDS,
+        blank=True,
+        null=True,
+        default=None,
+        help_text='This will be displayed after the recipe information.',
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -572,13 +595,25 @@ class RecipePage(Page):
             heading='Volume Information',
             classname='collapsible collapsed',
         ),
-        InlinePanel('fermentables', label="Fermentables"),
-        InlinePanel('hops', label="Hops"),
-        InlinePanel('yeasts', label="Yeast"),
-        InlinePanel('miscellaneous_ingredients', label="Miscellaneous Ingredients"),
+        MultiFieldPanel(
+            [InlinePanel('fermentables', label="Fermentables", classname='collapsible collapsed',)],
+            classname='collapsible collapsed',
+            heading='Fermentables',
+        ),
+        MultiFieldPanel([InlinePanel('hops', label="Hops"),], classname='collapsible collapsed', heading='Hops',),
+        MultiFieldPanel(
+            [InlinePanel('yeasts', label="Yeast", classname='collapsible collapsed',),],
+            classname='collapsible collapsed',
+            heading='Yeast',
+        ),
+        MultiFieldPanel(
+            [InlinePanel('miscellaneous_ingredients', label="Miscellaneous Ingredients"),],
+            classname='collapsible collapsed',
+            heading='Miscellaneous Ingredients',
+        ),
         FieldPanel('notes'),
-        FieldPanel('introduction'),
-        FieldPanel('conclusion'),
+        StreamFieldPanel('introduction'),
+        StreamFieldPanel('conclusion'),
     ]
 
     search_fields = Page.search_fields + [
@@ -611,13 +646,13 @@ class RecipePage(Page):
         Converts the batch volume to gallons for use in SRM estimation using Morey's equation
         """
         if self.volume_units == VolumeUnit.GALLON:
-            return self.batch_volume
+            return self.batch_size
         elif self.volume_units == VolumeUnit.FLUID_OZ:
-            return self.batch_volume * Decimal('0.0078125')
+            return self.batch_size * Decimal('0.0078125')
         elif self.volume_units == VolumeUnit.QUART:
-            return self.batch_volume * Decimal('0.25')
+            return self.batch_size * Decimal('0.25')
         elif self.volume_units == VolumeUnit.LITER:
-            return self.batch_volume * Decimal('0.26417287')
+            return self.batch_size * Decimal('0.26417287')
 
     def calculate_color_srm(self) -> int:
         """
@@ -626,7 +661,7 @@ class RecipePage(Page):
         total_mcu = Decimal('0')
 
         for fermentable in self.fermentables.all():
-            total_mcu += fermenatable.calculate_mcu(self.batch_volume_in_gallons())
+            total_mcu += fermentable.calculate_mcu(self.batch_volume_in_gallons())
 
         srm = Decimal('1.4922') * (total_mcu ** Decimal('0.6859'))
         return int(srm.quantize(Decimal('1')))
