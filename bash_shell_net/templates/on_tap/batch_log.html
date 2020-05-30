@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load wagtailcore_tags on_tap_tags %}
+{% block page_stylesheets %}
+
+  {% if page.style.color_min and page.style.color_max %}
+    <style>
+      {# extra specificity needed here or bootstrap padding values override this #}
+      td.beer-style-guide__srm {
+        padding: .5rem .75rem 0;
+      }
+      .beer-style-guide__srm-gradient {
+        background-image: linear-gradient(to right, {{ page.style.color_min|floatformat:"0"|srm_to_hex }}, {{ page.style.color_max|floatformat:"0"|srm_to_hex }});
+        padding: .25rem .75rem;
+      }
+
+      .recipe-stats__srm {
+        background-color: {{ page.calculate_color_srm|floatformat:"0"|srm_to_hex }};
+        padding: .25rem .75rem;
+        {# When srm is less than 7-10, the white text gets hard to read #}
+        {% if page.calculate_color_srm < 10 %}color: #2B3E50;{% endif %}
+      }
+    </style>
+  {% endif %}
+{% endblock page_stylesheets %}
+{% block primary %}
+  {% with page_title=page.title %}
+    {{ block.super }}
+  {% endwith %}
+  <div class="blog-post">
+    <p>
+      {{ page.body }}
+    </p>
+    <h2>{{ page.name }}</h2>
+    <h4>{{ page.style }}</h4>
+    <br>
+    <h3>Style Details</h3>
+    <table class="table">
+      <thead class="table-active">
+        <tr><th scope="col">O.G.</th><th scope="col">F.G.</th><th scope="col">IBU</th><th scope="col">Color</th></tr>
+      </thead>
+      <tbody class="table-secondary">
+        <tr>
+          <td>{% if page.style.original_gravity_min and page.style.original_gravity_max %}{{ page.style.original_gravity_min|floatformat:"3" }} - {{ page.style.original_gravity_max|floatformat:"3" }}{% endif %}</td>
+          <td>{% if page.style.final_gravity_min and page.style.final_gravity_max %}{{ page.style.final_gravity_min|floatformat:"3" }} - {{ page.style.final_gravity_max|floatformat:"3" }}{% endif %}</td>
+          <td>{% if page.style.ibu_min and page.style.ibu_max %}{{ page.style.ibu_min|floatformat:"0" }} - {{ page.style.ibu_max|floatformat:"0" }}{% endif %}</td>
+          {# bootstrap popover with popper.js seems like overkill here. Maybe just a hidden div and a css hover to show it? #}
+          <td class="beer-style-guide__srm">{% if page.style.color_min and page.style.color_max %}<div class="text-center beer-style-guide__srm-gradient">{{ page.style.color_min|floatformat:"0" }} - {{ page.style.color_max|floatformat:"0" }} srm</div>{% endif %}</td>
+        </tr>
+      </tbody>
+    </table>
+    <br>
+    <h3>Batch Details</h3>
+    <h4>Beer Profile</h4>
+    <table class="table">
+      <thead class="table-active">
+        <tr><th scope="col">Brewed On</th><th scope="col">Packaged On</th><th scope="col">On Tap Date</th><th scope="col">Original Gravity</th><th scope="col">Final Gravity</th><th>Color</th></tr>
+      </thead>
+      <tbody class="table-secondary">
+        <tr>
+          <td>{{ page.brewed_date }}</td>
+
+          {% comment %}
+            I will want the batch specific details - how much did I really boil, end with, etc.
+            also add packaging type? keg or bottle? What if I split it up?
+            <td>{{ page.boil_size|floatformat:"2" }} {{ page.get_volume_units_display }}</td>
+            <td>{{ page.batch_size|floatformat:"2" }} {{ page.get_volume_units_display }}</td>
+            <td>{{ page.boil_time }} Minutes</td>
+            <td>{{ page.efficiency }}%</td>
+            <td class="beer-style-guide__srm"><div class="text-center recipe-stats__srm">{{ page.calculate_color_srm|floatformat:"0" }} srm</div></td>
+          {% endcomment %}
+        </tr>
+      </tbody>
+    </table>
+  </div>
+{% endblock primary %}

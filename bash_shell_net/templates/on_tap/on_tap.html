@@ -1,18 +1,40 @@
 {% extends 'base.html' %}
 {% load blog_tags wagtailcore_tags %}
-{% block 'primary' %}
-  <div class="page-header">
-    <h2>On Tap</h2>
-  </div>
-  <div>
+{% block primary %}
+  {% with page_title=page.title %}
+    {{ block.super }}
+  {% endwith %}
+  <h3>On Tap Now</h3>
+  <div class="row">
     {% for batch in currently_on_tap %}
-      {{ batch }}
+      <div class="col-4">
+        <div class="card">
+          <div class="card-header text-center">
+            {{ batch.recipe_page.name }}<br>
+            <small>On Tap: {{ batch.on_tap_date }}</small>
+          </div>
+          <div class="card-body">
+            {# <h5 class="card-title">{{ batch.recipe_page.name }}</h5> #}
+            <p class="card-text">Style: {{ batch.recipe_page.style.name }}</p>
+            {# TODO: recipe_page.short_description #}
+            <a href="{% pageurl batch.recipe_page %}" class="card-link">recipe</a>
+            <a href="{% pageurl batch %}" class="card-link">batch details</a>
+            <!-- <a href="{% pageurl batch.recipe_page %}" class="btn btn-primary">recipe</a> -->
+          </div>
+          {% comment %}
+            <div class="card-footer text-muted">
+              On Tap: {{ batch.on_tap_date }}
+            </div>
+          {% endcomment %}
+        </div>
+      </div>
     {% endfor %}
   </div>
 
+  <h3>Upcoming and Past Brews</h3>
   <div>
     {% for batch in batches %}
       {{ batch }}
     {% endfor %}
   </div>
-{% endblock 'primary' %}
+{% endblock primary %}

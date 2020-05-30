@@ -8,7 +8,14 @@ from django.db.models.query import QuerySet
 from django.http import HttpRequest, HttpResponse
 
 from modelcluster.fields import ParentalKey
-from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, MultiFieldPanel, PageChooserPanel, StreamFieldPanel
+from wagtail.admin.edit_handlers import (
+    FieldPanel,
+    FieldRowPanel,
+    InlinePanel,
+    MultiFieldPanel,
+    PageChooserPanel,
+    StreamFieldPanel,
+)
 from wagtail.core.fields import RichTextField, StreamField
 from wagtail.core.models import Orderable, Page
 from wagtail.search import index
@@ -702,6 +709,19 @@ class BatchLogPage(Page):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    content_panels = Page.content_panels + [
+        PageChooserPanel('recipe_page'),
+        FieldPanel('is_on_tap'),
+        FieldPanel('status'),
+        FieldPanel('brewed_date'),
+        FieldPanel('on_tap_date'),
+        MultiFieldPanel(
+            [FieldRowPanel([FieldPanel('original_gravity'), FieldPanel('final_gravity'),]),],
+            heading='Gravity Information',
+        ),
+        StreamFieldPanel('body'),
+    ]
+
     search_fields = Page.search_fields + [
         index.SearchField('recipe_page'),
         index.SearchField('body', partial_match=True),
@@ -722,7 +742,7 @@ class BatchLogPage(Page):
         ]
 
     def __str__(self):
-        return f'{self.recipe} brewed {self.brewed_date}'
+        return f'{self.recipe_page.name} brewed {self.brewed_date}'
 
     def get_abv(self) -> Decimal:
         """
@@ -746,7 +766,6 @@ class OnTapPage(Page):
 
     subpage_types = ['on_tap.RecipePageIndex', 'on_tap.BatchLogPage']
     # or reverse this and use parent_page_types on these other pages?
-
     # @classmethod
     # def can_create_at(cls, parent):
     #     # You can only create one of these!
@@ -774,7 +793,7 @@ class OnTapPage(Page):
         return batches
 
     def paginate(self: 'OnTapPage', queryset: 'QuerySet', page_number: int = 1) -> (Paginator, 'QuerySet[Page]'):
-        paginator = Paginator(batches, 25)
+        paginator = Paginator(queryset, 25)
         try:
             page = paginator.page(page_number)
         except PageNotAnInteger:
