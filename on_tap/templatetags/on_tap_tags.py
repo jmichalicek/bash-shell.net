@@ -4,9 +4,13 @@ from django import template
 
 register = template.Library()
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 @register.filter
-def srm_to_hex(srm: Union[int, str]):
+def srm_to_hex(srm: Union[int, str]) -> str:
     """
     Takes an srm value as an int such as 1 or string such as '1' and returns a hex color code for it.
     """
@@ -52,4 +56,9 @@ def srm_to_hex(srm: Union[int, str]):
         39: '#3A070B',
         40: '#36080A',
     }
-    return mapping.get(int(srm))
+    try:
+        return mapping.get(int(srm))
+    except Exception as e:
+        logger.exception(e)
+
+    return ""

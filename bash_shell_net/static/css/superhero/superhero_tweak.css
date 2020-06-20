@@ -27,8 +27,13 @@ pre {
   background-color: #45515f;
 }
 
+.card-header a:hover, .card-footer a:hover {
+  /* These look terrible when they fade to the default a:hover color */
+  color: #DF691A;
+}
+
 .page-header {
-  padding: 1rem;
+  padding: 1rem .5rem;
   background-color: #2B3E50;
   margin-bottom: .25rem;
 }
@@ -160,12 +165,12 @@ a:active.btn.btn-outline-primary {
 }
 
 /* main 2nd column */
-#column-2.default {
+/* #column-2.default {
   /*overflow-x: auto;*/
   border-radius: .5rem;
   padding: .5rem;
   /* background-color: #2B3E50; */
-}
+} */
 
 /* footer */
 .blog-footer {

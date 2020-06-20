@@ -471,7 +471,9 @@ class BeverageStyle(models.Model):
         return self.name
 
     def bjcp_category(self):
-        return f'{self.category_number}{self.style_letter}'
+        if self.category_number and self.style_letter:
+            return f'{self.category_number}{self.style_letter}'
+        return ''
 
 
 class RecipeType:
@@ -515,9 +517,12 @@ class RecipePage(Page):
 
     # Do I need a separate recipe name and page title?
     name = CICharField(max_length=100, blank=False)
+    short_description = models.TextField(
+        blank=True, default='', help_text='A one or two sentence description of the recipe.',
+    )
     # extract, partial mash, or all grain
     recipe_type = models.CharField(
-        max_length=25, choices=RECIPE_TYPE_CHOICES, blank=False, default=RecipeType.ALL_GRAIN
+        max_length=25, choices=RECIPE_TYPE_CHOICES, blank=False, default=RecipeType.ALL_GRAIN,
     )
 
     # FK to a StylePage or snippet
@@ -587,6 +592,7 @@ class RecipePage(Page):
 
     content_panels = Page.content_panels + [
         FieldPanel('name'),
+        FieldPanel('short_description'),
         SnippetChooserPanel('style', 'on_tap.BeverageStyle'),
         FieldPanel('recipe_type'),
         FieldPanel('brewer'),
@@ -714,6 +720,7 @@ class BatchLogPage(Page):
         FieldPanel('is_on_tap'),
         FieldPanel('status'),
         FieldPanel('brewed_date'),
+        FieldPanel('packaged_date'),
         FieldPanel('on_tap_date'),
         MultiFieldPanel(
             [FieldRowPanel([FieldPanel('original_gravity'), FieldPanel('final_gravity'),]),],

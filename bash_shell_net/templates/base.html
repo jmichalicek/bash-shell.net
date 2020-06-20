@@ -18,19 +18,20 @@
     <header>
       <div class="blog-header">
         <div class="container">
-          <div class="title">
-            <h1 class="blog-title">Bash-Shell.Net</h1>
-            <p class="lead blog-description">I'm a developer, not a writer.</p>
+          <div class="title row">
+            <div class="col-12">
+              <h1 class="blog-title">Bash-Shell.Net</h1>
+              <p class="lead blog-description">I'm a developer, not a writer.</p>
+            </div>
           </div>
-
-            <ul class="nav">
-              {# <li class="nav-item"><a class="nav-link" href="{% url 'blog_post_list' %}#">Home</a></li> #}
-              <li class="nav-item"><a class="nav-link" href="/blog#">Home</a></li>
-              <li class="nav-item"><a class="nav-link" href="/archives#">Archive</a></li>
-              <li class="nav-item"><a class="nav-link" href="{% url 'projects_project_list' %}">Projects</a></li>
-              <li class="nav-item"><a class="nav-link" href="{% url 'opensource' %}">Open Source</a></li>
-              <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
-            </ul>
+          <ul class="nav">
+            {# <li class="nav-item"><a class="nav-link" href="{% url 'blog_post_list' %}#">Home</a></li> #}
+            <li class="nav-item"><a class="nav-link" href="/blog#">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="/archives#">Archive</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'projects_project_list' %}">Projects</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'opensource' %}">Open Source</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
+          </ul>
         </div>
       </div>
     </header>
@@ -38,7 +39,7 @@
       <div class="row">
         {% block sidebar %}{% endblock sidebar %}
         {% block col2_default %}
-          <div id="column-2" class="col default">
+          <div id="column-2" class="col">
             {% block primary %}
               {% block page_header %}
               <div class="page-header">
