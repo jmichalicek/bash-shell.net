@@ -96,6 +96,12 @@ class RecipeHop(Orderable, models.Model):
     def __str__(self) -> str:
         return self.name
 
+    def weight_in_ounces(self) -> Decimal:
+        if self.amount_units == 'g':
+            return self.amount * Decimal('0.035274')
+        # for now, must be oz
+        return self.amount
+
 
 class RecipeFermentable(Orderable, models.Model):
     """
@@ -561,6 +567,15 @@ class RecipePage(Page):
         help_text='Percent brewhouse efficiency to be used for estimating the starting gravity of the beer. Required for Partial Mash and All Grain recipes.',
     )
 
+    boil_gravity = models.DecimalField(default=None, blank=True, max_digits=4, decimal_places=3, null=True)
+    original_gravity = models.DecimalField(default=Decimal(0.0), blank=False, max_digits=4, decimal_places=3)
+    final_gravity = models.DecimalField(default=Decimal(0.0), blank=False, max_digits=4, decimal_places=3)
+    # I could calculate IBUs but it requires keeping large tables of standard data to do correctly, so
+    # for now I will let other software sort that out for me and just enter it here.
+    # correction factor is on page 79 of Designing Great Beers book
+    # and on http://howtobrew.com/book/section-1/hops/hop-bittering-calculations
+    ibus_tinseth = models.DecimalField(default=Decimal(0), max_digits=5, decimal_places=2)
+
     notes = RichTextField(
         blank=True,
         default='',
@@ -604,8 +619,12 @@ class RecipePage(Page):
                 FieldPanel('boil_size'),
                 FieldPanel('boil_time'),
                 FieldPanel('efficiency'),
+                FieldPanel('boil_gravity'),
+                FieldPanel('original_gravity'),
+                FieldPanel('final_gravity'),
+                FieldPanel('ibus_tinseth'),
             ],
-            heading='Volume Information',
+            heading='Recipe Profile',
             classname='collapsible collapsed',
         ),
         MultiFieldPanel(
@@ -671,6 +690,8 @@ class RecipePage(Page):
         """
         Returns the estimated color in SRM using Morey's equation of SRM = 1.4922 * (MCU ^ 0.6859).
         """
+        # TODO: maybe just store this like I am with everything else, grabbing the value from other software.
+        # It was fun to learn and is here now, though.
         total_mcu = Decimal('0')
 
         for fermentable in self.fermentables.all():

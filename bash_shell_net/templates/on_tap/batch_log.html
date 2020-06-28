@@ -28,9 +28,24 @@
     {{ block.super }}
   {% endwith %}
   <div class="blog-post">
-    <p>
-      {{ page.body }}
-    </p>
+    <div class="row">
+      <div class="col-sm-8">
+        <p>
+          {{ page.body }}
+        </p>
+      </div>
+      <div class="col-sm-4">
+        <div class="card">
+          <div class="card-body">
+            <ul class="list-unstyled">
+              <li>Brewed: {{ page.brewed_date|default:"N/A" }}</li>
+              <li>Packaged: {{ page.packaged_date|default:"N/A" }}</li>
+              <li>On Tap: {{ page.on_tap_date|default:"N/A" }}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
     <h2>{{ page.name }}</h2>
     <h4>{{ page.style }}</h4>
     <br>
