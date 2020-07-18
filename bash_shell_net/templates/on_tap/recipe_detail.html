@@ -27,32 +27,29 @@
     {{ block.super }}
   {% endwith %}
   <div class="blog-post">
-    <div class="recipe_detail__introduction">
-      {{ page.introduction }}
-    </div>
-    <div class="col-12 col-md-12 float-right">
+    <div class="d-none d-lg-block col-md-3 col-lg-4 col-xl-4 float-right">
       <div class="card">
         <div class="card-header">
           Style Profile
         </div>
         <div class="card-body pb-0">
           <dl class="row mb-0">
-            <div class="col-6">
+            <div class="col-12 col-xl-6">
               <div class="row">
                 <dt class="col-12">O.G.:</dt><dd class="col-12">{% if page.style.original_gravity_min and page.style.original_gravity_max %}{{ page.style.original_gravity_min|floatformat:"3" }} - {{ page.style.original_gravity_max|floatformat:"3" }}{% endif %}</dd>
               </div>
             </div>
-            <div class="col-6">
+            <div class="col-12 col-xl-6">
               <div class="row">
                 <dt class="col-12">F.G.:</dt><dd class="col-12">{% if page.style.final_gravity_min and page.style.final_gravity_max %}{{ page.style.final_gravity_min|floatformat:"3" }} - {{ page.style.final_gravity_max|floatformat:"3" }}{% endif %}</dd>
               </div>
             </div>
-            <div class="col-6">
+            <div class="col-12 col-xl-6">
               <div class="row">
                 <dt class="col-12">IBUs:</dt><dd class="col-12">{% if page.style.ibu_min and page.style.ibu_max %}{{ page.style.ibu_min|floatformat:"0" }} - {{ page.style.ibu_max|floatformat:"0" }}{% endif %}</dd>
               </div>
             </div>
-            <div class="col-6">
+            <div class="col-12 col-xl-6">
               <div class="row">
                 <dt class="beer-style-guide__srm col-12">Color:</dt><dd class="col-12">{% if page.style.color_min and page.style.color_max %}<div class="text-center beer-style-guide__srm-gradient">{{ page.style.color_min|floatformat:"0" }} - {{ page.style.color_max|floatformat:"0" }} srm</div>{% endif %}</dd>
               </div>
@@ -62,30 +59,30 @@
       </div>
 
       <!-- recipe profile -->
-      <div class="card">
+      <div class="card mt-2">
         <div class="card-header">
-          Style Profile
+          Recipe Statistics
         </div>
         <div class="card-body pb-0">
           <dl class="row mb-0">
-            <div class="col-6">
+            <div class="col-12 col-xl-6">
               <div class="row">
                 <dt class="col-12">O.G.:</dt><dd class="col-12">{% if page.original_gravity %}{{ page.original_gravity|floatformat:"3" }}{% endif %}</dd>
               </div>
             </div>
-            <div class="col-6">
+            <div class="col-12 col-xl-6">
               <div class="row">
                 <dt class="col-12">F.G.:</dt><dd class="col-12">{% if page.final_gravity %}{{ page.final_gravity|floatformat:"3" }}{% endif %}</dd>
               </div>
             </div>
-            <div class="col-6">
+            <div class="col-12 col-xl-6">
               <div class="row">
                 <dt class="col-12">IBUs:</dt><dd class="col-12">{% if page.ibus_tinseth %}{{ page.ibus_tinseth|floatformat:"0" }}{% endif %}</dd>
               </div>
             </div>
-            <div class="col-6">
+            <div class="col-12 col-xl-6">
               <div class="row">
-                <dt class="beer-style-guide__srm col-12">Color:</dt><dd class="col-12">{% if page.calculate_color_srm %}<div class="text-center beer-style-guide__srm">{{ page.calculate_color_srm|floatformat:"0" }} srm</div>{% endif %}</dd>
+                <dt class="beer-style-guide__srm col-12">Color:</dt><dd class="col-12">{% if page.calculate_color_srm %}<div class="text-center recipe-stats__srm"">{{ page.calculate_color_srm|floatformat:"0" }} srm</div>{% endif %}</dd>
               </div>
             </div>
           </dl>
@@ -93,18 +90,79 @@
       </div>
     </div>
     <div>
-      <h2>{{ page.name }}</h2>
-      <h4>{{ page.style }}</h4>
-    </div>
-    <div>
-      <h3>Recipe Details</h3>
-      <h4>Beer Profile</h4>
+      <div class="recipe_detail__introduction">
+        {{ page.introduction }}
+      </div>
+      <div class="col-12 d-lg-none">
+        <div class="card row">
+          <div class="card-header">
+            Style Profile
+          </div>
+          <div class="card-body pb-0">
+            <dl class="row mb-0">
+              <div class="col-6">
+                <div class="row">
+                  <dt class="col-12">O.G.:</dt><dd class="col-12">{% if page.style.original_gravity_min and page.style.original_gravity_max %}{{ page.style.original_gravity_min|floatformat:"3" }} - {{ page.style.original_gravity_max|floatformat:"3" }}{% endif %}</dd>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="row">
+                  <dt class="col-12">F.G.:</dt><dd class="col-12">{% if page.style.final_gravity_min and page.style.final_gravity_max %}{{ page.style.final_gravity_min|floatformat:"3" }} - {{ page.style.final_gravity_max|floatformat:"3" }}{% endif %}</dd>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="row">
+                  <dt class="col-12">IBUs:</dt><dd class="col-12">{% if page.style.ibu_min and page.style.ibu_max %}{{ page.style.ibu_min|floatformat:"0" }} - {{ page.style.ibu_max|floatformat:"0" }}{% endif %}</dd>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="row">
+                  <dt class="beer-style-guide__srm col-12">Color:</dt><dd class="col-12">{% if page.style.color_min and page.style.color_max %}<div class="text-center beer-style-guide__srm-gradient">{{ page.style.color_min|floatformat:"0" }} - {{ page.style.color_max|floatformat:"0" }} srm</div>{% endif %}</dd>
+                </div>
+              </div>
+            </dl>
+          </div>
+        </div>
+        <!-- recipe profile -->
+        <div class="card row mt-2">
+          <div class="card-header">
+            Recipe Statistics
+          </div>
+          <div class="card-body pb-0">
+            <dl class="row mb-0">
+              <div class="col-6">
+                <div class="row">
+                  <dt class="col-12">O.G.:</dt><dd class="col-12">{% if page.original_gravity %}{{ page.original_gravity|floatformat:"3" }}{% endif %}</dd>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="row">
+                  <dt class="col-12">F.G.:</dt><dd class="col-12">{% if page.final_gravity %}{{ page.final_gravity|floatformat:"3" }}{% endif %}</dd>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="row">
+                  <dt class="col-12">IBUs:</dt><dd class="col-12">{% if page.ibus_tinseth %}{{ page.ibus_tinseth|floatformat:"0" }}{% endif %}</dd>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="row">
+                  <dt class="beer-style-guide__srm col-12">Color:</dt><dd class="col-12">{% if page.calculate_color_srm %}<div class="text-center recipe-stats__srm"">{{ page.calculate_color_srm|floatformat:"0" }} srm</div>{% endif %}</dd>
+                </div>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </div>
     </div>
     <span class="clearfix"></span>
-    <h4>Beer Profile</h4>
+    <div>
+      <h2 name="recipe_details">{{ page.name }}</h2>
+      <h4>{{ page.style }}</h4>
+    </div>
     <table class="table mt-4">
       <thead class="table-active">
-        <tr><th scope="col">Type</th><th scope="col">Boil Volume</th><th scope="col">Volume in Fermenter</th><th scope="col">Boil Time</th><th scope="col">Efficiency</th><th>Color</th></tr>
+        <tr><th scope="col">Type</th><th scope="col">Boil Volume</th><th scope="col">Volume in Fermenter</th><th scope="col">Boil Time</th><th scope="col">Efficiency</th></tr>
       </thead>
       <tbody class="table-secondary">
         <tr>
@@ -113,7 +171,6 @@
           <td>{{ page.batch_size|floatformat:"2" }} {{ page.get_volume_units_display }}</td>
           <td>{{ page.boil_time }} Minutes</td>
           <td>{{ page.efficiency }}%</td>
-          <td class="beer-style-guide__srm"><div class="text-center recipe-stats__srm">{{ page.calculate_color_srm|floatformat:"0" }} srm</div></td>
         </tr>
       </tbody>
     </table>
