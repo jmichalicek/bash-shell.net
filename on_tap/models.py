@@ -23,6 +23,8 @@ from wagtail.snippets.edit_handlers import SnippetChooserPanel
 from wagtail.snippets.models import register_snippet
 from wagtail_blocks.fields import STANDARD_STREAMFIELD_FIELDS
 
+from django.utils import timezone
+
 
 class RecipeHop(Orderable, models.Model):
     """
@@ -701,11 +703,22 @@ class RecipePage(Page):
         return int(srm.quantize(Decimal('1')))
 
 
+class BatchStatus:
+    """
+    States a brew batch could be in
+    """
+
+    PLANNED = 'planned'
+    BREWING = 'brewing'  # why? It's only in this state for a few hours.
+    FERMENTING = 'fermenting'
+    COMPLETE = 'complete'
+
+    IN_PROGRESS_STATUSES = [PLANNED, BREWING, FERMENTING]
+
+
 class BatchLogPage(Page):
     """
     A homebrew batch intended for use within Wagtail
-
-    possibly should make a Page for this? Then it can act like a log
 
     TODO: what if I brew one batch, but split it across 2 fermenters with differences at that point?
     """
@@ -715,21 +728,21 @@ class BatchLogPage(Page):
     recipe_page = ParentalKey(
         'on_tap.RecipePage', on_delete=models.PROTECT, related_name='batch_log_pages', blank=False, null=False,
     )
-    is_on_tap = models.BooleanField(blank=True, default=False)
     status = models.CharField(
         max_length=25,
         blank=False,
         choices=(
-            ('planned', 'Planned'),
-            ('brewing', 'Brewing'),
-            ('fermenting', 'Fermenting'),
-            ('complete', 'Complete'),
+            (BatchStatus.PLANNED, 'Planned'),
+            (BatchStatus.BREWING, 'Brewing'),
+            (BatchStatus.FERMENTING, 'Fermenting'),
+            (BatchStatus.COMPLETE, 'Complete'),
         ),
-        default='planned',
+        default=BatchStatus.PLANNED,
     )
     brewed_date = models.DateField(blank=True, null=True, default=None)
     packaged_date = models.DateField(blank=True, null=True, default=None)
     on_tap_date = models.DateField(blank=True, null=True, default=None)
+    off_tap_date = models.DateField(blank=True, null=True, default=None)
     original_gravity = models.DecimalField(max_digits=4, decimal_places=3, blank=True, null=True, default=None)
     final_gravity = models.DecimalField(max_digits=4, decimal_places=3, blank=True, null=True, default=None)
     body = StreamField(STANDARD_STREAMFIELD_FIELDS, blank=True, null=True, default=None)
@@ -738,11 +751,11 @@ class BatchLogPage(Page):
 
     content_panels = Page.content_panels + [
         PageChooserPanel('recipe_page'),
-        FieldPanel('is_on_tap'),
         FieldPanel('status'),
         FieldPanel('brewed_date'),
         FieldPanel('packaged_date'),
         FieldPanel('on_tap_date'),
+        FieldPanel('off_tap_date'),
         MultiFieldPanel(
             [FieldRowPanel([FieldPanel('original_gravity'), FieldPanel('final_gravity'),]),],
             heading='Gravity Information',
@@ -754,23 +767,28 @@ class BatchLogPage(Page):
         index.SearchField('recipe_page'),
         index.SearchField('body', partial_match=True),
         index.RelatedFields('recipe_page', RecipePage.search_fields,),
-        index.FilterField('is_on_tap'),
         index.FilterField('status'),
         index.FilterField('brewed_date'),
         index.FilterField('packaged_date'),
         index.FilterField('on_tap_date'),
+        index.FilterField('off_tap_date'),
+        index.FilterField('original_gravity'),
+        index.FilterField('final_gravity'),
     ]
 
     # log multiple gravity checks?
 
     class Meta:
         indexes = [
-            models.Index(fields=['is_on_tap']),
+            models.Index(fields=['on_tap_date']),
+            models.Index(fields=['off_tap_date']),
+            models.Index(fields=['brewed_date']),
             models.Index(fields=['status']),
+            models.Index(fields=['status', 'brewed_date', 'on_tap_date', 'off_tap_date']),
         ]
 
-    def __str__(self):
-        return f'{self.recipe_page.name} brewed {self.brewed_date}'
+    def __str__(self) -> str:
+        return self.title
 
     def get_abv(self) -> Decimal:
         """
@@ -793,6 +811,7 @@ class OnTapPage(Page):
     updated_at = models.DateTimeField(auto_now=True)
 
     subpage_types = ['on_tap.RecipePageIndex', 'on_tap.BatchLogPage']
+
     # or reverse this and use parent_page_types on these other pages?
     # @classmethod
     # def can_create_at(cls, parent):
@@ -809,15 +828,37 @@ class OnTapPage(Page):
         Returns the currently on tap batches
         """
         currently_on_tap = BatchLogPage.objects.descendant_of(self).live()
-        currently_on_tap = currently_on_tap.filter(is_on_tap=True).order_by('-on_tap_date')
+        currently_on_tap = (
+            currently_on_tap.filter(on_tap_date__lte=timezone.now(), off_tap_date=None,)
+            .order_by('-on_tap_date')
+            .select_related('recipe_page')
+        )
         return currently_on_tap
 
-    def get_batches(self: 'OnTapPage') -> 'QuerySet[BatchLogPage]':
+    def get_upcoming_batches(self: 'OnTapPage') -> 'QuerySet[BatchLogPage]':
         """
-        Returns the batches which are not currently on tap ordered from newest to oldest.
+        Returns the batches which are planned and not currently on tap ordered from newest to oldest. These may be
+        just planned, fermenting, or packaged and just waiting to go on tap.
         """
         batches = BatchLogPage.objects.descendant_of(self).live()
-        batches = batches.filter(is_on_tap=False).order_by('-brewed_date', '-last_published_at')
+        batches = (
+            batches.filter(on_tap_date=None, status__in=BatchStatus.IN_PROGRESS_STATUSES)
+            .order_by(models.F('brewed_date').desc(nulls_last=True), '-last_published_at')
+            .select_related('recipe_page')
+        )
+        return batches
+
+    def get_past_batches(self: 'OnTapPage') -> 'QuerySet[BatchLogPage]':
+        """
+        Returns previous batches which are no longer on tap.
+        """
+        batches = BatchLogPage.objects.descendant_of(self).live()
+        batches = (
+            batches.filter(status=BatchStatus.COMPLETE)
+            .exclude(off_tap_date=None, on_tap_date=None)
+            .order_by('-brewed_date', '-last_published_at')
+            .select_related('recipe_page')
+        )
         return batches
 
     def paginate(self: 'OnTapPage', queryset: 'QuerySet', page_number: int = 1) -> (Paginator, 'QuerySet[Page]'):
@@ -839,13 +880,24 @@ class OnTapPage(Page):
         currently_on_tap = self.get_on_tap_batches()
 
         # paginate this
-        batches = self.get_batches()
-        page_number = request.GET.get('page', 1)
-        paginator, page = self.paginate(batches, page_number)
+        try:
+            page_number = int(request.GET.get('page', 1))
+        except Exception:
+            page_number = 1
+
+        if page_number == 1:
+            upcoming_batches = self.get_upcoming_batches()
+        else:
+            upcoming_batches = None
+        past_batches = self.get_past_batches()
+        paginator, page = self.paginate(past_batches, page_number)
         context.update(
             {
                 'currently_on_tap': currently_on_tap,
-                'batches': page.object_list,
+                'upcoming_batches': upcoming_batches,
+                'past_batches': page.object_list,
+                # not the page being viewed, but the paginator page. This is a confusing name in the template context.
+                # really need to review django pagination and clean up how I do these.
                 'page_obj': page,
                 'paginator': paginator,
             }

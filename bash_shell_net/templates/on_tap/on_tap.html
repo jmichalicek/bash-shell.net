@@ -7,7 +7,7 @@
   <h3 class="mt-4">On Tap Now</h3>
   <div class="row mt-3">
     {% for batch in currently_on_tap %}
-      <div class="col-4">
+      <div class="col-12 col-md-4">
         <div class="card">
           <div class="card-header text-center">
             <div class="w-100"><a href="{% pageurl batch.recipe_page %}">{{ batch.recipe_page.name }}</a></div>
@@ -26,7 +26,42 @@
     {% endfor %}
   </div>
 
-  <h3 class="mt-4">Upcoming and Past Brews</h3>
+  {% if upcoming_batches is not None %}
+    {% comment %}
+      On further pages we just show the currently on tap and past batches for now.
+      I might get fancy and paginate these lists and show both all the time with two separate page params.
+    {% endcomment %}
+    <h3 class="mt-4">Coming Soon</h3>
+    <table class="table table-striped table-dark">
+      <thead class="thead-dark">
+        <tr>
+          <th>Recipe Name</th>
+          <th>Style</th>
+          <th>Status</th>
+          <th>Brewed Date</th>
+          <th>Packaged Date</th>
+          <th>On Tap Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for batch in upcoming_batches %}
+          <tr>
+            <td>
+              <a href="{% pageurl batch.recipe_page %}">{{ batch.recipe_page.name }}</a>
+              {% if batch.status != 'planned' %} (<a href="{% pageurl batch %}">Log</a>){% endif %}
+            </td>
+            <td>{{ batch.recipe_page.style }}</td>
+            <td>{{ batch.get_status_display }}</td>
+            <td>{{ batch.brewed_date }}</td>
+            <td>{{ batch.packaged_date|default:"" }}</td>
+            <td>{{ batch.on_tap_date|default:"" }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+
+  <h3 class="mt-4">Past Brews</h3>
   <table class="table table-striped table-dark">
     <thead class="thead-dark">
       <tr>
@@ -34,12 +69,16 @@
       </tr>
     </thead>
     <tbody>
-      {% for batch in batches %}
+      {% for batch in past_batches %}
         <tr>
           <td><a href="{% pageurl batch.recipe_page %}">{{ batch.recipe_page.name }}</a> (<a href="{% pageurl batch %}">Log</a>)</td><td>{{ batch.recipe_page.style }}</td><td>{{ batch.get_status_display }}</td><td>{{ batch.brewed_date }}</td><td>{{ batch.packaged_date|default:"" }}</td><td>{{ batch.on_tap_date|default:"" }}</td>
         </tr>
       {% endfor %}
     </tbody>
   </table>
+  <nav class="blog-pagination">
+    <a class="btn btn-outline-primary {% if not page_obj.has_previous %}disabled{% endif %}" href="{% if page_obj.has_previous %}{% pageurl page %}?page={{ page_obj.previous_page_number }}{% else %}#{% endif %}">Newer Brews</a>
+    <a class="btn btn-outline-primary {% if not page_obj.has_next %}disabled{% endif %}" href="{% if page_obj.has_next %}{% pageurl page %}?page={{ page_obj.next_page_number }}{% else %}#{% endif %}">Older Brews</a>
+  </nav>
   <hr class="mt-4">
 {% endblock primary %}

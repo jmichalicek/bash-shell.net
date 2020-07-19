@@ -57,7 +57,7 @@ def srm_to_hex(srm: Union[int, str]) -> str:
         40: '#36080A',
     }
     try:
-        return mapping.get(int(srm))
+        return mapping.get(int(srm), mapping[40])
     except Exception as e:
         logger.exception(e)
 
