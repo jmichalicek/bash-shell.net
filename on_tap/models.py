@@ -6,6 +6,7 @@ from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db import models
 from django.db.models.query import QuerySet
 from django.http import HttpRequest, HttpResponse
+from django.utils import timezone
 
 from modelcluster.fields import ParentalKey
 from wagtail.admin.edit_handlers import (
@@ -16,14 +17,13 @@ from wagtail.admin.edit_handlers import (
     PageChooserPanel,
     StreamFieldPanel,
 )
+from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 from wagtail.core.fields import RichTextField, StreamField
 from wagtail.core.models import Orderable, Page
 from wagtail.search import index
 from wagtail.snippets.edit_handlers import SnippetChooserPanel
 from wagtail.snippets.models import register_snippet
 from wagtail_blocks.fields import STANDARD_STREAMFIELD_FIELDS
-
-from django.utils import timezone
 
 
 class RecipeHop(Orderable, models.Model):
@@ -502,12 +502,14 @@ class VolumeUnit:
     QUART = 'quart'
 
 
-class RecipePage(Page):
+class RecipePage(RoutablePageMixin, Page):
     """
     Page for a beer recipe
 
     Most of the details come from http://www.beerxml.com/beerxml.htm
     """
+
+    # Tempted to move much of this to a snippet and then the page could just include the snippet.
 
     template = 'on_tap/recipe_detail.html'
     RECIPE_TYPE_CHOICES = (
@@ -664,6 +666,8 @@ class RecipePage(Page):
         index.FilterField('recipe_type'),
     ]
 
+    subpage_types = []
+
     class Meta:
         verbose_name = 'Homebrew Recipe Page'
         ordering = ('name',)
@@ -716,7 +720,7 @@ class BatchStatus:
     IN_PROGRESS_STATUSES = [PLANNED, BREWING, FERMENTING]
 
 
-class BatchLogPage(Page):
+class BatchLogPage(RoutablePageMixin, Page):
     """
     A homebrew batch intended for use within Wagtail
 
@@ -777,6 +781,7 @@ class BatchLogPage(Page):
     ]
 
     # log multiple gravity checks?
+    subpage_types = []
 
     class Meta:
         indexes = [
@@ -803,14 +808,18 @@ class OnTapPage(Page):
     """
 
     # TODO: wondering about having per use OnTapPage and an index of OnTapPages - I do not need that currently
-    # but seems like a generally interesting idea.
+    # but seems like a generally interesting idea. Should I make this limit to 1 or 1 per parent?
+    # For now, as I am the only user, I will keep this simple.
 
     template = 'on_tap/on_tap.html'
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    subpage_types = ['on_tap.RecipePageIndex', 'on_tap.BatchLogPage']
+    subpage_types = [
+        'on_tap.RecipeIndexPage',
+        'on_tap.BatchLogIndexPage',
+    ]
 
     # or reverse this and use parent_page_types on these other pages?
     # @classmethod
@@ -905,7 +914,7 @@ class OnTapPage(Page):
         return context
 
 
-class RecipePageIndex(Page):
+class RecipeIndexPage(Page):
     """
     Root index for recipes
     """
@@ -918,4 +927,23 @@ class RecipePageIndex(Page):
     subpage_types = ['on_tap.RecipePage']
 
     def children(self: 'RecipeIndexPage') -> 'QuerySet[RecipePage]':
+        return self.get_children().specific().live()
+
+
+class BatchLogIndexPage(Page):
+    """
+    Root index for batches.
+
+    This really only exists so that I can have /on-tap/recipes/foo urls. Other options feel like I am fighting the
+    wagtail framework too much.
+    """
+
+    template = 'on_tap/recipe_index.html'
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    subpage_types = ['on_tap.BatchLogPage']
+
+    def children(self: 'BatchLogIndexPage') -> 'QuerySet[BatchLogPage]':
         return self.get_children().specific().live()
