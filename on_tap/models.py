@@ -864,7 +864,7 @@ class OnTapPage(Page):
         batches = BatchLogPage.objects.descendant_of(self).live()
         batches = (
             batches.filter(status=BatchStatus.COMPLETE)
-            .exclude(off_tap_date=None, on_tap_date=None)
+            .exclude(off_tap_date=None)
             .order_by('-brewed_date', '-last_published_at')
             .select_related('recipe_page')
         )
