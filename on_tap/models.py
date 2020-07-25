@@ -248,93 +248,98 @@ class RecipeYeast(Orderable, models.Model):
     def __str__(self) -> str:
         return self.name
 
-    class RecipeMiscIngredient(Orderable, models.Model):
-        """
-        The term "misc" encompasses all non-fermentable miscellaneous ingredients that are not hops or yeast and do not
-        significantly change the gravity of the beer.  For example: spices, clarifying agents, water treatments, etc…
 
-        Like RecipeHop and RecipeFermentable - a good candidate to have an FK back to a base Yeast
-        """
+class RecipeMiscIngredient(Orderable, models.Model):
+    """
+    The term "misc" encompasses all non-fermentable miscellaneous ingredients that are not hops or yeast and do not
+    significantly change the gravity of the beer.  For example: spices, clarifying agents, water treatments, etc…
 
-        UNIT_CHOICES = (
-            ('Weight', (('g', 'Grams'), ('oz', 'Ounces'), ('kg', 'Kilograms'), ('lb', 'Pounds'),),),
+    Like RecipeHop and RecipeFermentable - a good candidate to have an FK back to a base Yeast
+    """
+
+    UNIT_CHOICES = (
+        ('Weight', (('g', 'Grams'), ('oz', 'Ounces'), ('kg', 'Kilograms'), ('lb', 'Pounds'),),),
+        (
+            'Volume',
             (
-                'Volume',
-                (
-                    ('tsp', 'Teaspoons'),
-                    ('tbsp', 'Tablespoons'),
-                    ('fl_oz', 'Fluid Oz.'),
-                    # cups?
-                    ('l', 'Liters'),
-                    ('gal', 'Gallons'),
-                ),
+                ('tsp', 'Teaspoons'),
+                ('tbsp', 'Tablespoons'),
+                ('fl_oz', 'Fluid Oz.'),
+                # cups?
+                ('l', 'Liters'),
+                ('gal', 'Gallons'),
             ),
-        )
+        ),
+    )
 
-        TYPE_CHOICES = (
-            ('spice', 'Spice'),
-            ('fining', 'Fining'),
-            ('water_agent', 'Water Agent'),
-            ('herb', 'Herb'),
-            ('flavor', 'Flavor'),
-            ('other', 'Other'),
-        )
+    TYPE_CHOICES = (
+        ('spice', 'Spice'),
+        ('fining', 'Fining'),
+        ('water_agent', 'Water Agent'),
+        ('herb', 'Herb'),
+        ('flavor', 'Flavor'),
+        ('other', 'Other'),
+    )
 
-        USE_STEP_CHOICES = (
-            ('boil', 'Boil'),
-            ('mash', 'Mash'),  # boil 'em, mash 'em, stick 'em in a stew.
-            ('primary', 'Primary'),
-            ('secondary', 'Secondary'),
-            ('bottling', 'Bottling'),
-        )
-        recipe_page = ParentalKey(
-            'on_tap.RecipePage',
-            on_delete=models.CASCADE,
-            related_name='miscellaneous_ingredients',
-            blank=False,
-            null=False,
-        )
-        amount = models.DecimalField(max_digits=6, decimal_places=3, blank=True, null=True, default=None)
-        amount_units = models.CharField(max_length=5, choices=UNIT_CHOICES, blank=False)
-        use_time = models.IntegerField(
-            blank=False, null=False, help_text='Amount of time the misc was boiled, steeped, mashed, etc in minutes.'
-        )
+    USE_STEP_CHOICES = (
+        ('boil', 'Boil'),
+        ('mash', 'Mash'),  # boil 'em, mash 'em, stick 'em in a stew.
+        ('primary', 'Primary'),
+        ('secondary', 'Secondary'),
+        ('bottling', 'Bottling'),
+    )
+    recipe_page = ParentalKey(
+        'on_tap.RecipePage',
+        on_delete=models.CASCADE,
+        related_name='miscellaneous_ingredients',
+        blank=False,
+        null=False,
+    )
+    amount = models.DecimalField(max_digits=6, decimal_places=3, blank=True, null=True, default=None)
+    amount_units = models.CharField(max_length=5, choices=UNIT_CHOICES, blank=False)
+    use_time = models.IntegerField(
+        blank=False, null=False, help_text='Amount of time the misc was boiled, steeped, mashed, etc in minutes.'
+    )
 
-        use_for = RichTextField(
-            blank=True,
-            default='',
-            features=['superscript', 'subscript', 'strikethrough', 'bold', 'italic', 'ul', 'ol', 'link'],
-            help_text='Short description of what the ingredient is used for in text',
-        )
+    use_for = RichTextField(
+        blank=True,
+        default='',
+        features=['superscript', 'subscript', 'strikethrough', 'bold', 'italic', 'ul', 'ol', 'link'],
+        help_text='Short description of what the ingredient is used for in text',
+    )
 
-        notes = RichTextField(
-            blank=True,
-            default='',
-            features=['superscript', 'subscript', 'strikethrough', 'bold', 'italic', 'ul', 'ol', 'link'],
-            help_text='Detailed notes on the item including usage. May be multiline.',
-        )
+    notes = RichTextField(
+        blank=True,
+        default='',
+        features=['superscript', 'subscript', 'strikethrough', 'bold', 'italic', 'ul', 'ol', 'link'],
+        help_text='Detailed notes on the item including usage. May be multiline.',
+    )
 
-        # Everything below here would likely be good on an FK'd MiscIngredient model
-        # maybe use_step belongs per recipe?
-        name = CICharField(max_length=100, blank=False)
-        type = models.CharField(max_length=20, choices=TYPE_CHOICES, blank=False)
-        use_step = models.CharField(max_length=20, choices=USE_STEP_CHOICES, blank=False)
-        created_at = models.DateTimeField(auto_now_add=True)
-        updated_at = models.DateTimeField(auto_now=True)
+    # Everything below here would likely be good on an FK'd MiscIngredient model
+    # maybe use_step belongs per recipe?
+    name = CICharField(max_length=100, blank=False)
+    type = models.CharField(max_length=20, choices=TYPE_CHOICES, blank=False)
+    use_step = models.CharField(max_length=20, choices=USE_STEP_CHOICES, blank=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
-        panels = [
-            FieldPanel('name'),
-            FieldPanel('type'),
-            FieldPanel('amount'),
-            FieldPanel('amount_units'),
-            FieldPanel('use_step'),
-            FieldPanel('use_time'),
-            FieldPanel('use_for'),
-            FieldPanel('notes'),
-        ]
+    panels = [
+        FieldPanel('name'),
+        FieldPanel('type'),
+        FieldPanel('amount'),
+        FieldPanel('amount_units'),
+        FieldPanel('use_step'),
+        FieldPanel('use_time'),
+        FieldPanel('use_for'),
+        FieldPanel('notes'),
+    ]
 
-        def __str__(self) -> str:
-            return self.name
+    class Meta:
+        # sort_order is on Orderable
+        ordering = ('recipe_page', 'sort_order')
+
+    def __str__(self) -> str:
+        return self.name
 
 
 @register_snippet
@@ -669,8 +674,6 @@ class RecipePage(RoutablePageMixin, Page):
     subpage_types = []
 
     class Meta:
-        verbose_name = 'Homebrew Recipe Page'
-        ordering = ('name',)
         indexes = [
             models.Index(fields=['name']),
             models.Index(fields=['recipe_type']),
