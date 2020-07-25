@@ -1,7 +1,7 @@
 - name: tests
   # could SKIP this on master because our rules say that it should run before we can merge anyway.
   service: cms
-  command: /bin/bash -ic 'python manage.py test'
+  command: bash ./wait-for-it.sh database:5432 -t 60 -- python manage.py test
 - name: Push Latest Tag To Repository
   service: cms
   type: push

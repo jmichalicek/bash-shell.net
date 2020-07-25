@@ -34,7 +34,8 @@ RUN DJANGO_SETTINGS_MODULE=bash_shell_net.settings.production python manage.py c
 
 FROM python:3.8-slim-buster AS prod
 RUN useradd -ms /bin/bash -d /django django
-COPY --from=build /django/bash-shell.net /django/bash-shell.net
+COPY --chown=django --from=build /django/bash-shell.net /django/bash-shell.net
+USER django
 ENV DJANGO_SETTINGS_MODULE=bash_shell_net.settings.production HOME=/django PATH=/django/bash-shell.net/.venv/bin:/django/.local/bin:$PATH LC_ALL=C.UTF-8 LANG=C.UTF-8 PYTHONIOENCODING=utf-8
 WORKDIR /django/bash-shell.net/
 EXPOSE 8000
