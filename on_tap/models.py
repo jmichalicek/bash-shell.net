@@ -838,7 +838,8 @@ class OnTapPage(Page):
         """
         currently_on_tap = BatchLogPage.objects.descendant_of(self).live()
         currently_on_tap = (
-            currently_on_tap.filter(on_tap_date__lte=timezone.now(), off_tap_date=None,)
+            currently_on_tap.filter(on_tap_date__lte=timezone.now(), off_tap_date=None, status=BatchStatus.COMPLETE)
+            .exclude(on_tap_date=None)
             .order_by('-on_tap_date')
             .select_related('recipe_page')
         )
@@ -911,6 +912,7 @@ class OnTapPage(Page):
                 'paginator': paginator,
             }
         )
+
         return context
 
 
