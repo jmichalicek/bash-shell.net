@@ -1,0 +1,490 @@
+[
+{
+  "model": "accounts.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$180000$AlRq4DFzQbjJ$FOfa6U+/cB5F8A9pVUlwqCqKAuPCqmQx5RDAA6BOjOE=",
+    "last_login": "2020-07-24T21:20:45.783Z",
+    "is_superuser": true,
+    "email": "user@example.org",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2020-07-24T21:20:22.431Z",
+    "username": "user@example.org",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "wagtailcore.page",
+  "pk": 1,
+  "fields": {
+    "path": "0001",
+    "depth": 1,
+    "numchild": 1,
+    "title": "Root",
+    "draft_title": "Root",
+    "slug": "root",
+    "content_type": [
+      "wagtailcore",
+      "page"
+    ],
+    "live": true,
+    "has_unpublished_changes": false,
+    "url_path": "/",
+    "owner": null,
+    "seo_title": "",
+    "show_in_menus": false,
+    "search_description": "",
+    "go_live_at": null,
+    "expire_at": null,
+    "expired": false,
+    "locked": false,
+    "locked_at": null,
+    "locked_by": null,
+    "first_published_at": null,
+    "last_published_at": null,
+    "latest_revision_created_at": null,
+    "live_revision": null
+  }
+},
+{
+  "model": "wagtailcore.page",
+  "pk": 2,
+  "fields": {
+    "path": "00010001",
+    "depth": 2,
+    "numchild": 1,
+    "title": "Welcome to your new Wagtail site!",
+    "draft_title": "Welcome to your new Wagtail site!",
+    "slug": "home",
+    "content_type": [
+      "wagtailcore",
+      "page"
+    ],
+    "live": true,
+    "has_unpublished_changes": false,
+    "url_path": "/home/",
+    "owner": null,
+    "seo_title": "",
+    "show_in_menus": false,
+    "search_description": "",
+    "go_live_at": null,
+    "expire_at": null,
+    "expired": false,
+    "locked": false,
+    "locked_at": null,
+    "locked_by": null,
+    "first_published_at": null,
+    "last_published_at": null,
+    "latest_revision_created_at": null,
+    "live_revision": null
+  }
+},
+{
+  "model": "wagtailcore.page",
+  "pk": 3,
+  "fields": {
+    "path": "000100010001",
+    "depth": 3,
+    "numchild": 2,
+    "title": "On Tap",
+    "draft_title": "On Tap",
+    "slug": "on-tap",
+    "content_type": [
+      "on_tap",
+      "ontappage"
+    ],
+    "live": false,
+    "has_unpublished_changes": true,
+    "url_path": "/home/on-tap/",
+    "owner": [
+      "user@example.org"
+    ],
+    "seo_title": "",
+    "show_in_menus": false,
+    "search_description": "",
+    "go_live_at": null,
+    "expire_at": null,
+    "expired": false,
+    "locked": false,
+    "locked_at": null,
+    "locked_by": null,
+    "first_published_at": null,
+    "last_published_at": null,
+    "latest_revision_created_at": "2020-07-24T21:21:35.141Z",
+    "live_revision": null
+  }
+},
+{
+  "model": "wagtailcore.page",
+  "pk": 4,
+  "fields": {
+    "path": "0001000100010001",
+    "depth": 4,
+    "numchild": 1,
+    "title": "Recipes",
+    "draft_title": "Recipes",
+    "slug": "recipes",
+    "content_type": [
+      "on_tap",
+      "recipeindexpage"
+    ],
+    "live": false,
+    "has_unpublished_changes": true,
+    "url_path": "/home/on-tap/recipes/",
+    "owner": [
+      "user@example.org"
+    ],
+    "seo_title": "",
+    "show_in_menus": false,
+    "search_description": "",
+    "go_live_at": null,
+    "expire_at": null,
+    "expired": false,
+    "locked": false,
+    "locked_at": null,
+    "locked_by": null,
+    "first_published_at": null,
+    "last_published_at": null,
+    "latest_revision_created_at": "2020-07-24T21:21:59.713Z",
+    "live_revision": null
+  }
+},
+{
+  "model": "wagtailcore.page",
+  "pk": 5,
+  "fields": {
+    "path": "0001000100010002",
+    "depth": 4,
+    "numchild": 0,
+    "title": "Batches",
+    "draft_title": "Batches",
+    "slug": "batches",
+    "content_type": [
+      "on_tap",
+      "batchlogindexpage"
+    ],
+    "live": false,
+    "has_unpublished_changes": true,
+    "url_path": "/home/on-tap/batches/",
+    "owner": [
+      "user@example.org"
+    ],
+    "seo_title": "",
+    "show_in_menus": false,
+    "search_description": "",
+    "go_live_at": null,
+    "expire_at": null,
+    "expired": false,
+    "locked": false,
+    "locked_at": null,
+    "locked_by": null,
+    "first_published_at": null,
+    "last_published_at": null,
+    "latest_revision_created_at": "2020-07-24T21:22:19.213Z",
+    "live_revision": null
+  }
+},
+{
+  "model": "wagtailcore.page",
+  "pk": 6,
+  "fields": {
+    "path": "00010001000100010001",
+    "depth": 5,
+    "numchild": 0,
+    "title": "Porter",
+    "draft_title": "Porter",
+    "slug": "porter",
+    "content_type": [
+      "on_tap",
+      "recipepage"
+    ],
+    "live": false,
+    "has_unpublished_changes": true,
+    "url_path": "/home/on-tap/recipes/porter/",
+    "owner": [
+      "user@example.org"
+    ],
+    "seo_title": "",
+    "show_in_menus": false,
+    "search_description": "",
+    "go_live_at": null,
+    "expire_at": null,
+    "expired": false,
+    "locked": false,
+    "locked_at": null,
+    "locked_by": null,
+    "first_published_at": null,
+    "last_published_at": null,
+    "latest_revision_created_at": "2020-07-25T16:40:45.255Z",
+    "live_revision": null
+  }
+},
+{
+  "model": "wagtailcore.pagerevision",
+  "pk": 1,
+  "fields": {
+    "page": 3,
+    "submitted_for_moderation": false,
+    "created_at": "2020-07-24T21:21:35.141Z",
+    "user": [
+      "user@example.org"
+    ],
+    "content_json": "{\"pk\": 3, \"path\": \"000100010001\", \"depth\": 3, \"numchild\": 0, \"title\": \"On Tap\", \"draft_title\": \"On Tap\", \"slug\": \"tap\", \"content_type\": 44, \"live\": false, \"has_unpublished_changes\": false, \"url_path\": \"/home/on-tap/\", \"owner\": 1, \"seo_title\": \"\", \"show_in_menus\": false, \"search_description\": \"\", \"go_live_at\": null, \"expire_at\": null, \"expired\": false, \"locked\": false, \"locked_at\": null, \"locked_by\": null, \"first_published_at\": null, \"last_published_at\": null, \"latest_revision_created_at\": null, \"live_revision\": null, \"created_at\": \"2020-07-24T21:21:35.125Z\", \"updated_at\": \"2020-07-24T21:21:35.140Z\"}",
+    "approved_go_live_at": null
+  }
+},
+{
+  "model": "wagtailcore.pagerevision",
+  "pk": 2,
+  "fields": {
+    "page": 4,
+    "submitted_for_moderation": false,
+    "created_at": "2020-07-24T21:21:59.713Z",
+    "user": [
+      "user@example.org"
+    ],
+    "content_json": "{\"pk\": 4, \"path\": \"0001000100010001\", \"depth\": 4, \"numchild\": 0, \"title\": \"Recipes\", \"draft_title\": \"Recipes\", \"slug\": \"recipes\", \"content_type\": 51, \"live\": false, \"has_unpublished_changes\": false, \"url_path\": \"/home/on-tap/recipes/\", \"owner\": 1, \"seo_title\": \"\", \"show_in_menus\": false, \"search_description\": \"\", \"go_live_at\": null, \"expire_at\": null, \"expired\": false, \"locked\": false, \"locked_at\": null, \"locked_by\": null, \"first_published_at\": null, \"last_published_at\": null, \"latest_revision_created_at\": null, \"live_revision\": null, \"created_at\": \"2020-07-24T21:21:59.700Z\", \"updated_at\": \"2020-07-24T21:21:59.713Z\"}",
+    "approved_go_live_at": null
+  }
+},
+{
+  "model": "wagtailcore.pagerevision",
+  "pk": 3,
+  "fields": {
+    "page": 5,
+    "submitted_for_moderation": false,
+    "created_at": "2020-07-24T21:22:19.213Z",
+    "user": [
+      "user@example.org"
+    ],
+    "content_json": "{\"pk\": 5, \"path\": \"0001000100010002\", \"depth\": 4, \"numchild\": 0, \"title\": \"Batches\", \"draft_title\": \"Batches\", \"slug\": \"batches\", \"content_type\": 50, \"live\": false, \"has_unpublished_changes\": false, \"url_path\": \"/home/on-tap/batches/\", \"owner\": 1, \"seo_title\": \"\", \"show_in_menus\": false, \"search_description\": \"\", \"go_live_at\": null, \"expire_at\": null, \"expired\": false, \"locked\": false, \"locked_at\": null, \"locked_by\": null, \"first_published_at\": null, \"last_published_at\": null, \"latest_revision_created_at\": null, \"live_revision\": null, \"created_at\": \"2020-07-24T21:22:19.201Z\", \"updated_at\": \"2020-07-24T21:22:19.213Z\"}",
+    "approved_go_live_at": null
+  }
+},
+{
+  "model": "wagtailcore.pagerevision",
+  "pk": 4,
+  "fields": {
+    "page": 6,
+    "submitted_for_moderation": false,
+    "created_at": "2020-07-25T16:40:45.255Z",
+    "user": [
+      "user@example.org"
+    ],
+    "content_json": "{\"pk\": 6, \"path\": \"00010001000100010001\", \"depth\": 5, \"numchild\": 0, \"title\": \"Porter\", \"draft_title\": \"Porter\", \"slug\": \"porter\", \"content_type\": 45, \"live\": false, \"has_unpublished_changes\": false, \"url_path\": \"/home/on-tap/recipes/porter/\", \"owner\": 1, \"seo_title\": \"\", \"show_in_menus\": false, \"search_description\": \"\", \"go_live_at\": null, \"expire_at\": null, \"expired\": false, \"locked\": false, \"locked_at\": null, \"locked_by\": null, \"first_published_at\": null, \"last_published_at\": null, \"latest_revision_created_at\": null, \"live_revision\": null, \"name\": \"Brown Julien\", \"short_description\": \"A porter recipe\", \"recipe_type\": \"all_grain\", \"style\": 1, \"brewer\": \"Justin Michalicek\", \"assistant_brewer\": \"\", \"volume_units\": \"gal\", \"batch_size\": \"2.5\", \"boil_size\": \"3.6\", \"boil_time\": 60, \"efficiency\": 75, \"boil_gravity\": null, \"original_gravity\": \"1.050\", \"final_gravity\": \"1.013\", \"ibus_tinseth\": \"25\", \"notes\": \"\", \"introduction\": \"[{\\\"type\\\": \\\"paragraph\\\", \\\"value\\\": \\\"<p>This is a recipe for a porter.</p>\\\", \\\"id\\\": \\\"7c5aca59-2926-45d1-ac8b-fcdecd443f34\\\"}]\", \"conclusion\": \"[{\\\"type\\\": \\\"paragraph\\\", \\\"value\\\": \\\"<p>And now after making that, you have beer.</p>\\\", \\\"id\\\": \\\"c578ceff-a2b2-4ed2-9744-23b67c9dec4a\\\"}]\", \"created_at\": \"2020-07-25T16:40:45.218Z\", \"updated_at\": \"2020-07-25T16:40:45.246Z\", \"hops\": [{\"pk\": 1, \"sort_order\": 0, \"recipe_page\": 6, \"name\": \"Fuggles\", \"alpha_acid_percent\": \"5.000\", \"amount\": \"0.70\", \"amount_units\": \"oz\", \"use_step\": \"boil\", \"use_time\": 60, \"notes\": \"\", \"form\": \"pellet\", \"beta_acid_percent\": null, \"created_at\": \"2020-07-25T16:40:45.224Z\", \"updated_at\": \"2020-07-25T16:40:45.247Z\"}], \"fermentables\": [{\"pk\": 1, \"sort_order\": 0, \"recipe_page\": 6, \"amount\": \"3.600\", \"amount_units\": \"lb\", \"notes\": \"\", \"name\": \"Crisp Marris Otter\", \"type\": \"grain\", \"color\": \"3.000\", \"created_at\": \"2020-07-25T16:40:45.227Z\", \"updated_at\": \"2020-07-25T16:40:45.249Z\"}, {\"pk\": 2, \"sort_order\": 1, \"recipe_page\": 6, \"amount\": \"8.000\", \"amount_units\": \"oz\", \"notes\": \"\", \"name\": \"Crisp Brown Malt\", \"type\": \"grain\", \"color\": \"85.000\", \"created_at\": \"2020-07-25T16:40:45.228Z\", \"updated_at\": \"2020-07-25T16:40:45.249Z\"}, {\"pk\": 3, \"sort_order\": 2, \"recipe_page\": 6, \"amount\": \"5.000\", \"amount_units\": \"oz\", \"notes\": \"\", \"name\": \"Briess Caramel 40\", \"type\": \"grain\", \"color\": \"40.000\", \"created_at\": \"2020-07-25T16:40:45.229Z\", \"updated_at\": \"2020-07-25T16:40:45.249Z\"}, {\"pk\": 4, \"sort_order\": 3, \"recipe_page\": 6, \"amount\": \"3.000\", \"amount_units\": \"oz\", \"notes\": \"\", \"name\": \"Briess Caramel 80\", \"type\": \"grain\", \"color\": \"80.000\", \"created_at\": \"2020-07-25T16:40:45.229Z\", \"updated_at\": \"2020-07-25T16:40:45.249Z\"}, {\"pk\": 5, \"sort_order\": 4, \"recipe_page\": 6, \"amount\": \"2.000\", \"amount_units\": \"oz\", \"notes\": \"\", \"name\": \"Crisp Chocolate\", \"type\": \"grain\", \"color\": \"450.000\", \"created_at\": \"2020-07-25T16:40:45.230Z\", \"updated_at\": \"2020-07-25T16:40:45.249Z\"}, {\"pk\": 6, \"sort_order\": 5, \"recipe_page\": 6, \"amount\": \"1.500\", \"amount_units\": \"oz\", \"notes\": \"\", \"name\": \"Crisp Pale Chocolate\", \"type\": \"grain\", \"color\": \"225.000\", \"created_at\": \"2020-07-25T16:40:45.230Z\", \"updated_at\": \"2020-07-25T16:40:45.249Z\"}], \"miscellaneous_ingredients\": [], \"yeasts\": [{\"pk\": 1, \"sort_order\": 0, \"recipe_page\": 6, \"name\": \"SafAle S-04\", \"amount\": \"0.388\", \"amount_units\": \"oz\", \"notes\": \"\", \"add_to_secondary\": false, \"yeast_type\": \"dry\", \"created_at\": \"2020-07-25T16:40:45.233Z\", \"updated_at\": \"2020-07-25T16:40:45.252Z\"}], \"batch_log_pages\": []}",
+    "approved_go_live_at": null
+  }
+},
+{
+  "model": "on_tap.recipehop",
+  "pk": 1,
+  "fields": {
+    "sort_order": 0,
+    "recipe_page": 6,
+    "name": "Fuggles",
+    "alpha_acid_percent": "5.000",
+    "amount": "0.70",
+    "amount_units": "oz",
+    "use_step": "boil",
+    "use_time": 60,
+    "notes": "",
+    "form": "pellet",
+    "beta_acid_percent": null,
+    "created_at": "2020-07-25T16:40:45.224Z",
+    "updated_at": "2020-07-25T16:40:45.224Z"
+  }
+},
+{
+  "model": "on_tap.recipefermentable",
+  "pk": 1,
+  "fields": {
+    "sort_order": 0,
+    "recipe_page": 6,
+    "amount": "3.600",
+    "amount_units": "lb",
+    "notes": "",
+    "name": "Crisp Marris Otter",
+    "type": "grain",
+    "color": "3.000",
+    "created_at": "2020-07-25T16:40:45.227Z",
+    "updated_at": "2020-07-25T16:40:45.227Z"
+  }
+},
+{
+  "model": "on_tap.recipefermentable",
+  "pk": 2,
+  "fields": {
+    "sort_order": 1,
+    "recipe_page": 6,
+    "amount": "8.000",
+    "amount_units": "oz",
+    "notes": "",
+    "name": "Crisp Brown Malt",
+    "type": "grain",
+    "color": "85.000",
+    "created_at": "2020-07-25T16:40:45.228Z",
+    "updated_at": "2020-07-25T16:40:45.228Z"
+  }
+},
+{
+  "model": "on_tap.recipefermentable",
+  "pk": 3,
+  "fields": {
+    "sort_order": 2,
+    "recipe_page": 6,
+    "amount": "5.000",
+    "amount_units": "oz",
+    "notes": "",
+    "name": "Briess Caramel 40",
+    "type": "grain",
+    "color": "40.000",
+    "created_at": "2020-07-25T16:40:45.229Z",
+    "updated_at": "2020-07-25T16:40:45.229Z"
+  }
+},
+{
+  "model": "on_tap.recipefermentable",
+  "pk": 4,
+  "fields": {
+    "sort_order": 3,
+    "recipe_page": 6,
+    "amount": "3.000",
+    "amount_units": "oz",
+    "notes": "",
+    "name": "Briess Caramel 80",
+    "type": "grain",
+    "color": "80.000",
+    "created_at": "2020-07-25T16:40:45.229Z",
+    "updated_at": "2020-07-25T16:40:45.229Z"
+  }
+},
+{
+  "model": "on_tap.recipefermentable",
+  "pk": 5,
+  "fields": {
+    "sort_order": 4,
+    "recipe_page": 6,
+    "amount": "2.000",
+    "amount_units": "oz",
+    "notes": "",
+    "name": "Crisp Chocolate",
+    "type": "grain",
+    "color": "450.000",
+    "created_at": "2020-07-25T16:40:45.230Z",
+    "updated_at": "2020-07-25T16:40:45.230Z"
+  }
+},
+{
+  "model": "on_tap.recipefermentable",
+  "pk": 6,
+  "fields": {
+    "sort_order": 5,
+    "recipe_page": 6,
+    "amount": "1.500",
+    "amount_units": "oz",
+    "notes": "",
+    "name": "Crisp Pale Chocolate",
+    "type": "grain",
+    "color": "225.000",
+    "created_at": "2020-07-25T16:40:45.230Z",
+    "updated_at": "2020-07-25T16:40:45.230Z"
+  }
+},
+{
+  "model": "on_tap.recipeyeast",
+  "pk": 1,
+  "fields": {
+    "sort_order": 0,
+    "recipe_page": 6,
+    "name": "SafAle S-04",
+    "amount": "0.388",
+    "amount_units": "oz",
+    "notes": "",
+    "add_to_secondary": false,
+    "yeast_type": "dry",
+    "created_at": "2020-07-25T16:40:45.233Z",
+    "updated_at": "2020-07-25T16:40:45.233Z"
+  }
+},
+{
+  "model": "on_tap.beveragestyle",
+  "pk": 1,
+  "fields": {
+    "name": "English Porter",
+    "style_guide": "BJCP",
+    "category": "Brown Britis Beer",
+    "category_number": 13,
+    "style_letter": "C",
+    "beverage_type": "ale",
+    "original_gravity_min": "1.040",
+    "original_gravity_max": "1.052",
+    "final_gravity_min": "1.008",
+    "final_gravity_max": "1.014",
+    "ibu_min": "18.00",
+    "ibu_max": "35.00",
+    "color_min": "20.00",
+    "color_max": "30.00",
+    "abv_min": "4.00",
+    "abv_max": "5.40",
+    "carbonation_min": null,
+    "carbonation_max": null,
+    "notes": "",
+    "created_at": "2020-07-25T16:25:01.066Z",
+    "updated_at": "2020-07-25T16:25:01.066Z"
+  }
+},
+{
+  "model": "on_tap.recipepage",
+  "pk": 6,
+  "fields": {
+    "name": "Brown Julien",
+    "short_description": "A porter recipe",
+    "recipe_type": "all_grain",
+    "style": 1,
+    "brewer": "Justin Michalicek",
+    "assistant_brewer": "",
+    "volume_units": "gal",
+    "batch_size": "2.50",
+    "boil_size": "3.60",
+    "boil_time": 60,
+    "efficiency": 75,
+    "boil_gravity": null,
+    "original_gravity": "1.050",
+    "final_gravity": "1.013",
+    "ibus_tinseth": "25.00",
+    "notes": "",
+    "introduction": "[{\"type\": \"paragraph\", \"value\": \"<p>This is a recipe for a porter.</p>\", \"id\": \"7c5aca59-2926-45d1-ac8b-fcdecd443f34\"}]",
+    "conclusion": "[{\"type\": \"paragraph\", \"value\": \"<p>And now after making that, you have beer.</p>\", \"id\": \"c578ceff-a2b2-4ed2-9744-23b67c9dec4a\"}]",
+    "created_at": "2020-07-25T16:40:45.218Z",
+    "updated_at": "2020-07-25T16:40:45.218Z"
+  }
+},
+{
+  "model": "on_tap.ontappage",
+  "pk": 3,
+  "fields": {
+    "created_at": "2020-07-24T21:21:35.125Z",
+    "updated_at": "2020-07-24T21:21:35.125Z"
+  }
+},
+{
+  "model": "on_tap.recipeindexpage",
+  "pk": 4,
+  "fields": {
+    "created_at": "2020-07-24T21:21:59.700Z",
+    "updated_at": "2020-07-24T21:21:59.700Z"
+  }
+},
+{
+  "model": "on_tap.batchlogindexpage",
+  "pk": 5,
+  "fields": {
+    "created_at": "2020-07-24T21:22:19.201Z",
+    "updated_at": "2020-07-24T21:22:19.201Z"
+  }
+}
+]

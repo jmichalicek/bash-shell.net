@@ -19,8 +19,7 @@
   {% endfor %}
 
   <nav class="blog-pagination">
-    {{ page_obj.page.has_next }}
     <a class="btn btn-outline-primary {% if not page_obj.has_previous %}disabled{% endif %}" href="{% if page_obj.has_previous %}{% slugurl 'blog' %}?page={{ page_obj.previous_page_number }}{% else %}#{% endif %}">Newer</a>
     <a class="btn btn-outline-primary {% if not page_obj.has_next %}disabled{% endif %}" href="{% if page_obj.has_next %}{% slugurl 'blog' %}?page={{ page_obj.next_page_number }}{% else %}#{% endif %}">Older</a>
   </nav>
-{% endblock%}
+{% endblock %}

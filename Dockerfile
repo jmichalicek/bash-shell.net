@@ -8,6 +8,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteract
   sudo \
   vim \
   telnet \
+  postgresql-client \
   && apt-get autoremove && apt-get clean
 
 RUN pip install pip==20.0.2

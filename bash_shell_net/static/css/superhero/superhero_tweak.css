@@ -27,8 +27,13 @@ pre {
   background-color: #45515f;
 }
 
+.card-header a:hover, .card-footer a:hover {
+  /* These look terrible when they fade to the default a:hover color */
+  color: #DF691A;
+}
+
 .page-header {
-  padding: 1rem;
+  padding: 1rem .5rem;
   background-color: #2B3E50;
   margin-bottom: .25rem;
 }
@@ -160,12 +165,12 @@ a:active.btn.btn-outline-primary {
 }
 
 /* main 2nd column */
-#column-2.default {
+/* #column-2.default {
   /*overflow-x: auto;*/
   border-radius: .5rem;
   padding: .5rem;
   /* background-color: #2B3E50; */
-}
+} */
 
 /* footer */
 .blog-footer {
@@ -281,4 +286,126 @@ a:active.btn.btn-outline-primary {
 
 .image-gallery .image-gallery__image:hover {
     border: 3px solid #DF691A;
+}
+
+/* srm colors for background */
+.bg-srm-1 {
+background-color: #FFE699;
+}
+.bg-srm-2 {
+background-color: #FFD878;
+}
+.bg-srm-3 {
+background-color: #FFCA5A;
+}
+.bg-srm-4 {
+background-color: #FFBF42;
+}
+.bg-srm-5 {
+background-color: #FBB123;
+}
+.bg-srm-6 {
+background-color: #F8A600;
+}
+.bg-srm-7 {
+background-color: #F39C00;
+}
+.bg-srm-8 {
+background-color: #EA8F00;
+}
+.bg-srm-9 {
+background-color: #E58500;
+}
+.bg-srm-10 {
+background-color: DE7C00;
+}
+.bg-srm-11 {
+background-color: D77200;
+}
+.bg-srm-12 {
+background-color: CF6900;
+}
+.bg-srm-13 {
+background-color: CB6200;
+}
+.bg-srm-14 {
+background-color: C35900;
+}
+.bg-srm-15 {
+background-color: BB5100;
+}
+.bg-srm-16 {
+background-color: B54C00;
+}
+.bg-srm-17 {
+background-color: B04500;
+}
+.bg-srm-18 {
+background-color: A63E00;
+}
+.bg-srm-19 {
+background-color: A13700;
+}
+.bg-srm-20 {
+background-color: 9B3200;
+}
+.bg-srm-21 {
+background-color: 952D00;
+}
+.bg-srm-22 {
+background-color: 8E2900;
+}
+.bg-srm-23 {
+background-color: 882300;
+}
+.bg-srm-24 {
+background-color: 821E00;
+}
+.bg-srm-25 {
+background-color: 7B1A00;
+}
+.bg-srm-26 {
+background-color: 771900;
+}
+.bg-srm-27 {
+background-color: 701400;
+}
+.bg-srm-28 {
+background-color: 6A0E00;
+}
+.bg-srm-29 {
+background-color: 660D00;
+}
+.bg-srm-30 {
+background-color: 5E0B00;
+}
+.bg-srm-31 {
+background-color: 5A0A02;
+}
+.bg-srm-32 {
+background-color: 600903;
+}
+.bg-srm-33 {
+background-color: 520907;
+}
+.bg-srm-34 {
+background-color: #4C0505;
+}
+.bg-srm-35 {
+background-color: #470606;
+}
+.bg-srm-36 {
+background-color: #440607;
+}
+.bg-srm-37 {
+background-color: #3F0708;
+}
+.bg-srm-38 {
+background-color: #3B0607;
+}
+.bg-srm-39 {
+background-color: #3A070B;
+}
+.bg-srm-40 {
+background-color: #36080A;
 }

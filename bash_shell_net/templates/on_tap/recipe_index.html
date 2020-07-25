@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load blog_tags wagtailcore_tags %}
+{% block 'primary' %}
+<div class="page-header">
+  <h2>{{ page.title }}</h2>
+</div>
+<div>
+  {% for p in page.children %}
+    {{ p.name }}
+  {% endfor %}
+</div>
+{% endblock 'primary' %}
