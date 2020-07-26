@@ -103,6 +103,9 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', '5@r3yfc1j@cyh*uya0w&lrx_eyjt((
 #     'wagtail.contrib.redirects.middleware.RedirectMiddleware',
 # )
 
+# TODO: scrap the cache middleware, do more specific caching?
+# FetchFromCacheMiddleware is not even in the right place, it should be
+# the final thing.
 MIDDLEWARE = (
     'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -116,7 +119,6 @@ MIDDLEWARE = (
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
-    'raven.contrib.django.raven_compat.middleware.SentryResponseErrorIdMiddleware',
     'wagtail.core.middleware.SiteMiddleware',
     'wagtail.contrib.redirects.middleware.RedirectMiddleware',
 )
@@ -162,7 +164,6 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     'django.contrib.flatpages',
     'django.contrib.sitemaps',
-    'raven.contrib.django.raven_compat',
     # Wagtail
     'wagtail.contrib.forms',
     'wagtail.contrib.redirects',
