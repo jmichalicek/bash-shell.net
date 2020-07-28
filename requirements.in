@@ -1,7 +1,8 @@
 django>=3.0,<4.0
 pillow
 dj-database-url
-django-redis-cache
+#django-redis-cache
+django-redis
 whitenoise
 psycopg2-binary
 pytz
@@ -12,7 +13,7 @@ markdown
 requests
 https://github.com/jmichalicek/django-internetdefenseleague/archive/master.zip
 # django-internetdefenseleague-master = {git = "https://github.com/jmichalicek/django-internetdefenseleague.git",ref = "d9849b553885d36b3650d8f36c8a86f79b0cd37e"}
-raven
+sentry_sdk
 pygments
 django-coverage
 django-debug-toolbar
