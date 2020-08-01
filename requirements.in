@@ -21,3 +21,4 @@ factory-boy
 wagtail
 wagtailfontawesome
 #setuptools==41.6.0        # via gunicorn, markdown
+django-structlog

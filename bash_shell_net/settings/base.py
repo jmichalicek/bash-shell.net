@@ -103,13 +103,10 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', '5@r3yfc1j@cyh*uya0w&lrx_eyjt((
 #     'wagtail.contrib.redirects.middleware.RedirectMiddleware',
 # )
 
-# TODO: scrap the cache middleware, do more specific caching?
-# FetchFromCacheMiddleware is not even in the right place, it should be
-# the final thing.
+
 MIDDLEWARE = (
-    'django.middleware.cache.UpdateCacheMiddleware',
+    'django_structlog.middlewares.RequestMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.cache.FetchFromCacheMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
