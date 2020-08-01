@@ -5,7 +5,7 @@
     <title>{% block title %}Bash-Shell.Net{% endblock %}</title>
     {% block stylesheets %}
       {# <link rel="stylesheet" type="text/css" href="{% static 'css/superhero/bootstrap.min.css' %}" /> #}
-      <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/superhero/bootstrap.min.css" rel="stylesheet" integrity="sha384-LS4/wo5Z/8SLpOLHs0IbuPAGOWTx30XSoZJ8o7WKH0UJhRpjXXTpODOjfVnNjeHu" crossorigin="anonymous">
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.0/superhero/bootstrap.min.css" integrity="sha384-rvwYMW9Z/bbxZfgxHQEKx6D91KwffWAG+XnsoYNCGWi/qL1P9dIVYm1HBiHFqQEt" crossorigin="anonymous">
       <link rel="stylesheet" type="text/css" href="{% static 'css/superhero/superhero_tweak.css' %}" />
       <link rel="stylesheet" type="text/css" href="{% static 'css/pygments.css' %}" />
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.0/baguetteBox.min.css" integrity="sha256-cKiyvRKpm8RaTdU71Oq2RUVgvfWrdIXjvVdQF2oZ1Y4=" crossorigin="anonymous" />
@@ -58,39 +58,41 @@
       </div>
     </main>
     <footer class="blog-footer">
-      <div class="col-6 row offset-3 no-gutters">
-        <div class="col">
-          <h6>Sections</h6>
-          <ul class="nav flex-column">
-            <li><a href="/#">Home</a></li>
-            <li><a href="/archives/#">Archive</a></li>
-            <li><a href="{% url 'projects_project_list' %}">Projects</a></li>
-            <li><a href="{% url 'opensource' %}">Open Source</a></li>
-            <li><a href="{% url 'about' %}">About</a></li>
-          </ul>
+      <div class="col-6 offset-3 no-gutters">
+        <div class="row">
+          <div class="col">
+            <h6>Sections</h6>
+            <ul class="nav flex-column">
+              <li><a href="/#">Home</a></li>
+              <li><a href="/archives/#">Archive</a></li>
+              <li><a href="{% url 'projects_project_list' %}">Projects</a></li>
+              <li><a href="{% url 'opensource' %}">Open Source</a></li>
+              <li><a href="{% url 'about' %}">About</a></li>
+            </ul>
+          </div>
+          <div class="col">
+            <h6>Social</h6>
+            <ol class="list-unstyled">
+              <li><a href="https://github.com/jmichalicek/"><img type="image/svg+xml" src="{% static 'img/github.svg' %}" class="github-svg"></img> GitHub</a></li>
+              <li><a href="https://twitter.com/zingaya"><img type="image/svg+xml" src="{% static 'img/twitter.svg' %}" class="twitter-svg"></img> Twitter</a></li>
+            </ol>
+          </div>
+          <div class="col">
+            <h6>Other</h6>
+            <ul class="list-unstyled">
+              <li>Hosted on <a href="https://m.do.co/c/d39bb8f7dd5d">Digital Ocean&nbsp;&nbsp;<img type="image/svg+xml" src="{% static 'img/digitalocean.svg' %}" class="digitalocean-svg"></img></a>
+              </li>
+              <li>Web and App Development @ <a href="https://mobelux.com/">Mobelux</a></li>
+            </ul>
+          </div>
+          <div class="col-12"><p><a href="#">Back to top</a></p></div>
         </div>
-        <div class="col">
-          <h6>Social</h6>
-          <ol class="list-unstyled">
-            <li><a href="https://github.com/jmichalicek/"><img type="image/svg+xml" src="{% static 'img/github.svg' %}" class="github-svg"></img> GitHub</a></li>
-            <li><a href="https://twitter.com/zingaya"><img type="image/svg+xml" src="{% static 'img/twitter.svg' %}" class="twitter-svg"></img> Twitter</a></li>
-          </ol>
-        </div>
-        <div class="col">
-          <h6>Other</h6>
-          <ul class="list-unstyled">
-            <li>Hosted on <a href="https://m.do.co/c/d39bb8f7dd5d">Digital Ocean&nbsp;&nbsp;<img type="image/svg+xml" src="{% static 'img/digitalocean.svg' %}" class="digitalocean-svg"></img></a>
-            </li>
-            <li>Web and App Development @ <a href="https://mobelux.com/">Mobelux</a></li>
-          </ul>
-        </div>
-        <div class="col-12"><p><a href="#">Back to top</a></p></div>
       </div>
     </footer>
     {% block javascript %}
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.0/baguetteBox.min.js" integrity="sha256-yQGjQhFs3LtyiN5hhr3k9s9TWZOh/RzCkD3gwwCKlkg=" crossorigin="anonymous"></script>
         <script>
           baguetteBox.run('.js-lightbox', {noScrollbars: true});
