@@ -40,6 +40,9 @@ LOGGING = {
         'verbose': {'format': '%(levelname)s %(asctime)s %(module)s ' '%(process)d %(thread)d %(message)s'},
     },
     'handlers': {'console': {'level': 'DEBUG', 'class': 'logging.StreamHandler', 'formatter': 'verbose'}},
-    'loggers': {'django': {'level': 'INFO', 'handlers': ['console'], 'propagate': False,},},
+    'loggers': {
+        'django': {'level': 'INFO', 'handlers': ['console'], 'propagate': False,},
+        'django.request': {'handlers': ['console'], 'level': 'DEBUG', 'propagate': False,},
+    },
     # might want django.request logger at DEBUG level
 }
