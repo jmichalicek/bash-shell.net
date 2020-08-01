@@ -13,8 +13,11 @@ logger = logging.getLogger(__name__)
 def srm_to_hex(srm: Union[int, str]) -> str:
     """
     Takes an srm value as an int such as 1 or string such as '1' and returns a hex color code for it.
+
+    Colors from https://www.brewersfriend.com/color-calculator/
     """
     mapping = {
+        0: '#FFF4D4',
         1: '#FFE699',
         2: '#FFD878',
         3: '#FFCA5A',
@@ -50,11 +53,11 @@ def srm_to_hex(srm: Union[int, str]) -> str:
         33: '#520907',
         34: '#4C0505',
         35: '#470606',
-        36: '#440607',
-        37: '#3F0708',
-        38: '#3B0607',
-        39: '#3A070B',
-        40: '#36080A',
+        36: '#420607',
+        37: '#3D0708',
+        38: '#370607',
+        39: '#2D0607',
+        40: '#1F0506',
     }
     try:
         return mapping.get(int(srm), mapping[40])

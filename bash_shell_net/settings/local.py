@@ -28,7 +28,7 @@ LOGGING = {
     'version': 1,
     # 'disable_existing_loggers': True,
     'disable_existing_loggers': False,
-    'root': {'level': 'WARN', 'handlers': ['console'],},
+    'root': {'level': 'WARN', 'handlers': ['console_key_value'],},
     'formatters': {
         'verbose': {'format': '%(levelname)s %(asctime)s %(module)s ' '%(process)d %(thread)d %(message)s'},
         "json_formatter": {
@@ -41,6 +41,16 @@ LOGGING = {
             "processor": structlog.processors.KeyValueRenderer(key_order=['timestamp', 'level', 'event', 'logger']),
         },
     },
-    'handlers': {'console': {'level': 'DEBUG', 'class': 'logging.StreamHandler', 'formatter': 'json_formatter'},},
-    'loggers': {'django': {'level': 'INFO', 'handlers': ['console'], 'propagate': False,},},
+    'handlers': {
+        'console_json': {'level': 'DEBUG', 'class': 'logging.StreamHandler', 'formatter': 'json_formatter'},
+        'console_plain': {'level': 'DEBUG', 'class': 'logging.StreamHandler', 'formatter': 'plain_console'},
+        'console_key_value': {'level': 'DEBUG', 'class': 'logging.StreamHandler', 'formatter': 'key_value'},
+    },
+    'loggers': {
+        'django': {'level': 'INFO', 'handlers': ['console_key_value'], 'propagate': False,},
+        'django.request': {'handlers': ['console_key_value'], 'level': 'DEBUG', 'propagate': False,},
+        'django.server': {'handlers': ['console_key_value'], 'level': 'DEBUG', 'propagate': False,},
+        # Log SQL queries - noisy, but sometimes useful
+        # 'django.db.backends': {'handlers': ['console_plain'], 'level': 'DEBUG', 'propagate': False,},
+    },
 }

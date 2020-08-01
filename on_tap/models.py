@@ -145,6 +145,7 @@ class RecipeFermentable(Orderable, models.Model):
     # Name, Type, and Color belong on a separate Fermentable model, really.
     # there are many other stats which would be handy to keep on a separate model as well but are overkill here
     name = CICharField(max_length=100, blank=False)
+    maltster = CICharField(max_length=100, blank=True, default='')
     type = models.CharField(max_length=25, choices=TYPE_CHOICES, blank=False)
     color = models.DecimalField(
         max_digits=6,
@@ -159,6 +160,7 @@ class RecipeFermentable(Orderable, models.Model):
 
     panels = [
         FieldPanel('name'),
+        FieldPanel('maltster'),
         FieldPanel('amount'),
         FieldPanel('amount_units', heading='Units'),
         FieldPanel('color'),
@@ -177,6 +179,8 @@ class RecipeFermentable(Orderable, models.Model):
         """
         Returns the weight in Pounds
         """
+        # I should maybe just convert to oz or g on save, then return converted value as desired
+        # that would also let me do things like use db sum() methods instead of iterating to get totals
         # Keep it dumb and simple for now
         if self.amount_units == 'lb':
             return self.amount
@@ -411,12 +415,14 @@ class BeverageStyle(models.Model):
         blank=True, null=True, default=None, max_digits=5, decimal_places=2, help_text='Maximum carbonation vol/vol'
     )
     notes = models.TextField(blank=True, default='')
+    external_url = models.URLField(blank=True, default='')
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     panels = [
         FieldPanel('name'),
+        FieldPanel('external_url'),
         FieldPanel('beverage_type'),
         MultiFieldPanel(
             [
@@ -708,6 +714,16 @@ class RecipePage(RoutablePageMixin, Page):
 
         srm = Decimal('1.4922') * (total_mcu ** Decimal('0.6859'))
         return int(srm.quantize(Decimal('1')))
+
+    def calculate_grain_pounds(self) -> int:
+        """
+        Returns the total weight of grains in pounds
+        """
+        # TODO: not sure where to put this on UI yet.
+        weight = decimal.Decimal('0')
+        for fermentable in self.fermentables.all():
+            weight += fermentable.weight_in_pounds()
+        return weight
 
 
 class BatchStatus:

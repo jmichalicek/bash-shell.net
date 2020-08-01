@@ -1,27 +1,24 @@
 {% extends 'base.html' %}
 {% load wagtailcore_tags on_tap_tags %}
 {% block page_stylesheets %}
+  <style>
+    {# extra specificity needed here or bootstrap padding values override this #}
+    td.beer-style-guide__srm {
+      padding: .5rem .75rem 0;
+    }
 
-  {% if page.recipe_page.style.color_min and page.recipe_page.style.color_max %}
-    <style>
-      {# extra specificity needed here or bootstrap padding values override this #}
-      td.beer-style-guide__srm {
-        padding: .5rem .75rem 0;
-      }
+    .beer-style-guide__srm-gradient {
+      background-image: linear-gradient(to right, {{ page.recipe_page.style.color_min|default:0|floatformat:"0"|srm_to_hex }}, {{ page.recipe_page.style.color_max|default:40|floatformat:"0"|srm_to_hex }});
+      padding: .25rem .75rem;
+    }
 
-      .beer-style-guide__srm-gradient {
-        background-image: linear-gradient(to right, {{ page.recipe_page.style.color_min|floatformat:"0"|srm_to_hex }}, {{ page.recipe_page.style.color_max|floatformat:"0"|srm_to_hex }});
-        padding: .25rem .75rem;
-      }
-
-      .recipe-stats__srm {
-        background-color: {{ page.recipe_page.calculate_color_srm|floatformat:"0"|srm_to_hex }};
-        padding: .25rem .75rem;
-        {# When srm is less than 7-10, the white text gets hard to read #}
-        {% if page.recipe_page.calculate_color_srm < 10 %}color: #2B3E50;{% endif %}
-      }
-    </style>
-  {% endif %}
+    .recipe-stats__srm {
+      background-color: {{ page.recipe_page.calculate_color_srm|floatformat:"0"|srm_to_hex }};
+      padding: .25rem .75rem;
+      {# When srm is less than 7-10, the white text gets hard to read #}
+      {% if page.recipe_page.calculate_color_srm < 10 %}color: #2B3E50;{% endif %}
+    }
+  </style>
 {% endblock page_stylesheets %}
 {% block primary %}
   {% with page_title=page.title %}
@@ -56,10 +53,11 @@
       </thead>
       <tbody class="table-secondary">
         <tr>
-          <td>{% if page.recipe_page.style.original_gravity_min and page.recipe_page.style.original_gravity_max %}{{ page.recipe_page.style.original_gravity_min|floatformat:"3" }} - {{ page.recipe_page.style.original_gravity_max|floatformat:"3" }}{% endif %}</td>
-          <td>{% if page.recipe_page.style.final_gravity_min and page.recipe_page.style.final_gravity_max %}{{ page.recipe_page.style.final_gravity_min|floatformat:"3" }} - {{ page.recipe_page.style.final_gravity_max|floatformat:"3" }}{% endif %}</td>
-          <td>{% if page.recipe_page.style.ibu_min and page.recipe_page.style.ibu_max %}{{ page.recipe_page.style.ibu_min|floatformat:"0" }} - {{ page.recipe_page.style.ibu_max|floatformat:"0" }}{% endif %}</td>
-          <td class="beer-style-guide__srm">{% if page.recipe_page.style.color_min and page.recipe_page.style.color_max %}<div class="text-center beer-style-guide__srm-gradient">{{ page.recipe_page.style.color_min|floatformat:"0" }} - {{ page.recipe_page.style.color_max|floatformat:"0" }} srm</div>{% endif %}</td>
+          <td>{% if page.recipe_page.style.original_gravity_min and page.recipe_page.style.original_gravity_max %}{{ page.recipe_page.style.original_gravity_min|floatformat:"3" }} - {{ page.recipe_page.style.original_gravity_max|floatformat:"3" }}{% else %}N/A{% endif %}</td>
+          <td>{% if page.recipe_page.style.final_gravity_min and page.recipe_page.style.final_gravity_max %}{{ page.recipe_page.style.final_gravity_min|floatformat:"3" }} - {{ page.recipe_page.style.final_gravity_max|floatformat:"3" }}{% else %}N/A{% endif %}</td>
+          <td>{% if page.recipe_page.style.ibu_min and page.recipe_page.style.ibu_max %}{{ page.recipe_page.style.ibu_min|floatformat:"0" }} - {{ page.recipe_page.style.ibu_max|floatformat:"0" }}{% else %}N/A{% endif %}</td>
+          <td class="beer-style-guide__srm"><div class="text-center beer-style-guide__srm-gradient">{{ page.recipe_page.style.color_min|floatformat:"0" }} - {{ page.recipe_page.style.color_max|floatformat:"0" }} srm</div>
+          </td>
         </tr>
       </tbody>
     </table>

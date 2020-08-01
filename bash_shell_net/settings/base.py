@@ -6,13 +6,9 @@ import dj_database_url
 # the dir with manage.py
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 DEFENSE_LEAGUE = True
-
 AUTH_USER_MODEL = 'accounts.User'
-
 DEBUG = True
-
 ADMINS = (('Justin Michalicek', 'jmichalicek@gmail.com'),)
-
 MANAGERS = ADMINS
 
 DATABASES = {
@@ -87,25 +83,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # it's probably a good idea to override this with the env variable
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', '5@r3yfc1j@cyh*uya0w&lrx_eyjt((@^#k1%!r4$u)eus!9m6x')
 
-# MIDDLEWARE = (
-#     'django.middleware.common.CommonMiddleware',
-#     'django.contrib.sessions.middleware.SessionMiddleware',
-#     'django.middleware.csrf.CsrfViewMiddleware',
-#     'django.contrib.auth.middleware.AuthenticationMiddleware',
-#     'django.contrib.messages.middleware.MessageMiddleware',
-#     # Uncomment the next line for simple clickjacking protection:
-#     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-#     'django.middleware.security.SecurityMiddleware',
-#     'whitenoise.middleware.WhiteNoiseMiddleware',
-#     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
-#     'raven.contrib.django.raven_compat.middleware.SentryResponseErrorIdMiddleware',
-#     'wagtail.core.middleware.SiteMiddleware',
-#     'wagtail.contrib.redirects.middleware.RedirectMiddleware',
-# )
-
-
 MIDDLEWARE = (
-    'django_structlog.middlewares.RequestMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -118,6 +96,7 @@ MIDDLEWARE = (
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'wagtail.core.middleware.SiteMiddleware',
     'wagtail.contrib.redirects.middleware.RedirectMiddleware',
+    'django_structlog.middlewares.RequestMiddleware',
 )
 
 ROOT_URLCONF = 'bash_shell_net.urls'
@@ -213,3 +192,66 @@ MARKDOWN_EXTENSIONS = ['markdown.extensions.extra', 'markdown.extensions.toc', '
 # wagtail settings
 WAGTAIL_SITE_NAME = 'bash-shell.net'
 TAGGIT_CASE_INSENSITIVE = True  # might avoid taggit anyway.  I do not care for it
+
+import structlog
+
+structlog.configure(
+    processors=[
+        structlog.stdlib.filter_by_level,
+        structlog.processors.TimeStamper(fmt="iso"),
+        structlog.stdlib.add_logger_name,
+        structlog.stdlib.add_log_level,
+        structlog.stdlib.PositionalArgumentsFormatter(),
+        structlog.processors.StackInfoRenderer(),
+        structlog.processors.format_exc_info,
+        structlog.processors.UnicodeDecoder(),
+        structlog.processors.ExceptionPrettyPrinter(),
+        structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
+    ],
+    context_class=structlog.threadlocal.wrap_dict(dict),
+    logger_factory=structlog.stdlib.LoggerFactory(),
+    wrapper_class=structlog.stdlib.BoundLogger,
+    cache_logger_on_first_use=True,
+)
+LOGGING = {
+    'version': 1,
+    # 'disable_existing_loggers': True,
+    'disable_existing_loggers': False,
+    'root': {'level': os.environ.get('LOG_LEVEL', 'INFO'), 'handlers': ['console_json'],},
+    'formatters': {
+        'verbose': {'format': '%(levelname)s %(asctime)s %(module)s ' '%(process)d %(thread)d %(message)s'},
+        "json_formatter": {
+            "()": structlog.stdlib.ProcessorFormatter,
+            "processor": structlog.processors.JSONRenderer(),
+        },
+        "plain_console": {"()": structlog.stdlib.ProcessorFormatter, "processor": structlog.dev.ConsoleRenderer(),},
+        "key_value": {
+            "()": structlog.stdlib.ProcessorFormatter,
+            "processor": structlog.processors.KeyValueRenderer(key_order=['timestamp', 'level', 'event', 'logger']),
+        },
+    },
+    'handlers': {
+        'console_json': {'level': 'DEBUG', 'class': 'logging.StreamHandler', 'formatter': 'json_formatter'},
+        'console_plain': {'level': 'DEBUG', 'class': 'logging.StreamHandler', 'formatter': 'plain_console'},
+        'console_key_value': {'level': 'DEBUG', 'class': 'logging.StreamHandler', 'formatter': 'key_value'},
+    },
+    'loggers': {
+        'django': {'level': os.environ.get('LOG_LEVEL', 'INFO'), 'handlers': ['console_json'], 'propagate': False,},
+        # only when not manage.py runserver
+        'django.request': {
+            'handlers': ['console_json'],
+            'level': os.environ.get('LOG_LEVEL', 'INFO'),
+            'propagate': False,
+        },
+        'django.security': {
+            'handlers': ['console_json'],
+            'level': os.environ.get('LOG_LEVEL', 'INFO'),
+            'propagate': False,
+        },
+        # only happens with manage.py runserver
+        'django.server': {'handlers': ['console_json'], 'level': 'DEBUG', 'propagate': False,},
+        # Log SQL queries - noisy, but sometimes useful
+        # 'django.db.backends': {'handlers': ['console_plain'], 'level': 'DEBUG', 'propagate': False,},
+    },
+    # might want django.request logger at DEBUG level
+}
