@@ -4,7 +4,7 @@
 {% load wagtailcore_tags %}
 
 {% block primary %}
-  <div class="page-header">
+  <div class="page-header col-12">
      <h2>{{ page.title }}</h2>
      {% comment %}
      rather than page.owner, may want to make a field specifically for authors.
@@ -13,7 +13,7 @@
      {% endcomment %}
       <em>by {% if page.owner %}{{ page.owner.get_full_name }}{% elif user.is_authenticated %}{{ user.get_full_name }}{% endif %} on {{ page.last_published_at|date:"N j, Y, P T"|default:"Not Published" }}</em>
   </div>
-  <div class="blog-post">
+  <div class="blog-post col-12">
     {# I wonder if the .blog-post wrapper should be part of page.body #}
     {% include_block page.body %}
   </div>

@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 {% load blog_tags wagtailcore_tags %}
 {% block primary %}
-  <div class="page-header">
+  <div class="page-header col-12">
     <h2>Posts</h2>
   </div>
   {% for post in posts %}
-    <div class="blog-post">
+    <div class="blog-post col-12">
       <h2>{{ post.title }}</h2>
       <p class="blog-post-meta"> by {{ post.owner.first_name }} on {{ post.first_published_at|date:"N j, Y, P T" }}</p>
       {# add updated if last_published_at is different from first_published_at? #}
