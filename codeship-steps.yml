@@ -1,5 +1,5 @@
 - name: tests
-  # could SKIP this on master because our rules say that it should run before we can merge anyway.
+  # could SKIP this on main because our rules say that it should run before we can merge anyway.
   service: cms
   command: bash ./wait-for-it.sh database:5432 -t 60 -- python manage.py test
 - name: Push Latest Tag To Repository
@@ -9,7 +9,7 @@
   registry: https://registry.gitlab.com
   image_tag: latest
   encrypted_dockercfg_path: dockercfg.encrypted
-  tag: master
+  tag: main
 - name: Push Branch Latest Tag To Repository
   service: cms
   type: push
@@ -17,7 +17,7 @@
   registry: https://registry.gitlab.com
   image_tag: "{{ .Branch }}_latest"
   encrypted_dockercfg_path: dockercfg.encrypted
-  tag: master
+  tag: main
 - name: Push Branch/SHA Tag To Repository
   service: cms
   type: push
@@ -25,4 +25,4 @@
   registry: https://registry.gitlab.com
   image_tag: "{{ .Branch }}_{{ .CommitID }}"
   encrypted_dockercfg_path: dockercfg.encrypted
-  tag: master
+  tag: main
