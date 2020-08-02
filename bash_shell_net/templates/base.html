@@ -5,18 +5,24 @@
     <title>{% block title %}Bash-Shell.Net{% endblock %}</title>
     {% block stylesheets %}
       {# <link rel="stylesheet" type="text/css" href="{% static 'css/superhero/bootstrap.min.css' %}" /> #}
-      <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/superhero/bootstrap.min.css" rel="stylesheet" integrity="sha384-LS4/wo5Z/8SLpOLHs0IbuPAGOWTx30XSoZJ8o7WKH0UJhRpjXXTpODOjfVnNjeHu" crossorigin="anonymous">
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.0/superhero/bootstrap.min.css" integrity="sha384-rvwYMW9Z/bbxZfgxHQEKx6D91KwffWAG+XnsoYNCGWi/qL1P9dIVYm1HBiHFqQEt" crossorigin="anonymous">
       <link rel="stylesheet" type="text/css" href="{% static 'css/superhero/superhero_tweak.css' %}" />
       <link rel="stylesheet" type="text/css" href="{% static 'css/pygments.css' %}" />
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.0/baguetteBox.min.css" integrity="sha256-cKiyvRKpm8RaTdU71Oq2RUVgvfWrdIXjvVdQF2oZ1Y4=" crossorigin="anonymous" />
+
+      <style>
+        html, body {
+          min-height: 100%;
+        }
+      </style>
     {% endblock stylesheets %}
     {% block page_stylesheets %}{% endblock page_stylesheets %}
   </head>
   <body>
-    <header>
-      <div class="blog-header">
-        <div class="container">
-          <div class="title row">
+    <div class="container-lg pb-5">
+      <header role="header" class="row">
+        <div class="blog-header">
+          <div class="title">
             <div class="col-12">
               <h1 class="blog-title">Bash-Shell.Net</h1>
               <p class="lead blog-description">I'm a developer, not a writer.</p>
@@ -39,26 +45,25 @@
             <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
           </ul>
         </div>
-      </div>
-    </header>
-    <main role="main" class="container">
-      <div class="row">
+      </header>
+      <main role="main" class="row">
         {% block sidebar %}{% endblock sidebar %}
         {% block col2_default %}
           <div id="column-2" class="col">
-            {% block primary %}
-              {% block page_header %}
-              <div class="page-header">
-                <h2>{{ page_title }}</h2>
-              </div>
+            <div class="row">
+              {% block primary %}
+                {% block page_header %}
+                <div class="page-header col-12">
+                  <h2>{{ page_title }}</h2>
+                </div>
+                {% endblock %}
               {% endblock %}
-            {% endblock %}
+            </div>
           </div>
         {% endblock col2_default %}
-      </div>
-    </main>
-    <footer class="blog-footer">
-      <div class="col-6 row offset-3 no-gutters">
+      </main>
+      <footer role="footer" class="blog-footer row">
+        <div class="col-2"></div>
         <div class="col">
           <h6>Sections</h6>
           <ul class="nav flex-column">
@@ -84,17 +89,17 @@
             <li>Web and App Development @ <a href="https://mobelux.com/">Mobelux</a></li>
           </ul>
         </div>
-        <div class="col-12"><p><a href="#">Back to top</a></p></div>
-      </div>
-    </footer>
+        <div class="col-2"></div>
+      </footer>
+    </div> {# end main container #}
     {% block javascript %}
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.0/baguetteBox.min.js" integrity="sha256-yQGjQhFs3LtyiN5hhr3k9s9TWZOh/RzCkD3gwwCKlkg=" crossorigin="anonymous"></script>
-        <script>
-          baguetteBox.run('.js-lightbox', {noScrollbars: true});
-        </script>
+      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.0/baguetteBox.min.js" integrity="sha256-yQGjQhFs3LtyiN5hhr3k9s9TWZOh/RzCkD3gwwCKlkg=" crossorigin="anonymous"></script>
+      <script>
+        baguetteBox.run('.js-lightbox', {noScrollbars: true});
+      </script>
     {% endblock javascript %}
   </body>
 </html>

@@ -33,7 +33,8 @@ pre {
 }
 
 .page-header {
-  padding: 1rem .5rem;
+  /* padding: 1rem .5rem; */
+  padding: 1rem;
   background-color: #2B3E50;
   margin-bottom: .25rem;
 }
@@ -198,10 +199,6 @@ a:active.btn.btn-outline-primary {
 .nav-tabs .nav-link {
   /*border-bottom-color: rgb(223, 105, 26);*/
   border-bottom-color: #DF691A;
-}
-
-.project_detail__content {
-  padding: .5rem;
 }
 
 /*
