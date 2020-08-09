@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load wagtailcore_tags %}
 
+{% block title %}{{ page.title }}{% endblock title %}
+{% block og_title %}{{ page.title }}{% endblock og_title %}
+{% block og_description %}Homebrew beer style{% endblock og_description %}
+
 {% block 'primary' %}
   {{ page.title }}
   {{ page.author }}

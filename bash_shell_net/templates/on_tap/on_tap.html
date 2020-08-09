@@ -1,5 +1,8 @@
 {% extends 'base.html' %}
 {% load blog_tags wagtailcore_tags %}
+{% block title %}{{ page.title }}{% endblock title %}
+{% block og_title %}{{ page.title }}{% endblock og_title%}
+{% block og_description %}What's brews are on tap or will be soon? Links to recipes and brew day logs.{% endblock og_description %}
 {% block primary %}
   {% with page_title=page.title %}
     {{ block.super }}
