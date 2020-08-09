@@ -748,7 +748,7 @@ class BatchLogPage(RoutablePageMixin, Page):
 
     template = 'on_tap/batch_log.html'
 
-    recipe_page = ParentalKey(
+    recipe_page = models.ForeignKey(
         'on_tap.RecipePage', on_delete=models.PROTECT, related_name='batch_log_pages', blank=False, null=False,
     )
     status = models.CharField(
