@@ -29,3 +29,5 @@ sentry_sdk.init(
     # django.contrib.auth) you may enable sending PII data.
     send_default_pii=True,
 )
+
+CLICKY_SITE_ID = '101271437'

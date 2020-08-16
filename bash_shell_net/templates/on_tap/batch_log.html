@@ -20,6 +20,9 @@
     }
   </style>
 {% endblock page_stylesheets %}
+{% block title %}{{ page.title }}{% endblock title %}
+{% block og_title %}{{ page.title }}{% endblock og_title %}
+{% block og_description %}Brew day log and notes for {{ page.recipe_page.name }}{% if page.brewed_date %} brewed on {{ page.brewed_date }}{% endif %}{% endblock og_description %}
 {% block primary %}
   {% with page_title=page.title %}
     {{ block.super }}
@@ -48,46 +51,50 @@
     <h4>{{ page.style }}</h4>
     <br>
     <h3>Style Details</h3>
-    <table class="table">
-      <thead class="table-active">
-        <tr><th scope="col">O.G.</th><th scope="col">F.G.</th><th scope="col">IBU</th><th scope="col">Color</th></tr>
-      </thead>
-      <tbody class="table-secondary">
-        <tr>
-          <td>{% if page.recipe_page.style.original_gravity_min and page.recipe_page.style.original_gravity_max %}{{ page.recipe_page.style.original_gravity_min|floatformat:"3" }} - {{ page.recipe_page.style.original_gravity_max|floatformat:"3" }}{% else %}N/A{% endif %}</td>
-          <td>{% if page.recipe_page.style.final_gravity_min and page.recipe_page.style.final_gravity_max %}{{ page.recipe_page.style.final_gravity_min|floatformat:"3" }} - {{ page.recipe_page.style.final_gravity_max|floatformat:"3" }}{% else %}N/A{% endif %}</td>
-          <td>{% if page.recipe_page.style.ibu_min and page.recipe_page.style.ibu_max %}{{ page.recipe_page.style.ibu_min|floatformat:"0" }} - {{ page.recipe_page.style.ibu_max|floatformat:"0" }}{% else %}N/A{% endif %}</td>
-          <td class="beer-style-guide__srm"><div class="text-center beer-style-guide__srm-gradient">{{ page.recipe_page.style.color_min|floatformat:"0" }} - {{ page.recipe_page.style.color_max|floatformat:"0" }} srm</div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="table-responsive">
+      <table class="table">
+        <thead class="table-active">
+          <tr><th scope="col">O.G.</th><th scope="col">F.G.</th><th scope="col">IBU</th><th scope="col">Color</th></tr>
+        </thead>
+        <tbody class="table-secondary">
+          <tr>
+            <td>{% if page.recipe_page.style.original_gravity_min and page.recipe_page.style.original_gravity_max %}{{ page.recipe_page.style.original_gravity_min|floatformat:"3" }} - {{ page.recipe_page.style.original_gravity_max|floatformat:"3" }}{% else %}N/A{% endif %}</td>
+            <td>{% if page.recipe_page.style.final_gravity_min and page.recipe_page.style.final_gravity_max %}{{ page.recipe_page.style.final_gravity_min|floatformat:"3" }} - {{ page.recipe_page.style.final_gravity_max|floatformat:"3" }}{% else %}N/A{% endif %}</td>
+            <td>{% if page.recipe_page.style.ibu_min and page.recipe_page.style.ibu_max %}{{ page.recipe_page.style.ibu_min|floatformat:"0" }} - {{ page.recipe_page.style.ibu_max|floatformat:"0" }}{% else %}N/A{% endif %}</td>
+            <td class="beer-style-guide__srm"><div class="text-center beer-style-guide__srm-gradient">{{ page.recipe_page.style.color_min|floatformat:"0" }} - {{ page.recipe_page.style.color_max|floatformat:"0" }} srm</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <br>
     <h3>Batch Details</h3>
-    <table class="table">
-      <thead class="table-active">
-        <tr><th scope="col">Brewed On</th><th scope="col">Packaged On</th><th scope="col">On Tap Date</th><th scope="col">Original Gravity</th><th scope="col">Final Gravity</th><th>Color</th></tr>
-      </thead>
-      <tbody class="table-secondary">
-        <tr>
-          {# move these dates up to some nice div next to the body #}
-          <td>{{ page.brewed_date|default:"N/A" }}</td>
-          <td>{{ page.packaged_date|default:"N/A" }}</td>
-          <td>{{ page.on_tap_date|default:"N/A" }}</td>
-          <td>{{ page.original_gravity }}</td>
-          <td>{{ page.final_gravity }}</td>
-          <td class="beer-style-guide__srm"><div class="text-center recipe-stats__srm">{{ page.recipe_page.calculate_color_srm|floatformat:"0" }} srm</div></td>
-          {% comment %}
-            I will want the batch specific details - how much did I really boil, end with, etc.
-            also add packaging type? keg or bottle? What if I split it up?
-            <td>{{ page.boil_size|floatformat:"2" }} {{ page.get_volume_units_display }}</td>
-            <td>{{ page.batch_size|floatformat:"2" }} {{ page.get_volume_units_display }}</td>
-            <td>{{ page.boil_time }} Minutes</td>
-            <td>{{ page.efficiency }}%</td>
-            <td class="beer-style-guide__srm"><div class="text-center recipe-stats__srm">{{ page.calculate_color_srm|floatformat:"0" }} srm</div></td>
-          {% endcomment %}
-        </tr>
-      </tbody>
-    </table>
+    <div class="table-responsive">
+      <table class="table col-12">
+        <thead class="table-active">
+          <tr><th scope="col">Brewed On</th><th scope="col">Packaged On</th><th scope="col">On Tap Date</th><th scope="col">Original Gravity</th><th scope="col">Final Gravity</th><th>Color</th></tr>
+        </thead>
+        <tbody class="table-secondary">
+          <tr>
+            {# move these dates up to some nice div next to the body #}
+            <td>{{ page.brewed_date|default:"N/A" }}</td>
+            <td>{{ page.packaged_date|default:"N/A" }}</td>
+            <td>{{ page.on_tap_date|default:"N/A" }}</td>
+            <td>{{ page.original_gravity }}</td>
+            <td>{{ page.final_gravity }}</td>
+            <td class="beer-style-guide__srm"><div class="text-center recipe-stats__srm">{{ page.recipe_page.calculate_color_srm|floatformat:"0" }} srm</div></td>
+            {% comment %}
+              I will want the batch specific details - how much did I really boil, end with, etc.
+              also add packaging type? keg or bottle? What if I split it up?
+              <td>{{ page.boil_size|floatformat:"2" }} {{ page.get_volume_units_display }}</td>
+              <td>{{ page.batch_size|floatformat:"2" }} {{ page.get_volume_units_display }}</td>
+              <td>{{ page.boil_time }} Minutes</td>
+              <td>{{ page.efficiency }}%</td>
+              <td class="beer-style-guide__srm"><div class="text-center recipe-stats__srm">{{ page.calculate_color_srm|floatformat:"0" }} srm</div></td>
+            {% endcomment %}
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 {% endblock primary %}

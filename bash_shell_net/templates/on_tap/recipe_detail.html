@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% load wagtailcore_tags on_tap_tags %}
 {% block page_stylesheets %}
-
   <style>
     {# extra specificity needed here or bootstrap padding values override this #}
     td.beer-style-guide__srm {
@@ -24,6 +23,12 @@
     }
   </style>
 {% endblock page_stylesheets %}
+
+{% block title %}{{ page.title }}{% endblock title %}
+{% block og_title %}{{ page.name }}{% endblock og_title %}
+{# the default filter is not playing nicely with what I need here, so use if/else #}
+{% block og_description %}{% if page.short_description %}{{ page.short_description }}{% else %}{{ page.style.name|add:" Recipe" }}{% endif %}{% endblock og_description %}
+
 {% block primary %}
   {% with page_title=page.title %}
     {{ block.super }}
