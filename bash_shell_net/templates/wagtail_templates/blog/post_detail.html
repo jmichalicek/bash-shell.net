@@ -5,7 +5,7 @@
 
 {% block title %}{{ page.title }}{% endblock title %}
 {% block og_title %}{{ page.title }}{% endblock og_title %}
-{% block og_description %}{{ page.body }}{% endblock og_description %}
+{% block og_description %}{{ page.body|striptags|truncatewords:50 }}{% endblock og_description %}
 
 {% block primary %}
   <div class="page-header col-12">

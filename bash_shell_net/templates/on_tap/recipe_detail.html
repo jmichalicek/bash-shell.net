@@ -26,7 +26,8 @@
 
 {% block title %}{{ page.title }}{% endblock title %}
 {% block og_title %}{{ page.name }}{% endblock og_title %}
-{% block og_description %}{{ page.introduction|default:"A homebrew recipe"}}{% endblock og_description %}
+{# the default filter is not playing nicely with what I need here, so use if/else #}
+{% block og_description %}{% if page.short_description %}{{ page.short_description }}{% else %}{{ page.style.name|add:" Recipe" }}{% endif %}{% endblock og_description %}
 
 {% block primary %}
   {% with page_title=page.title %}

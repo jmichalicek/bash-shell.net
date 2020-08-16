@@ -3,9 +3,11 @@
 <html lang="en">
   <head>
     <title>Bash-Shell.Net - {% block title %}Programming, Running, Cycling{% endblock %}</title>
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     {% block og_tags %}
       <meta property="og:title" content="{% block og_title %}Bash-Shell.Net{% endblock %}" />
-      <meta property="og:type" content="{% block og_type %}{% enblock %}" />
+      <meta property="og:type" content="{% block og_type %}og:website{% endblock %}" />
       <meta property="og:url" content="https://bash-shell.net{{ request.get_path }}" />
       {% comment %}Might muck with this some here{% endcomment %}
       <meta property="og:description" content="{% block og_description %}{{ page.opengraph_description|default:'A blog about programming, running, and cycling'}}{% endblock %}" />

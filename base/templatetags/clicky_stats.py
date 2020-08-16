@@ -8,10 +8,11 @@ register = template.Library()
 
 @register.simple_tag
 def clicky_stats_js(*args, **kwargs):
-    if settings.ENABLE_CLICKY:
+
+    if clicky_site_id := getattr(settings, 'CLICKY_SITE_ID', None):
         clicky_string = textwrap.dedent(
-            '''
-            <script>var clicky_site_ids = clicky_site_ids || []; clicky_site_ids.push(101271437);</script>
+            f'''
+            <script>var clicky_site_ids = clicky_site_ids || []; clicky_site_ids.push({clicky_site_id});</script>
             <script async src="//static.getclicky.com/js"></script>
             '''
         )
