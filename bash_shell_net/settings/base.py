@@ -1,7 +1,11 @@
 # Django settings for bsdev project.
 import os
-
+import sys
 import dj_database_url
+
+# This checks that the first arg to `manage.py` is `test`
+# The main use case is to turn off caching specifically for tests because it makes things unpredictable
+TESTING = sys.argv[1:2] == ['test']
 
 # the dir with manage.py
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
@@ -256,3 +260,13 @@ LOGGING = {
     },
     # might want django.request logger at DEBUG level
 }
+
+if TESTING:
+    # faster password hashing in tests.
+    PASSWORD_HASHERS = [
+        'django.contrib.auth.hashers.MD5PasswordHasher',
+    ]
+    # Should have made it so that the whitenoise stuff is not used in tests and I do not need
+    # to run collectstatic to run tests, but I seem to be missing something still.
+    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+    WHITENOISE_AUTOREFRESH = False
