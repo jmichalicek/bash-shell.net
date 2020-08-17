@@ -1,7 +1,11 @@
 # Django settings for bsdev project.
 import os
-
+import sys
 import dj_database_url
+
+# This checks that the first arg to `manage.py` is `test`
+# The main use case is to turn off caching specifically for tests because it makes things unpredictable
+TESTING = sys.argv[1:2] == ['test']
 
 # the dir with manage.py
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
@@ -83,18 +87,19 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # it's probably a good idea to override this with the env variable
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', '5@r3yfc1j@cyh*uya0w&lrx_eyjt((@^#k1%!r4$u)eus!9m6x')
 
+# Ordering based on https://docs.djangoproject.com/en/3.1/ref/middleware/#middleware-ordering
+# and http://whitenoise.evans.io/en/stable/django.html#enable-whitenoise
 MIDDLEWARE = (
-    'django.middleware.common.CommonMiddleware',
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',  # Should this go higher in the list?
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
-    'wagtail.core.middleware.SiteMiddleware',
     'wagtail.contrib.redirects.middleware.RedirectMiddleware',
     'django_structlog.middlewares.RequestMiddleware',
 )
@@ -255,3 +260,13 @@ LOGGING = {
     },
     # might want django.request logger at DEBUG level
 }
+
+if TESTING:
+    # faster password hashing in tests.
+    PASSWORD_HASHERS = [
+        'django.contrib.auth.hashers.MD5PasswordHasher',
+    ]
+    # Should have made it so that the whitenoise stuff is not used in tests and I do not need
+    # to run collectstatic to run tests, but I seem to be missing something still.
+    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+    WHITENOISE_AUTOREFRESH = False
