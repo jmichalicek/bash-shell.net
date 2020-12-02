@@ -21,4 +21,8 @@ factory-boy
 wagtail
 wagtailfontawesome
 #setuptools==41.6.0        # via gunicorn, markdown
+structlog
 django-structlog
+# From https://github.com/hynek/structlog/issues/193
+# and https://github.com/kiwicom/structlog-sentry to get our stack traces back
+structlog-sentry

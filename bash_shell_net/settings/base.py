@@ -1,7 +1,11 @@
 # Django settings for bsdev project.
+import logging
 import os
 import sys
+
 import dj_database_url
+import structlog
+from structlog_sentry import SentryJsonProcessor
 
 # This checks that the first arg to `manage.py` is `test`
 # The main use case is to turn off caching specifically for tests because it makes things unpredictable
@@ -198,14 +202,13 @@ MARKDOWN_EXTENSIONS = ['markdown.extensions.extra', 'markdown.extensions.toc', '
 WAGTAIL_SITE_NAME = 'bash-shell.net'
 TAGGIT_CASE_INSENSITIVE = True  # might avoid taggit anyway.  I do not care for it
 
-import structlog
-
 structlog.configure(
     processors=[
         structlog.stdlib.filter_by_level,
         structlog.processors.TimeStamper(fmt="iso"),
         structlog.stdlib.add_logger_name,
         structlog.stdlib.add_log_level,
+        SentryJsonProcessor(level=logging.ERROR),
         structlog.stdlib.PositionalArgumentsFormatter(),
         structlog.processors.StackInfoRenderer(),
         structlog.processors.format_exc_info,
