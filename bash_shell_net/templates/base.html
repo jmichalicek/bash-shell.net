@@ -1,4 +1,4 @@
-{% load static projects_tags wagtailcore_tags defense_league clicky_stats %}
+{% load static projects_tags wagtailcore_tags defense_league %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -27,7 +27,6 @@
       </style>
     {% endblock stylesheets %}
     {% block page_stylesheets %}{% endblock page_stylesheets %}
-    {% block clicky %}{% clicky_stats_js %}{% endblock clicky %}
   </head>
   <body>
     <div class="container-lg pb-5">

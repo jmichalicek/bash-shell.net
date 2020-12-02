@@ -1,4 +1,8 @@
 import os
+
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
 from .base import *
 
 DEBUG = False
@@ -19,8 +23,6 @@ AWS_STORAGE_BUCKET_NAME = 'bash-shell-net'
 MEDIAFILES_LOCATION = 'uploads'
 DEFAULT_FILE_STORAGE = 'bash_shell_net.storages.MediaStorage'
 
-import sentry_sdk
-from sentry_sdk.integrations.django import DjangoIntegration
 
 sentry_sdk.init(
     dsn=os.environ.get('SENTRY_DSN', ''),
@@ -29,5 +31,3 @@ sentry_sdk.init(
     # django.contrib.auth) you may enable sending PII data.
     send_default_pii=True,
 )
-
-CLICKY_SITE_ID = '101271437'
