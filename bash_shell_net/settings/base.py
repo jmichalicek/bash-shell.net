@@ -23,6 +23,15 @@ DATABASES = {
     'default': dj_database_url.config(default='sqlite:////{0}'.format(os.path.join(PROJECT_ROOT, 'bs_net.sqlite'))),
 }
 
+CACHES = {
+    # 'default': {'BACKEND': 'redis_cache.RedisCache', 'LOCATION': '%s:6379' % REDIS_HOST, 'OPTIONS': {'DB': 2,},},
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://%s:6379' % REDIS_HOST,
+        'OPTIONS': {'DB': 2,},
+    },
+}
+
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
