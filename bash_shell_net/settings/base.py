@@ -19,10 +19,6 @@ DEBUG = True
 ADMINS = (('Justin Michalicek', 'jmichalicek@gmail.com'),)
 MANAGERS = ADMINS
 
-DATABASES = {
-    'default': dj_database_url.config(default='sqlite:////{0}'.format(os.path.join(PROJECT_ROOT, 'bs_net.sqlite'))),
-}
-
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
@@ -179,8 +175,20 @@ COVERAGE_PATH_EXCLUDES = [r'.svn', r'.git', r'templates', r'static']
 
 ALLOWED_HOSTS = ['*']
 
-# CACHING
+# CACHING AND STORAGE
 REDIS_HOST = os.environ.get('REDIS_HOST', '')
+DATABASES = {
+    'default': dj_database_url.config(default='sqlite:////{0}'.format(os.path.join(PROJECT_ROOT, 'bs_net.sqlite'))),
+}
+
+CACHES = {
+    # 'default': {'BACKEND': 'redis_cache.RedisCache', 'LOCATION': '%s:6379' % REDIS_HOST, 'OPTIONS': {'DB': 2,},},
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://%s:6379' % REDIS_HOST,
+        'OPTIONS': {'DB': 2,},
+    },
+}
 
 # S3/DO spaces settings
 AWS_IS_GZIPPED = True
