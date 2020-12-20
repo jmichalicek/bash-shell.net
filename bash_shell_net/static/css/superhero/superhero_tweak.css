@@ -245,6 +245,13 @@ a:active.btn.btn-outline-primary {
   list-style-type: none;
 }
 
+.image-gallery__caption {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  font-size: small;
+  white-space: nowrap;
+}
+
 /* the <a> may want to rename this to something more generic? */
 .image-gallery .image-gallery__link {
   color: inherit;
