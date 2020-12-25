@@ -162,13 +162,15 @@ INSTALLED_APPS = (
     'modelcluster',
     'taggit',
     'wagtailfontawesome',
+    # Health/monitoring
+    'watchman',
     # My stuff
     'internetdefenseleague',
     'accounts',
     'blog',
     'projects',
     'base',
-    'on_tap',
+    'on_tap.apps.OnTapConfig',
 )
 
 COVERAGE_PATH_EXCLUDES = [r'.svn', r'.git', r'templates', r'static']
@@ -271,6 +273,13 @@ LOGGING = {
     },
     # might want django.request logger at DEBUG level
 }
+
+# python -c "import secrets; print(secrets.token_urlsafe())"
+WATCHMAN_TOKENS = os.environ.get('WATCHMAN_TOKENS', None)
+WATCHMAN_CHECKS = (
+    'watchman.checks.caches',
+    'watchman.checks.databases',
+)
 
 if TESTING:
     # faster password hashing in tests.
