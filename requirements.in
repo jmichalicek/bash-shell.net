@@ -26,3 +26,4 @@ django-structlog
 # From https://github.com/hynek/structlog/issues/193
 # and https://github.com/kiwicom/structlog-sentry to get our stack traces back
 structlog-sentry
+django-watchman
