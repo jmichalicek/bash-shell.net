@@ -17,7 +17,7 @@
       <div class="col-md-4 col-12 mt-3 mt-md-0 pr-0">
         <div class="card" style="min-height: 275px">
           <div class="card-header text-center">
-            <div class="w-100"><a href="{% pageurl batch.recipe_page %}">{{ batch.recipe_page.name }}</a></div>
+            <div class="w-100"><a href="{{ batch.recipe_page.id_and_slug_url }}">{{ batch.recipe_page.name }}</a></div>
             <small>{{ batch.recipe_page.style.name }}{% if batch.recipe_page.style.bjcp_category %} ({{ batch.recipe_page.style.bjcp_category }}){% endif %}</small>
           </div>
           <div class="card-body">
@@ -26,7 +26,7 @@
             <!-- <a href="{% pageurl batch.recipe_page %}" class="btn btn-primary">recipe</a> -->
           </div>
           <div class="card-footer">
-            <a href="{% pageurl batch %}" class="card-link">Details</a>
+            <a href="{{ batch.id_and_slug_url }}" class="card-link">Details</a>
           </div>
         </div>
       </div>
@@ -57,8 +57,8 @@
           {% for batch in upcoming_batches %}
             <tr>
               <td>
-                <a href="{% pageurl batch.recipe_page %}">{{ batch.recipe_page.name }}</a>
-                {% if batch.status != 'planned' %} (<a href="{% pageurl batch %}">Log</a>){% endif %}
+                <a href="{{ batch.recipe_page.id_and_slug_url }}">{{ batch.recipe_page.name }}</a>
+                {% if batch.status != 'planned' %} (<a href="{{ batch.id_and_slug_url }}">Log</a>){% endif %}
               </td>
               <td>{{ batch.recipe_page.style }}</td>
               <td>{{ batch.get_status_display }}</td>
@@ -84,7 +84,7 @@
       <tbody>
         {% for batch in past_batches %}
           <tr>
-            <td><a href="{% pageurl batch.recipe_page %}">{{ batch.recipe_page.name }}</a> (<a href="{% pageurl batch %}">Log</a>)</td><td>{{ batch.recipe_page.style }}</td><td>{{ batch.get_status_display }}</td><td>{{ batch.brewed_date }}</td><td>{{ batch.packaged_date|default:"" }}</td><td>{{ batch.on_tap_date|default:"" }}</td>
+            <td><a href="{{ batch.recipe_page.id_and_slug_url }}">{{ batch.recipe_page.name }}</a> (<a href="{{ batch.id_and_slug_url }}">Log</a>)</td><td>{{ batch.recipe_page.style }}</td><td>{{ batch.get_status_display }}</td><td>{{ batch.brewed_date }}</td><td>{{ batch.packaged_date|default:"" }}</td><td>{{ batch.on_tap_date|default:"" }}</td>
           </tr>
         {% endfor %}
       </tbody>

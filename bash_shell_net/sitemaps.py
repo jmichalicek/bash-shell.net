@@ -22,11 +22,13 @@ class BlogSitemap(WagtailSitemap):
     def lastmod(self, obj):
         return obj.last_published_at
 
+    def location(self, obj):
+        return obj.get_id_and_slug_url()
+
 
 class OnTapSitemap(WagtailSitemap):
     """
     Sitemap for posts
-    main_298a6006830dacabb4569bb44b23e66b2a7b1150
     """
 
     # changefreq = "never"
@@ -43,8 +45,7 @@ class OnTapSitemap(WagtailSitemap):
 
 class RecipePageSitemap(WagtailSitemap):
     """
-    Sitemap for posts
-    main_298a6006830dacabb4569bb44b23e66b2a7b1150
+    Sitemap for on_tap.RecipePage
     """
 
     # changefreq = "never"
@@ -61,8 +62,7 @@ class RecipePageSitemap(WagtailSitemap):
 
 class BatchLogPageSitemap(WagtailSitemap):
     """
-    Sitemap for posts
-    main_298a6006830dacabb4569bb44b23e66b2a7b1150
+    Sitemap for on_tap.BatchLogPage
     """
 
     # changefreq = "never"

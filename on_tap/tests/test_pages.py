@@ -34,7 +34,16 @@ class PageTreeTest(WagtailPageTests):
 
 
 class OnTapPageTest(WagtailPageTests):
+    # TODO: factories, not fixtures
     fixtures = ['on_tap/fixtures/test_pages']
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.on_tap_page = OnTapPage.objects.first()
+        cls.batch_log_index_page = BatchLogIndexPage.objects.first()
+        cls.batch_log_page = BatchLogPage.objects.first()
+        cls.recipe_index_page = RecipeIndexPage.objects.first()
+        cls.recipe_page = RecipePage.objects.first()
 
     def test_get_request_no_batches(self):
         """
@@ -82,7 +91,7 @@ class OnTapPageTest(WagtailPageTests):
             },
         )
         if not batch_index_page:
-            batch_index_page = RecipeIndexPage.objects.latest('id')
+            batch_index_page = self.batch_log_index_page
         self.assertCanCreate(batch_index_page, BatchLogPage, form_data)
         page = BatchLogPage.objects.get(slug=slug)
         return page
@@ -94,7 +103,7 @@ class OnTapPageTest(WagtailPageTests):
         for p in RecipePage.objects.all():
             publish_page(p)
 
-        batch_index = BatchLogIndexPage.objects.first()
+        batch_index = self.batch_log_index_page
         publish_page(batch_index)
 
         on_tap_batch = self._make_batch_log_page(
@@ -122,14 +131,14 @@ class OnTapPageTest(WagtailPageTests):
         for p in BatchLogPage.objects.all():
             publish_page(p)
 
-        page = OnTapPage.objects.first()
+        page = self.on_tap_page
         publish_page(page)
         page.refresh_from_db()
 
         r = self.client.get(page.url)
         self.assertEqual(r.status_code, 200)
         self.assertEqual(list(r.context['currently_on_tap']), [on_tap_batch])
-        self.assertEqual(list(r.context['upcoming_batches']), [fermenting_batch, planned_batch])
+        self.assertEqual(list(r.context['upcoming_batches']), [fermenting_batch, planned_batch, self.batch_log_page])
         self.assertEqual(list(r.context['past_batches']), [previous_batch])
         self.assertTrue('page_obj' in r.context)
         self.assertTrue('paginator' in r.context)
@@ -142,6 +151,14 @@ class RecipePageTest(WagtailPageTests):
 
     fixtures = ['on_tap/fixtures/test_pages']
 
+    @classmethod
+    def setUpTestData(cls):
+        cls.index_page = RecipeIndexPage.objects.first()
+        # TODO: Confirm that RoutablePageMixin routes only work when the RoutablePage is published.
+        # Not certain yet, but that seems to be behavior I have seen.
+        publish_page(cls.index_page)
+        cls.recipe_page = RecipePage.objects.first()
+
     @unittest.skip('Skipped because I have not written this but at least I will see skipped tests now.')
     def test_calculate_color_srm(self):
         pass
@@ -150,7 +167,6 @@ class RecipePageTest(WagtailPageTests):
         """
         Test creating a RecipePage under the RecipeIndexPage via form with expected data creates the page.
         """
-        recipe_page_index = RecipeIndexPage.objects.first()
         # Assert that a ContentPage can be made here, with this POST data
         # TODO: More tests - one with minimum post data one with everything.
         form_data = nested_form_data(
@@ -194,7 +210,7 @@ class RecipePageTest(WagtailPageTests):
                 "miscellaneous_ingredients": inline_formset([]),
             },
         )
-        self.assertCanCreate(recipe_page_index, RecipePage, form_data)
+        self.assertCanCreate(self.index_page, RecipePage, form_data)
         page = RecipePage.objects.filter(slug='test-case-recipe').first()
         publish_page(page)
         page.refresh_from_db()
@@ -202,6 +218,38 @@ class RecipePageTest(WagtailPageTests):
         # but I think it is since it'll run through the page's get_context(), template logic, etc.
         r = self.client.get(page.url)
         self.assertEqual(r.status_code, 200)
+
+    def test_get_id_and_slug_url(self):
+        """
+        Test that RecipePage.get_id_and_slug_url() returns the url route we expect.
+        """
+        page = self.recipe_page
+        # /on-tap/recipes/<pk>/<slug>/
+        self.assertEqual(f'{self.index_page.get_url()}{page.pk}/{page.slug}/', page.get_id_and_slug_url())
+
+    def test_request_by_id_and_slug_route(self):
+        # Technically a method/route on RecipePageIndex but it is to route to this model... :shrug:
+        page = self.recipe_page
+        publish_page(page)
+        r = self.client.get(page.get_id_and_slug_url())
+        self.assertEqual(200, r.status_code)
+        # TODO: test that we got the expected page - maybe add in a 2nd published page to be 100% certain
+
+    def test_request_by_id_and_slug_route_redirects_on_slug_mismatch(self):
+        """
+        Test that a GET request to the id_and_slug_url redirects to the correct slug if the requested slug does not
+        match the current slug.
+        """
+        # Technically a method/route on BatchLogPageIndex but it is to route to this model... :shrug:
+        page = self.recipe_page
+        publish_page(page)
+
+        url = page.get_id_and_slug_url()
+        url = f'{url[:-1]}1/'
+        r = self.client.get(url)
+        self.assertRedirects(
+            r, page.get_id_and_slug_url(),
+        )
 
 
 class RecipeIndexPageTest(WagtailPageTests):
@@ -235,12 +283,18 @@ class BatchLogIndexPageTest(WagtailPageTests):
 class BatchLogPageTest(WagtailPageTests):
     fixtures = ['on_tap/fixtures/test_pages']
 
+    @classmethod
+    def setUpTestData(cls):
+        cls.index_page = BatchLogIndexPage.objects.first()
+        publish_page(cls.index_page)
+        cls.recipe_page = RecipePage.objects.first()
+        publish_page(cls.recipe_page)
+        cls.batch_log_page = BatchLogPage.objects.first()
+
     def test_can_create_page(self):
         """
         Test creating a BatchLogPage under the BatchLogIndexPage via form with expected data creates the page.
         """
-        index_page = BatchLogIndexPage.objects.first()
-        recipe_page = RecipePage.objects.first()
         # TODO: More tests - one with minimum post data one with everything.
         form_data = nested_form_data(
             {
@@ -251,7 +305,7 @@ class BatchLogPageTest(WagtailPageTests):
                 'go_live_at': '',
                 'expire_at': '',
                 'name': 'Brewing The Test Case Recipe',
-                'recipe_page': recipe_page.pk,
+                'recipe_page': self.recipe_page.pk,
                 'brewed_date': '2020-07-10',
                 'packaged_date': '2020-07-25',
                 'on_tap_date': '2020-07-25',
@@ -262,12 +316,44 @@ class BatchLogPageTest(WagtailPageTests):
                 'body': streamfield([("paragraph", rich_text("<p>This is a test recipe.</p>"),)]),
             },
         )
-        self.assertCanCreate(index_page, BatchLogPage, form_data)
+        self.assertCanCreate(self.index_page, BatchLogPage, form_data)
         page = BatchLogPage.objects.filter(slug='test-case-batch').first()
         publish_page(page)
         page.refresh_from_db()
         r = self.client.get(page.url)
         self.assertEqual(r.status_code, 200)
+
+    def test_request_by_id_and_slug_route(self):
+        # Technically a method/route on BatchLogPageIndex but it is to route to this model... :shrug:
+        page = self.batch_log_page
+        # just make it published? Or have two pages for testing both published and unpublished page stuff?
+        publish_page(page)
+        r = self.client.get(page.get_id_and_slug_url())
+        self.assertEqual(200, r.status_code)
+        # TODO: test that we got the expected page - maybe add in a 2nd published page to be 100% certain
+
+    def test_request_by_id_and_slug_route_redirects_on_slug_mismatch(self):
+        """
+        Test that a GET request to the id_and_slug_url redirects to the correct slug if the requested slug does not
+        match the current slug.
+        """
+        # Technically a method/route on BatchLogPageIndex but it is to route to this model... :shrug:
+        page = self.batch_log_page
+        publish_page(page)
+
+        url = page.get_id_and_slug_url()
+        url = f'{url[:-1]}1/'
+        r = self.client.get(url)
+        self.assertRedirects(
+            r, page.get_id_and_slug_url(),
+        )
+
+    def test_get_id_and_slug_url(self):
+        """
+        Test that BatchLogPage.get_id_and_slug_url() returns the url route we expect.
+        """
+        page = BatchLogPage.objects.first()
+        self.assertEqual(f'{self.index_page.get_url()}{page.pk}/{page.slug}/', page.get_id_and_slug_url())
 
 
 class RecipeFermentableTest(TestCase):
