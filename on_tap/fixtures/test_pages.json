@@ -3,8 +3,8 @@
   "model": "accounts.user",
   "pk": 1,
   "fields": {
-    "password": "pbkdf2_sha256$180000$AlRq4DFzQbjJ$FOfa6U+/cB5F8A9pVUlwqCqKAuPCqmQx5RDAA6BOjOE=",
-    "last_login": "2020-07-24T21:20:45.783Z",
+    "password": "pbkdf2_sha256$216000$isjq49ApzrdN$8faY+G23K4TB/o3eJsqbSm2EjtiRS9kVc7B83xZxI/8=",
+    "last_login": "2020-12-31T19:01:56.887Z",
     "is_superuser": true,
     "email": "user@example.org",
     "first_name": "",
@@ -18,12 +18,33 @@
   }
 },
 {
+  "model": "sites.site",
+  "pk": 1,
+  "fields": {
+    "domain": "example.com",
+    "name": "example.com"
+  }
+},
+{
+  "model": "wagtailcore.site",
+  "pk": 1,
+  "fields": {
+    "hostname": "localhost",
+    "port": 80,
+    "site_name": "",
+    "root_page": 2,
+    "is_default_site": true
+  }
+},
+{
   "model": "wagtailcore.page",
   "pk": 1,
   "fields": {
     "path": "0001",
     "depth": 1,
     "numchild": 1,
+    "translation_key": "78f32a7f-3264-4d1d-a4af-98123dbc8881",
+    "locale": 1,
     "title": "Root",
     "draft_title": "Root",
     "slug": "root",
@@ -47,7 +68,8 @@
     "first_published_at": null,
     "last_published_at": null,
     "latest_revision_created_at": null,
-    "live_revision": null
+    "live_revision": null,
+    "alias_of": null
   }
 },
 {
@@ -57,6 +79,8 @@
     "path": "00010001",
     "depth": 2,
     "numchild": 1,
+    "translation_key": "44c8b50c-9006-4877-90a7-bff9f4285ab3",
+    "locale": 1,
     "title": "Welcome to your new Wagtail site!",
     "draft_title": "Welcome to your new Wagtail site!",
     "slug": "home",
@@ -80,7 +104,8 @@
     "first_published_at": null,
     "last_published_at": null,
     "latest_revision_created_at": null,
-    "live_revision": null
+    "live_revision": null,
+    "alias_of": null
   }
 },
 {
@@ -90,6 +115,8 @@
     "path": "000100010001",
     "depth": 3,
     "numchild": 2,
+    "translation_key": "33fe00e3-4f94-4f66-90c1-c21adcbd53f9",
+    "locale": 1,
     "title": "On Tap",
     "draft_title": "On Tap",
     "slug": "on-tap",
@@ -115,7 +142,8 @@
     "first_published_at": null,
     "last_published_at": null,
     "latest_revision_created_at": "2020-07-24T21:21:35.141Z",
-    "live_revision": null
+    "live_revision": null,
+    "alias_of": null
   }
 },
 {
@@ -125,6 +153,8 @@
     "path": "0001000100010001",
     "depth": 4,
     "numchild": 1,
+    "translation_key": "e7b8888a-dc80-4b4f-8627-e1d696fb4618",
+    "locale": 1,
     "title": "Recipes",
     "draft_title": "Recipes",
     "slug": "recipes",
@@ -150,7 +180,8 @@
     "first_published_at": null,
     "last_published_at": null,
     "latest_revision_created_at": "2020-07-24T21:21:59.713Z",
-    "live_revision": null
+    "live_revision": null,
+    "alias_of": null
   }
 },
 {
@@ -159,7 +190,9 @@
   "fields": {
     "path": "0001000100010002",
     "depth": 4,
-    "numchild": 0,
+    "numchild": 1,
+    "translation_key": "753254ac-cd97-43b7-b99c-8e89125eea9e",
+    "locale": 1,
     "title": "Batches",
     "draft_title": "Batches",
     "slug": "batches",
@@ -185,7 +218,8 @@
     "first_published_at": null,
     "last_published_at": null,
     "latest_revision_created_at": "2020-07-24T21:22:19.213Z",
-    "live_revision": null
+    "live_revision": null,
+    "alias_of": null
   }
 },
 {
@@ -195,6 +229,8 @@
     "path": "00010001000100010001",
     "depth": 5,
     "numchild": 0,
+    "translation_key": "56b08a6c-cf7d-4b76-96e1-68226b85e16a",
+    "locale": 1,
     "title": "Porter",
     "draft_title": "Porter",
     "slug": "porter",
@@ -220,7 +256,46 @@
     "first_published_at": null,
     "last_published_at": null,
     "latest_revision_created_at": "2020-07-25T16:40:45.255Z",
-    "live_revision": null
+    "live_revision": null,
+    "alias_of": null
+  }
+},
+{
+  "model": "wagtailcore.page",
+  "pk": 7,
+  "fields": {
+    "path": "00010001000100020001",
+    "depth": 5,
+    "numchild": 0,
+    "translation_key": "71d7ad39-ab72-4215-a809-c594dc996059",
+    "locale": 1,
+    "title": "Test Porter Batch - Unbrewed",
+    "draft_title": "Test Porter Batch - Unbrewed",
+    "slug": "test-porter-batch-unbrewed",
+    "content_type": [
+      "on_tap",
+      "batchlogpage"
+    ],
+    "live": false,
+    "has_unpublished_changes": true,
+    "url_path": "/home/on-tap/batches/test-porter-batch-unbrewed/",
+    "owner": [
+      "user@example.org"
+    ],
+    "seo_title": "",
+    "show_in_menus": false,
+    "search_description": "",
+    "go_live_at": null,
+    "expire_at": null,
+    "expired": false,
+    "locked": false,
+    "locked_at": null,
+    "locked_by": null,
+    "first_published_at": null,
+    "last_published_at": null,
+    "latest_revision_created_at": "2020-12-31T19:03:25.118Z",
+    "live_revision": null,
+    "alias_of": null
   }
 },
 {
@@ -280,6 +355,20 @@
   }
 },
 {
+  "model": "wagtailcore.pagerevision",
+  "pk": 5,
+  "fields": {
+    "page": 7,
+    "submitted_for_moderation": false,
+    "created_at": "2020-12-31T19:03:25.118Z",
+    "user": [
+      "user@example.org"
+    ],
+    "content_json": "{\"pk\": 7, \"path\": \"00010001000100020001\", \"depth\": 5, \"numchild\": 0, \"translation_key\": \"71d7ad39-ab72-4215-a809-c594dc996059\", \"locale\": 1, \"title\": \"Test Porter Batch - Unbrewed\", \"draft_title\": \"Test Porter Batch - Unbrewed\", \"slug\": \"test-porter-batch-unbrewed\", \"content_type\": 53, \"live\": false, \"has_unpublished_changes\": false, \"url_path\": \"/home/on-tap/batches/test-porter-batch-unbrewed/\", \"owner\": 1, \"seo_title\": \"\", \"show_in_menus\": false, \"search_description\": \"\", \"go_live_at\": null, \"expire_at\": null, \"expired\": false, \"locked\": false, \"locked_at\": null, \"locked_by\": null, \"first_published_at\": null, \"last_published_at\": null, \"latest_revision_created_at\": null, \"live_revision\": null, \"alias_of\": null, \"recipe_page\": 6, \"status\": \"planned\", \"brewed_date\": null, \"packaged_date\": null, \"on_tap_date\": null, \"off_tap_date\": null, \"original_gravity\": \"1.050\", \"final_gravity\": \"0.00\", \"body\": \"[]\", \"created_at\": \"2020-12-31T19:03:25.092Z\", \"updated_at\": \"2020-12-31T19:03:25.118Z\"}",
+    "approved_go_live_at": null
+  }
+},
+{
   "model": "on_tap.recipehop",
   "pk": 1,
   "fields": {
@@ -308,6 +397,7 @@
     "amount_units": "lb",
     "notes": "",
     "name": "Crisp Marris Otter",
+    "maltster": "",
     "type": "grain",
     "color": "3.000",
     "created_at": "2020-07-25T16:40:45.227Z",
@@ -324,6 +414,7 @@
     "amount_units": "oz",
     "notes": "",
     "name": "Crisp Brown Malt",
+    "maltster": "",
     "type": "grain",
     "color": "85.000",
     "created_at": "2020-07-25T16:40:45.228Z",
@@ -340,6 +431,7 @@
     "amount_units": "oz",
     "notes": "",
     "name": "Briess Caramel 40",
+    "maltster": "",
     "type": "grain",
     "color": "40.000",
     "created_at": "2020-07-25T16:40:45.229Z",
@@ -356,6 +448,7 @@
     "amount_units": "oz",
     "notes": "",
     "name": "Briess Caramel 80",
+    "maltster": "",
     "type": "grain",
     "color": "80.000",
     "created_at": "2020-07-25T16:40:45.229Z",
@@ -372,6 +465,7 @@
     "amount_units": "oz",
     "notes": "",
     "name": "Crisp Chocolate",
+    "maltster": "",
     "type": "grain",
     "color": "450.000",
     "created_at": "2020-07-25T16:40:45.230Z",
@@ -388,6 +482,7 @@
     "amount_units": "oz",
     "notes": "",
     "name": "Crisp Pale Chocolate",
+    "maltster": "",
     "type": "grain",
     "color": "225.000",
     "created_at": "2020-07-25T16:40:45.230Z",
@@ -433,6 +528,7 @@
     "carbonation_min": null,
     "carbonation_max": null,
     "notes": "",
+    "external_url": "",
     "created_at": "2020-07-25T16:25:01.066Z",
     "updated_at": "2020-07-25T16:25:01.066Z"
   }
@@ -461,6 +557,23 @@
     "conclusion": "[{\"type\": \"paragraph\", \"value\": \"<p>And now after making that, you have beer.</p>\", \"id\": \"c578ceff-a2b2-4ed2-9744-23b67c9dec4a\"}]",
     "created_at": "2020-07-25T16:40:45.218Z",
     "updated_at": "2020-07-25T16:40:45.218Z"
+  }
+},
+{
+  "model": "on_tap.batchlogpage",
+  "pk": 7,
+  "fields": {
+    "recipe_page": 6,
+    "status": "planned",
+    "brewed_date": null,
+    "packaged_date": null,
+    "on_tap_date": null,
+    "off_tap_date": null,
+    "original_gravity": "1.050",
+    "final_gravity": "0.000",
+    "body": "[]",
+    "created_at": "2020-12-31T19:03:25.092Z",
+    "updated_at": "2020-12-31T19:03:25.092Z"
   }
 },
 {

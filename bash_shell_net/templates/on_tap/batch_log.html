@@ -41,7 +41,7 @@
               <li>Brewed: {{ page.brewed_date|default:"N/A" }}</li>
               <li>Packaged: {{ page.packaged_date|default:"N/A" }}</li>
               <li>On Tap: {{ page.on_tap_date|default:"N/A" }}</li>
-              <li>Recipe: <a href="{% pageurl page.recipe_page %}">{{ page.recipe_page.name }}</a></li>
+              <li>Recipe: <a href="{{ page.recipe_page.id_and_slug_url }}">{{ page.recipe_page.name }}</a></li>
             </ul>
           </div>
         </div>

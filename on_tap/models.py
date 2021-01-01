@@ -5,8 +5,9 @@ from django.contrib.postgres.fields import CICharField
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db import models
 from django.db.models.query import QuerySet
-from django.http import HttpRequest, HttpResponse
+from django.http import Http404, HttpRequest, HttpResponse, HttpResponseRedirect
 from django.utils import timezone
+from django.utils.functional import cached_property
 
 from modelcluster.fields import ParentalKey
 from wagtail.admin.edit_handlers import (
@@ -513,7 +514,7 @@ class VolumeUnit:
     QUART = 'quart'
 
 
-class RecipePage(RoutablePageMixin, Page):
+class RecipePage(Page):
     """
     Page for a beer recipe
 
@@ -688,6 +689,12 @@ class RecipePage(RoutablePageMixin, Page):
     def __str__(self):
         return self.name
 
+    @cached_property
+    def id_and_slug_url(self) -> str:
+        # tempted to just put this in actual cache instead, but that feels dirty on a model even though this model
+        # is really more akin to a django view
+        return self.get_id_and_slug_url()
+
     def batch_volume_in_gallons(self) -> Decimal:
         """
         Converts the batch volume to gallons for use in SRM estimation using Morey's equation
@@ -725,6 +732,18 @@ class RecipePage(RoutablePageMixin, Page):
             weight += fermentable.weight_in_pounds()
         return weight
 
+    def get_id_and_slug_url(self) -> str:
+        """
+        Returns the url path for on_tap_recipe_by_id_and_slug route
+        """
+        # lightly modified from https://github.com/wagtail/wagtail/blob/ba6f94def17b8bbc66002cbc7af60ed422658ff1/wagtail/contrib/routable_page/templatetags/wagtailroutablepage_tags.py#L10
+        parent = self.get_parent().specific
+        base_url = parent.relative_url(self.get_site())
+        routed_url = parent.reverse_subpage('on_tap_recipe_by_id_and_slug', kwargs={'id': self.pk, 'slug': self.slug})
+        if not base_url.endswith('/'):
+            base_url += '/'
+        return base_url + routed_url
+
 
 class BatchStatus:
     """
@@ -739,7 +758,7 @@ class BatchStatus:
     IN_PROGRESS_STATUSES = [PLANNED, BREWING, FERMENTING]
 
 
-class BatchLogPage(RoutablePageMixin, Page):
+class BatchLogPage(Page):
     """
     A homebrew batch intended for use within Wagtail
 
@@ -814,11 +833,48 @@ class BatchLogPage(RoutablePageMixin, Page):
     def __str__(self) -> str:
         return self.title
 
+    @cached_property
+    def id_and_slug_url(self) -> str:
+        # tempted to just put this in actual cache instead, but that feels dirty on a model even though this model
+        # is really more akin to a django view
+        return self.get_id_and_slug_url()
+
     def get_abv(self) -> Decimal:
         """
         Returns the calculated ABV from gravity readings using the formula (OG-FG) x 131.25 = ABV
         """
         return (self.original_gravity - self.final_gravity) * Decimal('131.25')
+
+    # def calculate_color_srm(self) -> int:
+    #     """
+    #     Returns the estimated color of this batch in SRM using Morey's equation of SRM = 1.4922 * (MCU ^ 0.6859).
+    #
+    #     This accounts for differences in actual volume versus the expected volume of the batch.
+    #     """
+    #     TODO: Store actual final volume of the batch!
+    #     # TODO: maybe just store this like I am with everything else, grabbing the value from other software.
+    #     # It was fun to learn and is here now, though.
+    #     total_mcu = Decimal('0')
+    #
+    #     for fermentable in self.recipe_page.fermentables.all():
+    #         total_mcu += fermentable.calculate_mcu(self.batch_volume_in_gallons())
+    #
+    #     srm = Decimal('1.4922') * (total_mcu ** Decimal('0.6859'))
+    #     return int(srm.quantize(Decimal('1')))
+
+    def get_id_and_slug_url(self) -> str:
+        """
+        Returns the url path for on_tap_recipe_by_id_and_slug route
+        """
+        # lightly modified from https://github.com/wagtail/wagtail/blob/ba6f94def17b8bbc66002cbc7af60ed422658ff1/wagtail/contrib/routable_page/templatetags/wagtailroutablepage_tags.py#L10
+        parent = self.get_parent().specific
+        base_url = parent.relative_url(self.get_site())
+        routed_url = parent.reverse_subpage(
+            'on_tap_batch_log_by_id_and_slug', kwargs={'id': self.pk, 'slug': self.slug}
+        )
+        if not base_url.endswith('/'):
+            base_url += '/'
+        return base_url + routed_url
 
 
 class OnTapPage(Page):
@@ -935,7 +991,7 @@ class OnTapPage(Page):
         return context
 
 
-class RecipeIndexPage(Page):
+class RecipeIndexPage(RoutablePageMixin, Page):
     """
     Root index for recipes
     """
@@ -950,8 +1006,30 @@ class RecipeIndexPage(Page):
     def children(self: 'RecipeIndexPage') -> 'QuerySet[RecipePage]':
         return self.get_children().specific().live()
 
+    @route(r'^(?P<id>\d+)/(?P<slug>[-_\w]+)/$', name="on_tap_recipe_by_id_and_slug")
+    def recipe_by_id_and_slug(self, request, id, slug, *args, **kwargs) -> HttpResponse:
+        """
+        Look up post using the a "slug" which is really the post id followed by the actual slug
+        """
+        # TODO: I am using this pattern in several places, make it more generic/reusable
+        page = RecipePage.objects.filter(pk=id)
+        if not getattr(request, 'is_preview', False):
+            page = page.live()
+        page = page.first()
+        if not page:
+            raise Http404
+        if not page.slug == slug:
+            # using this for efficiency vs page.get_id_and_slug_url()
+            # TODO: review wagtail docs to see if there is a simple and efficient way to have it just default
+            # to the id and slug url for page.url
+            return HttpResponseRedirect(
+                self.url + self.reverse_subpage('on_tap_recipe_by_id_and_slug', kwargs={'id': id, 'slug': page.slug})
+            )
+        # or return blog_page.serve(request, *args, **kwargs) ??
+        return page.serve(request, *args, **kwargs)
 
-class BatchLogIndexPage(Page):
+
+class BatchLogIndexPage(RoutablePageMixin, Page):
     """
     Root index for batches.
 
@@ -968,3 +1046,26 @@ class BatchLogIndexPage(Page):
 
     def children(self: 'BatchLogIndexPage') -> 'QuerySet[BatchLogPage]':
         return self.get_children().specific().live()
+
+    @route(r'^(?P<id>\d+)/(?P<slug>[-_\w]+)/$', name="on_tap_batch_log_by_id_and_slug")
+    def batch_log_by_id_and_slug(self, request, id, slug, *args, **kwargs) -> HttpResponse:
+        """
+        Look up post using the a "slug" which is really the post id followed by the actual slug
+        """
+        # TODO: I am using this pattern in several places, make it more generic/reusable
+        page = BatchLogPage.objects.filter(pk=id)
+        if not getattr(request, 'is_preview', False):
+            page = page.live()
+        page = page.first()
+        if not page:
+            raise Http404
+
+        if not page.slug == slug:
+            # using this for efficiency vs page.get_id_and_slug_url()
+            # TODO: review wagtail docs to see if there is a simple and efficient way to have it just default
+            # to the id and slug url for page.url
+            return HttpResponseRedirect(
+                self.url + self.reverse_subpage('on_tap_batch_log_by_id_and_slug', kwargs={'id': id, 'slug': page.slug})
+            )
+        # or return blog_page.serve(request, *args, **kwargs) ??
+        return page.serve(request, *args, **kwargs)

@@ -4,6 +4,15 @@
 Main project for http://bash-shell.net/
 
 
+### Test Fixtures
+
+```
+# For blog page tests
+python manage.py dumpdata --natural-foreign --indent=2 -e blog.post -e blog.tag accounts sites wagtailcore.site wagtailcore.page wagtailcore.pagerevision
+
+# May need to add wagtailcore.workflowpage, wagtailcore.workflowtask, wagtailcore.task, wagtailcore.workflow, wagtailcore.groupapprovaltask
+```
+
 # Tools
 
 ## Frameworks
