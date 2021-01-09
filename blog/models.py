@@ -4,9 +4,9 @@ from django.db.models import Q
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.functional import cached_property
 from django.utils.text import slugify
 
+from base.mixins import IdAndSlugUrlIndexMixin, IdAndSlugUrlMixin
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from modelcluster.fields import ParentalKey
 from taggit.models import TaggedItemBase
@@ -95,7 +95,7 @@ class BlogPageTag(TaggedItemBase):
     content_object = ParentalKey('blog.BlogPage', on_delete=models.CASCADE, related_name='tagged_items')
 
 
-class BlogPageIndex(RoutablePageMixin, Page):
+class BlogPageIndex(RoutablePageMixin, IdAndSlugUrlIndexMixin, Page):
     """
     Index page to list blog posts
     """
@@ -103,6 +103,8 @@ class BlogPageIndex(RoutablePageMixin, Page):
     # For pagination, look here: https://stackoverflow.com/questions/40365500/pagination-in-wagtail
     # and for general: https://github.com/wagtail/bakerydemo/blob/master/bakerydemo/blog/models.py#L133
     template = 'wagtail_templates/blog/post_index.html'
+    id_and_slug_url_name = 'blog_post_by_id_and_slug'
+    id_and_slug_url_class = 'blog.models.BlogPage'
 
     # subpage_types = ['BlogPost']
 
@@ -143,29 +145,18 @@ class BlogPageIndex(RoutablePageMixin, Page):
     @route(r'^(?P<id>\d+)/(?P<slug>[-_\w]+)/$', name="blog_post_by_id_and_slug")
     def blog_post_by_id_and_slug(self, request, id, slug, *args, **kwargs) -> HttpResponse:
         """
-        Look up post using the a "slug" which is really the post id followed by the actual slug
+        Look up BlogPage using the id and slug, using just the id for the actual lookup
         """
-        page = BlogPage.objects.filter(pk=id)
-        if not getattr(request, 'is_preview', False):
-            page = page.live()
-        page = page.first()
-        if not page:
-            raise Http404
-
-        if not page.slug == slug:
-            # using this for efficiency vs page.get_id_and_slug_url()
-            # TODO: review wagtail docs to see if there is a simple and efficient way to have it just default
-            # to the id and slug url for page.url
-            return HttpResponseRedirect(
-                self.url + self.reverse_subpage('blog_post_by_id_and_slug', kwargs={'id': id, 'slug': page.slug})
-            )
-        # or return blog_page.serve(request, *args, **kwargs) ??
-        return page.serve(request, *args, **kwargs)
+        # TODO: Find a cleaner way to do this where I do not have to decorate a method here just to directly call
+        # the method on IdAndSlugUrlIndexMixin?
+        return self.page_by_id_and_slug(request, id, slug, *args, **kwargs)
 
 
-class BlogPage(Page):
+class BlogPage(IdAndSlugUrlMixin, Page):
 
     template = 'wagtail_templates/blog/post_detail.html'
+    id_and_slug_url_name = 'blog_post_by_id_and_slug'
+
     parent_page_types = ['BlogPageIndex']
     subpage_types = []
 
@@ -226,12 +217,6 @@ class BlogPage(Page):
     def __str__(self):
         return self.title
 
-    @cached_property
-    def id_and_slug_url(self) -> str:
-        # tempted to just put this in actual cache instead, but that feels dirty on a model even though this model
-        # is really more akin to a django view
-        return self.get_id_and_slug_url()
-
     def get_context(self, request):
         context = super().get_context(request)
 
@@ -262,15 +247,3 @@ class BlogPage(Page):
         context['previous_post'] = previous_post
         context['next_post'] = next_post
         return context
-
-    def get_id_and_slug_url(self) -> str:
-        """
-        Returns the url path for post_by_id_and_slug route
-        """
-        # lightly modified from https://github.com/wagtail/wagtail/blob/ba6f94def17b8bbc66002cbc7af60ed422658ff1/wagtail/contrib/routable_page/templatetags/wagtailroutablepage_tags.py#L10
-        parent = self.get_parent().specific
-        base_url = parent.relative_url(self.get_site())
-        routed_url = parent.reverse_subpage('blog_post_by_id_and_slug', kwargs={'id': self.pk, 'slug': self.slug})
-        if not base_url.endswith('/'):
-            base_url += '/'
-        return base_url + routed_url
