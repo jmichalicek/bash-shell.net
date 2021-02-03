@@ -14,7 +14,7 @@ class Homepage(Page):
     Base homepage for the root of the site
     """
 
-    template = 'wagtail_templates/base/homepage.html'
+    template = 'base/homepage.html'
 
     # subpage_types = ['BlogPost']
 
@@ -58,7 +58,7 @@ class StandardPage(Page):
     A generic content page. Useful for about page, etc. where it's not part of another
     app or browsing tree.
     """
-    template = 'wagtail_templates/base/standard_page.html'
+    template = 'base/standard_page.html'
 
     introduction = models.TextField(help_text='Text to describe the page', blank=True)
 

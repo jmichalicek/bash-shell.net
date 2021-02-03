@@ -6,7 +6,6 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
 
-from base.mixins import IdAndSlugUrlIndexMixin, IdAndSlugUrlMixin
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from modelcluster.fields import ParentalKey
 from taggit.models import TaggedItemBase
@@ -15,84 +14,15 @@ from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 from wagtail.core.fields import StreamField
 from wagtail.core.models import Page
 from wagtail.search import index
+
+from base.mixins import IdAndSlugUrlIndexMixin, IdAndSlugUrlMixin
 from wagtail_blocks.fields import STANDARD_STREAMFIELD_FIELDS
-
-from .managers import PublishedPostQuerySet
-
-
-class Tag(models.Model):
-    """
-    Category which posts belong to
-
-    Legacy model from old, pre-wagtail blog
-    """
-
-    # name indexed because we order on name
-    name = models.CharField(max_length=50, unique=True, db_index=True)
-    slug = models.SlugField(max_length=50)
-
-    class Meta:
-        ordering = ['name']
-
-    def __str__(self):
-        return self.name
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.name.lower())
-        super(Tag, self).save(*args, **kwargs)
-
-
-class Post(models.Model):
-    """
-    Model for each separate post
-
-    Legacy model from old, pre-wagtail blog
-    """
-
-    title = models.CharField(max_length=100)
-    content = models.TextField(blank=True)
-    created_date = models.DateTimeField(auto_now_add=True)
-    updated_date = models.DateTimeField(auto_now=True)
-    tags = models.ManyToManyField('blog.Tag', blank=True, related_name='posts')
-    is_published = models.BooleanField(db_index=True, default=False, blank=True)
-    published_date = models.DateTimeField(db_index=True, null=True, default=None, blank=True)
-    user = models.ForeignKey(
-        'accounts.User',
-        null=True,
-        on_delete=models.SET_NULL,
-        default=None,
-        blank=True,
-        db_index=True,
-        related_name='posts',
-    )
-    slug = models.SlugField(
-        help_text='Automatically built from the title.', db_index=True, blank=True, default='', max_length=100
-    )
-    objects = PublishedPostQuerySet.as_manager()
-
-    def get_absolute_url(self):
-        # make sure the url date is utc.  If not, annoying things happen...
-        # either posts created when the day is a day earlier in local time than in UTC
-        # become unreachable or everything has to be done in UTC and then the web browser
-        # set date and time is incorrect when creating a post.  So allow proper user timezone
-        # but create the url always as UTC
-        if self.is_published and self.published_date and self.published_date <= timezone.now():
-            return reverse('blog_post_detail', args=[self.slug])
-        else:
-            return reverse('blog_post_preview', args=[self.slug])
-
-    def __str__(self):
-        return self.title
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.title.lower())
-        super(Post, self).save(*args, **kwargs)
 
 
 class BlogPageTag(TaggedItemBase):
-    content_object = ParentalKey('blog.BlogPage', on_delete=models.CASCADE, related_name='tagged_items')
+    content_object = ParentalKey(
+        "blog.BlogPage", on_delete=models.CASCADE, related_name="tagged_items"
+    )
 
 
 class BlogPageIndex(RoutablePageMixin, IdAndSlugUrlIndexMixin, Page):
@@ -102,9 +32,9 @@ class BlogPageIndex(RoutablePageMixin, IdAndSlugUrlIndexMixin, Page):
 
     # For pagination, look here: https://stackoverflow.com/questions/40365500/pagination-in-wagtail
     # and for general: https://github.com/wagtail/bakerydemo/blob/master/bakerydemo/blog/models.py#L133
-    template = 'wagtail_templates/blog/post_index.html'
-    id_and_slug_url_name = 'blog_post_by_id_and_slug'
-    id_and_slug_url_class = 'blog.models.BlogPage'
+    template = "blog/post_index.html"
+    id_and_slug_url_name = "blog_post_by_id_and_slug"
+    id_and_slug_url_class = "blog.models.BlogPage"
 
     # subpage_types = ['BlogPost']
 
@@ -124,9 +54,11 @@ class BlogPageIndex(RoutablePageMixin, IdAndSlugUrlIndexMixin, Page):
         # TODO: move this to a mixin similar to django's ListView.  WagtailListView or something.
         # try with pagination
         context = super().get_context(request)
-        posts = BlogPage.objects.descendant_of(self).live().order_by('-last_published_at')
+        posts = (
+            BlogPage.objects.descendant_of(self).live().order_by("-last_published_at")
+        )
         paginator = Paginator(posts, 15)  # Show 5 resources per page
-        page_number = request.GET.get('page')
+        page_number = request.GET.get("page")
         try:
             page = paginator.page(page_number)
         except PageNotAnInteger:
@@ -137,13 +69,15 @@ class BlogPageIndex(RoutablePageMixin, IdAndSlugUrlIndexMixin, Page):
             page = paginator.page(paginator.num_pages)
 
         # make the variable 'resources' available on the template
-        context['paginator'] = paginator
-        context['posts'] = page.object_list
-        context['page_obj'] = page
+        context["paginator"] = paginator
+        context["posts"] = page.object_list
+        context["page_obj"] = page
         return context
 
-    @route(r'^(?P<id>\d+)/(?P<slug>[-_\w]+)/$', name="blog_post_by_id_and_slug")
-    def blog_post_by_id_and_slug(self, request, id, slug, *args, **kwargs) -> HttpResponse:
+    @route(r"^(?P<id>\d+)/(?P<slug>[-_\w]+)/$", name="blog_post_by_id_and_slug")
+    def blog_post_by_id_and_slug(
+        self, request, id, slug, *args, **kwargs
+    ) -> HttpResponse:
         """
         Look up BlogPage using the id and slug, using just the id for the actual lookup
         """
@@ -154,10 +88,10 @@ class BlogPageIndex(RoutablePageMixin, IdAndSlugUrlIndexMixin, Page):
 
 class BlogPage(IdAndSlugUrlMixin, Page):
 
-    template = 'wagtail_templates/blog/post_detail.html'
-    id_and_slug_url_name = 'blog_post_by_id_and_slug'
+    template = "blog/post_detail.html"
+    id_and_slug_url_name = "blog_post_by_id_and_slug"
 
-    parent_page_types = ['BlogPageIndex']
+    parent_page_types = ["BlogPageIndex"]
     subpage_types = []
 
     # body = StreamField(BaseStreamBlock(), verbose_name="Page body", blank=True)
@@ -201,16 +135,21 @@ class BlogPage(IdAndSlugUrlMixin, Page):
     #     default=None,
     # )
 
-    content_panels = Page.content_panels + [StreamFieldPanel('body')]
+    content_panels = Page.content_panels + [StreamFieldPanel("body")]
     promote_panels = Page.promote_panels + [
-        FieldPanel('tags'),
+        FieldPanel("tags"),
     ]
 
     search_fields = Page.search_fields + [
-        index.SearchField('body'),
-        index.SearchField('tags'),
+        index.SearchField("body"),
+        index.SearchField("tags"),
         index.RelatedFields(
-            'owner', (index.SearchField('email'), index.SearchField('first_name'), index.SearchField('last_name'))
+            "owner",
+            (
+                index.SearchField("email"),
+                index.SearchField("first_name"),
+                index.SearchField("last_name"),
+            ),
         ),
     ]
 
@@ -224,26 +163,38 @@ class BlogPage(IdAndSlugUrlMixin, Page):
             # TODO: Is this really going to happen? Same first published but id lower? or higher?
             # I think it would work just as well to just make this:
             # BP.live().filter(first_published_at__lte=self.first_published_at).exclude(pk=self.pk).order_by('-first_published_at', 'id')
-            previous_post_q = Q(first_published_at=self.first_published_at, id__lt=self.id)
-            previous_post_q = previous_post_q | Q(first_published_at__lt=self.first_published_at)
+            previous_post_q = Q(
+                first_published_at=self.first_published_at, id__lt=self.id
+            )
+            previous_post_q = previous_post_q | Q(
+                first_published_at__lt=self.first_published_at
+            )
             previous_post = (
                 BlogPage.objects.live()
                 .filter(previous_post_q)
                 .exclude(pk=self.pk)
-                .order_by('-first_published_at', 'id')
+                .order_by("-first_published_at", "id")
                 .first()
             )
         else:
-            previous_post = BlogPage.objects.live().order_by('-first_published_at', 'id').first()
+            previous_post = (
+                BlogPage.objects.live().order_by("-first_published_at", "id").first()
+            )
 
         if self.first_published_at and self.pk:
             next_post_q = Q(first_published_at=self.first_published_at, id__gt=self.id)
             # is there a better way to handle this being used in unpublished previews?
-            next_post_q = next_post_q | Q(first_published_at__gt=self.first_published_at)
+            next_post_q = next_post_q | Q(
+                first_published_at__gt=self.first_published_at
+            )
             next_post = BlogPage.objects.live().filter(next_post_q)
-            next_post = next_post.exclude(pk=self.pk).order_by('first_published_at', '-id').first()
+            next_post = (
+                next_post.exclude(pk=self.pk)
+                .order_by("first_published_at", "-id")
+                .first()
+            )
         else:
             next_post = None
-        context['previous_post'] = previous_post
-        context['next_post'] = next_post
+        context["previous_post"] = previous_post
+        context["next_post"] = next_post
         return context

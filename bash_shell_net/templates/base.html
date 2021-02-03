@@ -46,10 +46,6 @@
             {% endcomment %}
             <li class="nav-item"><a class="nav-link" href="/blog">Home</a></li>
             <li class="nav-item"><a class="nav-link" href="/on-tap">On Tap</a></li>
-            {% comment %}
-              Maybe move this to a blog subnav somewhere?
-              <li class="nav-item"><a class="nav-link" href="/archives#">Archive</a></li>
-            {% endcomment %}
             <li class="nav-item"><a class="nav-link" href="{% url 'projects_project_list' %}">Projects</a></li>
             <li class="nav-item"><a class="nav-link" href="{% url 'opensource' %}">Open Source</a></li>
             <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
@@ -78,7 +74,6 @@
           <h6>Sections</h6>
           <ul class="nav flex-column">
             <li><a href="/#">Home</a></li>
-            <li><a href="/archives/#">Archive</a></li>
             <li><a href="{% url 'projects_project_list' %}">Projects</a></li>
             <li><a href="{% url 'opensource' %}">Open Source</a></li>
             <li><a href="{% url 'about' %}">About</a></li>
