@@ -89,7 +89,7 @@
             </div>
             <div class="col-12 col-xl-6">
               <div class="row">
-                <dt class="beer-style-guide__srm col-12">Color:</dt><dd class="col-12">{% if page.calculate_color_srm %}<div class="text-center recipe-stats__srm"">{{ page.calculate_color_srm|floatformat:"0" }} srm</div>{% else %}N/A{% endif %}</dd>
+                <dt class="beer-style-guide__srm col-12">Color:</dt><dd class="col-12">{% if page.calculate_color_srm %}<div class="text-center recipe-stats__srm">{{ page.calculate_color_srm|floatformat:"0" }} srm</div>{% else %}N/A{% endif %}</dd>
               </div>
             </div>
           </dl>
@@ -218,7 +218,7 @@
         {% for hop in page.hops.all %}
           <tr>
             <td>{{ hop.name }}</td>
-            <td>{{ hop.amount|floatformat:"3" }} {{ hop.amount_units }}</td>
+            <td>{{ hop.amount|floatformat:"2" }} {{ hop.amount_units }}</td>
             <td>{{ hop.get_form_display }}</td>
             <td>{{ hop.get_use_step_display }}</td>
             <td>{{ hop.use_time }}</td>
@@ -240,7 +240,7 @@
         {% for yeast in page.yeasts.all %}
           <tr>
             <td>{{ yeast }}</td>
-            <td>{{ yeast.amount|floatformat:"3" }} {{ yeast.amount_units }}</td>
+            <td>{{ yeast.amount|floatformat:"2" }} {{ yeast.amount_units }}</td>
             <td>{{ yeast.get_yeast_type_display }}</td>
           </tr>
         {% endfor %}
@@ -263,7 +263,7 @@
           {% for misc in page.miscellaneous_ingredients.all %}
             <tr>
               <td>{{ misc.name }}</td>
-              <td>{{ misc.amount|floatformat:"3" }} {{ hop.amount_units }}</td>
+              <td>{{ misc.amount|floatformat:"2" }} {{ misc.amount_units }}</td>
               <td>{{ misc.get_type_display }}</td>
               <td>{{ misc.get_use_step_display }}</td>
               <td>{{ misc.use_time }}</td>
