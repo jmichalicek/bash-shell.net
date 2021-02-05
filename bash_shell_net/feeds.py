@@ -1,3 +1,5 @@
+
+# This all needs fixed for wagtail
 from django.contrib.syndication.views import Feed
 
 from blog.models import BlogPage

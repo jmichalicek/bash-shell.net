@@ -1,0 +1,42 @@
+[run]
+branch = True
+source = .
+omit =
+    */migrations/*
+    bash_shell_net/wsgi.py
+    bash_shell_net/asgi.py
+    bash_shell_net/settings/*.py
+    manage.py
+    */apps.py
+    */admin.py
+    */node_modules/*
+    .venv/*
+    */factories.py
+    bash_shell_net/templates/404.html
+    bash_shell_net/templates/flatpages/*
+    */tests/*.py
+    bash_shell_net/storages.py
+
+plugins =
+    django_coverage_plugin
+
+[report]
+fail_under = 80
+show_missing = True
+skip_covered = True
+exclude_lines =
+    pragma: no cover
+
+    if self\.debug
+
+    raise AssertionError
+    raise NotImplementedError
+
+    if 0:
+    if __name__ == .__main__.:
+
+
+ignore_errors = True
+
+[html]
+directory = coverage_html_report

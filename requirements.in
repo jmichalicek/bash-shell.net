@@ -5,6 +5,8 @@ dj-database-url
 django-redis
 whitenoise
 psycopg2-binary
+wagtail
+wagtailfontawesome
 pytz
 gunicorn
 boto3
@@ -13,17 +15,20 @@ markdown
 requests
 https://github.com/jmichalicek/django-internetdefenseleague/archive/master.zip
 # django-internetdefenseleague-master = {git = "https://github.com/jmichalicek/django-internetdefenseleague.git",ref = "d9849b553885d36b3650d8f36c8a86f79b0cd37e"}
-sentry_sdk
 pygments
-django-coverage
-django-debug-toolbar
+
+# Testing
+coverage
+django_coverage_plugin
 factory-boy
-wagtail
-wagtailfontawesome
-#setuptools==41.6.0        # via gunicorn, markdown
+
+# Logging
 structlog
 django-structlog
+sentry_sdk
 # From https://github.com/hynek/structlog/issues/193
 # and https://github.com/kiwicom/structlog-sentry to get our stack traces back
 structlog-sentry
+django-debug-toolbar
 django-watchman
+
