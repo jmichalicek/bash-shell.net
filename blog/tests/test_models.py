@@ -22,9 +22,7 @@ class BlogPageTest(WagtailPageTests):
         cls.index_page = BlogPageIndex.objects.live().first()
         cls.published_blog_page = BlogPage.objects.live().first()
 
-    @unittest.skip(
-        "Skipped because I have not written this but at least I will see skipped tests now."
-    )
+    @unittest.skip("Skipped because I have not written this but at least I will see skipped tests now.")
     def test_can_create_page(self):
         """
         Test creating a BlogPage under the BlogPageIndex via form with expected data creates the page.
@@ -37,8 +35,7 @@ class BlogPageTest(WagtailPageTests):
         """
         blog_page = BlogPage.objects.live().first()
         self.assertEqual(
-            f"/blog-index/{blog_page.pk}/{blog_page.slug}/",
-            blog_page.get_id_and_slug_url(),
+            f"/blog-index/{blog_page.pk}/{blog_page.slug}/", blog_page.get_id_and_slug_url(),
         )
 
     def test_request_by_id_and_slug_route(self):
