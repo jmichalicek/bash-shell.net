@@ -28,14 +28,15 @@
     {{ block.super }}
   {% endwith %}
   <div class="blog-post col-12">
-    <div class="row">
-      <div class="col-sm-8">
-        <p>
-          {{ page.body }}
-        </p>
-      </div>
-      <div class="col-sm-4">
-        <div class="card">
+    <!--
+      some hackery going on here - use display: block on larger screens so that I can float these to the right and get
+      long intro text text to wrap around them but use display: flex and column-reverse on smaller screens so that
+      I can drop the floated div down below the introduction text. This way I don't have to duplicate data in elements
+      which get hidden or shown on different screen sizes.
+    -->
+    <div class="d-flex flex-column-reverse d-md-block">
+      <div class="d-md-block col-12 col-md-4 float-right">
+        <div class="card row">
           <div class="card-body">
             <ul class="list-unstyled">
               <li>Brewed: {{ page.brewed_date|default:"N/A" }}</li>
@@ -45,6 +46,11 @@
             </ul>
           </div>
         </div>
+      </div>
+      <div>
+        <p>
+          {{ page.body }}
+        </p>
       </div>
     </div>
     <h2>{{ page.name }}</h2>
