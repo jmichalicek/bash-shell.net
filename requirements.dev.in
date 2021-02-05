@@ -1,0 +1,6 @@
+-c requirements.txt
+
+coverage
+django_coverage_plugin
+factory-boy
+pywatchman
