@@ -3,8 +3,32 @@ import os
 import sys
 
 if __name__ == "__main__":
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "bash_shell_net.settings")
+    # Coverage related stuff from https://adamj.eu/tech/2019/04/30/getting-a-django-application-to-100-percent-coverage/
+    try:
+        command = sys.argv[1]
+    except IndexError:
+        command = "help"
+    running_tests = command == 'test'
+
+    if running_tests:
+        os.environ["DJANGO_SETTINGS_MODULE"] = "bash_shell_net.settings.test"
+        from coverage import Coverage
+
+        cov = Coverage()
+        cov.erase()
+        cov.start()
+    else:
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "bash_shell_net.settings.local")
 
     from django.core.management import execute_from_command_line
 
     execute_from_command_line(sys.argv)
+
+    if running_tests:
+        cov.stop()
+        cov.save()
+        covered = cov.report()
+        # I'm a slacker... set to 70 since my current coverage is at 72%.
+        # Time to add more tests.
+        if covered < 70:
+            sys.exit(1)

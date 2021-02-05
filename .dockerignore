@@ -11,3 +11,4 @@ media
 .python-version
 *.sql
 src/
+.coverage
