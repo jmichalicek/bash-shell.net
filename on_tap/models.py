@@ -27,6 +27,49 @@ from wagtail.snippets.edit_handlers import SnippetChooserPanel
 from wagtail.snippets.models import register_snippet
 from wagtail_blocks.fields import STANDARD_STREAMFIELD_FIELDS
 
+from enum import Enum
+
+class VolumeToGallonsConverter(Enum):
+    """
+    Multipliers to convert from other volume units to gallons.
+
+    Multiply other volumes times these to convert to gallons. 4 quarts = 1 gallon, so multiple quarts by 0.25, etc.
+    """
+    # TODO: Similarly to VolumeUnit, making this a models.Choices subclass like
+    # VolumeToGallonsConverter(decimal.Decimal, models.Choices):
+    # might be a good idea.
+    GALLON = Decimal(1)
+    FLUID_OZ = Decimal('0.0078125')
+    QUART = Decimal('0.25')
+    LITER = Decimal('0.26417287')
+
+
+class RecipeType:
+    """
+    The type of beer recipe
+    """
+
+    # or just use ints and enum this?
+    ALL_GRAIN = 'all_grain'
+    EXTRACT = 'extract'
+    PARTIAL_MASH = 'partial_mash'
+
+
+class VolumeUnit(Enum):
+    # TODO: Django's models.TextChoices would be great here.
+    FLUID_OZ = 'fl_oz'
+    LITER = 'l'
+    GALLON = 'gal'
+    QUART = 'quart'
+
+
+def convert_volume_to_gallons(volume: Decimal, unit: VolumeUnit) -> Decimal:
+        """
+        Converts the batch volume to gallons for use in SRM estimation using Morey's equation
+        """
+        # Probably makes sense to live on either VolumeUnit or VolumeToGallonsConverter now.
+        return volume * VolumeToGallonsConverter[unit.name].value
+
 
 class RecipeHop(Orderable, models.Model):
     """
@@ -497,24 +540,6 @@ class BeverageStyle(models.Model):
         return ''
 
 
-class RecipeType:
-    """
-    The type of beer recipe
-    """
-
-    # or just use ints and enum this?
-    ALL_GRAIN = 'all_grain'
-    EXTRACT = 'extract'
-    PARTIAL_MASH = 'partial_mash'
-
-
-class VolumeUnit:
-    FLUID_OZ = 'fl_oz'
-    LITER = 'l'
-    GALLON = 'gal'
-    QUART = 'quart'
-
-
 class RecipePage(IdAndSlugUrlMixin, Page):
     """
     Page for a beer recipe
@@ -533,10 +558,10 @@ class RecipePage(IdAndSlugUrlMixin, Page):
     )
 
     VOLUME_UNIT_CHOICES = (
-        (VolumeUnit.FLUID_OZ, 'Fluid Oz.'),
-        (VolumeUnit.LITER, 'Liters'),
-        (VolumeUnit.GALLON, 'Gallons'),
-        (VolumeUnit.QUART, 'Quarts'),
+        (VolumeUnit.FLUID_OZ.value, 'Fluid Oz.'),
+        (VolumeUnit.LITER.value, 'Liters'),
+        (VolumeUnit.GALLON.value, 'Gallons'),
+        (VolumeUnit.QUART.value, 'Quarts'),
     )
 
     # Do I need a separate recipe name and page title?
@@ -681,6 +706,7 @@ class RecipePage(IdAndSlugUrlMixin, Page):
     ]
 
     subpage_types = []
+    parent_page_types = ['on_tap.RecipeIndexPage', ]
 
     class Meta:
         indexes = [
@@ -688,21 +714,14 @@ class RecipePage(IdAndSlugUrlMixin, Page):
             models.Index(fields=['recipe_type']),
         ]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
     def batch_volume_in_gallons(self) -> Decimal:
         """
         Converts the batch volume to gallons for use in SRM estimation using Morey's equation
         """
-        if self.volume_units == VolumeUnit.GALLON:
-            return self.batch_size
-        elif self.volume_units == VolumeUnit.FLUID_OZ:
-            return self.batch_size * Decimal('0.0078125')
-        elif self.volume_units == VolumeUnit.QUART:
-            return self.batch_size * Decimal('0.25')
-        elif self.volume_units == VolumeUnit.LITER:
-            return self.batch_size * Decimal('0.26417287')
+        return convert_volume_to_gallons(volume=self.batch_size, unit=VolumeUnit(self.volume_units))
 
     def calculate_color_srm(self) -> int:
         """
@@ -747,7 +766,15 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):
     A homebrew batch intended for use within Wagtail
 
     TODO: what if I brew one batch, but split it across 2 fermenters with differences at that point?
+    TODO: On save, if setting on tap date for first time and status is FERMENTING then change to COMPLETE automatically?
     """
+
+    VOLUME_UNIT_CHOICES = (
+        (VolumeUnit.FLUID_OZ.value, 'Fluid Oz.'),
+        (VolumeUnit.LITER.value, 'Liters'),
+        (VolumeUnit.GALLON.value, 'Gallons'),
+        (VolumeUnit.QUART.value, 'Quarts'),
+    )
 
     template = 'on_tap/batch_log.html'
     id_and_slug_url_name = 'on_tap_batch_log_by_id_and_slug'
@@ -772,6 +799,23 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):
     off_tap_date = models.DateField(blank=True, null=True, default=None)
     original_gravity = models.DecimalField(max_digits=4, decimal_places=3, blank=True, null=True, default=None)
     final_gravity = models.DecimalField(max_digits=4, decimal_places=3, blank=True, null=True, default=None)
+    volume_units = models.CharField(max_length=10, choices=VOLUME_UNIT_CHOICES, blank=False, default=VolumeUnit.GALLON.value)
+    post_boil_volume = models.DecimalField(
+        blank=True,
+        null=True,
+        default=None,
+        max_digits=5,
+        decimal_places=2,
+        help_text='Volume of finished batch prior to transfer to fermenter.',
+    )
+    volume_in_fermenter = models.DecimalField(
+        blank=True,
+        null=True,
+        default=None,
+        max_digits=5,
+        decimal_places=2,
+        help_text='Volume of finished batch in the fermenter.',
+    )
     body = StreamField(STANDARD_STREAMFIELD_FIELDS, blank=True, null=True, default=None)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -801,10 +845,12 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):
         index.FilterField('off_tap_date'),
         index.FilterField('original_gravity'),
         index.FilterField('final_gravity'),
+        index.FilterField('volume_in_fermenter'),
     ]
 
     # log multiple gravity checks?
     subpage_types = []
+    parent_page_types = ['on_tap.BatchLogIndexPage', ]
 
     class Meta:
         indexes = [
@@ -824,22 +870,33 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):
         """
         return (self.original_gravity - self.final_gravity) * Decimal('131.25')
 
-    # def calculate_color_srm(self) -> int:
-    #     """
-    #     Returns the estimated color of this batch in SRM using Morey's equation of SRM = 1.4922 * (MCU ^ 0.6859).
-    #
-    #     This accounts for differences in actual volume versus the expected volume of the batch.
-    #     """
-    #     TODO: Store actual final volume of the batch!
-    #     # TODO: maybe just store this like I am with everything else, grabbing the value from other software.
-    #     # It was fun to learn and is here now, though.
-    #     total_mcu = Decimal('0')
-    #
-    #     for fermentable in self.recipe_page.fermentables.all():
-    #         total_mcu += fermentable.calculate_mcu(self.batch_volume_in_gallons())
-    #
-    #     srm = Decimal('1.4922') * (total_mcu ** Decimal('0.6859'))
-    #     return int(srm.quantize(Decimal('1')))
+    def fermenter_volume_as_gallons(self) -> Decimal:
+        """
+        Converts the batch volume to gallons for use in SRM estimation using Morey's equation
+        """
+        return convert_volume_to_gallons(volume=self.volume_in_fermenter, unit=VolumeUnit(self.volume_units))
+
+    def post_boil_volume_as_gallons(self) -> Decimal:
+        return convert_volume_to_gallons(volume=self.post_boil_volume, unit=VolumeUnit(self.volume_units))
+
+    def calculate_color_srm(self) -> int:
+        """
+        Returns the estimated color of this batch in SRM using Morey's equation of SRM = 1.4922 * (MCU ^ 0.6859).
+
+        This accounts for differences in actual volume versus the expected volume of the batch.
+        """
+        # TODO: maybe just store this like I am with everything else, grabbing the value from other software.
+        # It was fun to learn and is here now, though.
+        # TODO: I have this method in 2 places - can I de-duplicate it without just having a fairly pointless one line
+        # function? Maybe a calculate_color_srm(fermentables: Iterable[RecipeFermentable], volume: Decimal) which
+        # takes volume in gallons
+        total_mcu = Decimal('0')
+
+        for fermentable in self.recipe_page.fermentables.all():
+            total_mcu += fermentable.calculate_mcu(self.post_boil_volume_as_gallons())
+
+        srm = Decimal('1.4922') * (total_mcu ** Decimal('0.6859'))
+        return int(srm.quantize(Decimal('1')))
 
 
 class OnTapPage(Page):
