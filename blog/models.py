@@ -36,7 +36,7 @@ class BlogPageIndex(RoutablePageMixin, IdAndSlugUrlIndexMixin, Page):
     id_and_slug_url_name = "blog_post_by_id_and_slug"
     id_and_slug_url_class = "blog.models.BlogPage"
 
-    # subpage_types = ['BlogPost']
+    subpage_types = ['blog.BlogPage']
 
     # Defines a method to access the children of the page (e.g. BlogPage
     # objects). On the demo site we use this on the HomePage

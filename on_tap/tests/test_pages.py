@@ -1,12 +1,13 @@
-from wagtail.tests.utils import WagtailPageTests
-from wagtail.core.models import Page
-
-from django.test import TestCase
 import unittest
 
-from ..models import *
+from django.test import TestCase
 
-from wagtail.tests.utils.form_data import nested_form_data, rich_text, streamfield, inline_formset
+from wagtail.core.models import Page
+from wagtail.tests.utils import WagtailPageTests
+from wagtail.tests.utils.form_data import inline_formset, nested_form_data, rich_text, streamfield
+
+from ..models import *
+from ..models import VolumeToGallonsConverter
 
 # TODO: These tests are a bit slow, I suspect due to creating pages and then publishing them separately
 # rather than just creating already published pages. Will sort this out when I implement factory_boy
@@ -314,6 +315,8 @@ class BatchLogPageTest(WagtailPageTests):
                 'final_gravity': 1.016,
                 'status': 'complete',
                 'body': streamfield([("paragraph", rich_text("<p>This is a test recipe.</p>"),)]),
+                'volume_in_fermenter': 2.75,
+                'volume_units': 'gal',
             },
         )
         self.assertCanCreate(self.index_page, BatchLogPage, form_data)
@@ -354,6 +357,50 @@ class BatchLogPageTest(WagtailPageTests):
         """
         page = BatchLogPage.objects.first()
         self.assertEqual(f'{self.index_page.get_url()}{page.pk}/{page.slug}/', page.get_id_and_slug_url())
+
+    def test_fermenter_volume_as_gallons(self):
+        expected_conversion = {
+            VolumeUnit.GALLON: Decimal(1),
+            VolumeUnit.FLUID_OZ: Decimal('0.0078125'),
+            VolumeUnit.QUART: Decimal('0.25'),
+            VolumeUnit.LITER: Decimal('0.26417287'),
+
+        }
+        page = BatchLogPage.objects.first()
+        base_volume = Decimal('2.75')
+        for unit in [VolumeUnit.GALLON, VolumeUnit.FLUID_OZ, VolumeUnit.QUART, VolumeUnit.LITER]:
+            page.volume_in_fermenter = Decimal(2.75 ) / expected_conversion[unit]
+            page.volume_units = unit.value
+            with self.subTest(volume_units=page.get_volume_units_display(), volume=page.volume_in_fermenter):
+                self.assertEqual(base_volume, page.fermenter_volume_as_gallons().quantize(base_volume))
+
+    def test_post_boil_volume_in_gallons(self):
+        expected_conversion = {
+            VolumeUnit.GALLON: Decimal(1),
+            VolumeUnit.FLUID_OZ: Decimal('0.0078125'),
+            VolumeUnit.QUART: Decimal('0.25'),
+            VolumeUnit.LITER: Decimal('0.26417287'),
+
+        }
+        page = BatchLogPage.objects.first()
+        base_volume = Decimal('2.75')
+        for unit in [VolumeUnit.GALLON, VolumeUnit.FLUID_OZ, VolumeUnit.QUART, VolumeUnit.LITER]:
+            page.post_boil_volume = Decimal(2.75 ) / expected_conversion[unit]
+            page.volume_units = unit.value
+            with self.subTest(volume_units=page.get_volume_units_display(), volume=page.volume_in_fermenter):
+                self.assertEqual(base_volume, page.post_boil_volume_as_gallons().quantize(base_volume))
+
+    def test_calculate_color_srm(self):
+        page = BatchLogPage.objects.first()
+        test_matrix = [
+            {'volume': '2.75', 'expected_srm': '24'},
+            {'volume': '3.00', 'expected_srm': '23'},
+            {'volume': '5.00', 'expected_srm': '16'},
+        ]
+        for t in test_matrix:
+            page.post_boil_volume = Decimal(t['volume'])
+            with self.subTest(volume=page.post_boil_volume):
+                self.assertEqual(Decimal(t['expected_srm']), page.calculate_color_srm())
 
 
 class RecipeFermentableTest(TestCase):

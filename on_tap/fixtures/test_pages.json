@@ -571,6 +571,9 @@
     "off_tap_date": null,
     "original_gravity": "1.050",
     "final_gravity": "0.000",
+    "volume_in_fermenter": null,
+    "post_boil_volume": null,
+    "volume_units": "gal",
     "body": "[]",
     "created_at": "2020-12-31T19:03:25.092Z",
     "updated_at": "2020-12-31T19:03:25.092Z"

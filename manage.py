@@ -28,7 +28,6 @@ if __name__ == "__main__":
         cov.stop()
         cov.save()
         covered = cov.report()
-        # I'm a slacker... set to 70 since my current coverage is at 72%.
-        # Time to add more tests.
-        if covered < 70:
+        # Keep bumping this up as I add more tests
+        if covered < 73:
             sys.exit(1)
