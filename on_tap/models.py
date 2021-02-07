@@ -1,6 +1,6 @@
 from decimal import Decimal
 from enum import Enum
-from typing import List
+from typing import List, Tuple
 
 from django.contrib.postgres.fields import CICharField
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
@@ -1000,7 +1000,7 @@ class OnTapPage(Page):
         )
         return batches
 
-    def paginate(self: 'OnTapPage', queryset: 'QuerySet', page_number: int = 1) -> (Paginator, 'QuerySet[Page]'):
+    def paginate(self: 'OnTapPage', queryset: 'QuerySet', page_number: int = 1) -> Tuple[Paginator, 'QuerySet[Page]']:
         paginator = Paginator(queryset, 25)
         try:
             page = paginator.page(page_number)
