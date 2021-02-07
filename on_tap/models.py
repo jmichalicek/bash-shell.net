@@ -1,4 +1,5 @@
 from decimal import Decimal
+from enum import Enum
 from typing import List
 
 from django.contrib.postgres.fields import CICharField
@@ -10,7 +11,9 @@ from django.utils import timezone
 from django.utils.functional import cached_property
 
 from base.mixins import IdAndSlugUrlIndexMixin, IdAndSlugUrlMixin
+from modelcluster.contrib.taggit import ClusterTaggableManager
 from modelcluster.fields import ParentalKey
+from taggit.models import TaggedItemBase
 from wagtail.admin.edit_handlers import (
     FieldPanel,
     FieldRowPanel,
@@ -27,7 +30,6 @@ from wagtail.snippets.edit_handlers import SnippetChooserPanel
 from wagtail.snippets.models import register_snippet
 from wagtail_blocks.fields import STANDARD_STREAMFIELD_FIELDS
 
-from enum import Enum
 
 class VolumeToGallonsConverter(Enum):
     """
@@ -35,6 +37,7 @@ class VolumeToGallonsConverter(Enum):
 
     Multiply other volumes times these to convert to gallons. 4 quarts = 1 gallon, so multiple quarts by 0.25, etc.
     """
+
     # TODO: Similarly to VolumeUnit, making this a models.Choices subclass like
     # VolumeToGallonsConverter(decimal.Decimal, models.Choices):
     # might be a good idea.
@@ -64,11 +67,15 @@ class VolumeUnit(Enum):
 
 
 def convert_volume_to_gallons(volume: Decimal, unit: VolumeUnit) -> Decimal:
-        """
+    """
         Converts the batch volume to gallons for use in SRM estimation using Morey's equation
         """
-        # Probably makes sense to live on either VolumeUnit or VolumeToGallonsConverter now.
-        return volume * VolumeToGallonsConverter[unit.name].value
+    # Probably makes sense to live on either VolumeUnit or VolumeToGallonsConverter now.
+    return volume * VolumeToGallonsConverter[unit.name].value
+
+
+class RecipePageTag(TaggedItemBase):
+    content_object = ParentalKey("on_tap.RecipePage", on_delete=models.CASCADE, related_name="tagged_items")
 
 
 class RecipeHop(Orderable, models.Model):
@@ -564,7 +571,10 @@ class RecipePage(IdAndSlugUrlMixin, Page):
         (VolumeUnit.QUART.value, 'Quarts'),
     )
 
+    tags = ClusterTaggableManager(through=RecipePageTag, blank=True)
+
     # Do I need a separate recipe name and page title?
+    # I do not believe I do now, but here it is for now. I should remove it.
     name = CICharField(max_length=100, blank=False)
     short_description = models.TextField(
         blank=True, default='', help_text='A one or two sentence description of the recipe.',
@@ -691,6 +701,10 @@ class RecipePage(IdAndSlugUrlMixin, Page):
         StreamFieldPanel('conclusion'),
     ]
 
+    promote_panels = Page.promote_panels + [
+        FieldPanel("tags"),
+    ]
+
     search_fields = Page.search_fields + [
         index.SearchField('name', partial=True, boost=2),  # should this just be Page.title?
         index.SearchField('notes', partial=True),
@@ -703,10 +717,13 @@ class RecipePage(IdAndSlugUrlMixin, Page):
         index.RelatedFields('fermentables', [index.SearchField('name', partial_match=True)]),
         index.RelatedFields('style', (index.SearchField('name', partial_match=True), index.FilterField('name')),),
         index.FilterField('recipe_type'),
+        index.FilterField("tags"),
     ]
 
     subpage_types = []
-    parent_page_types = ['on_tap.RecipeIndexPage', ]
+    parent_page_types = [
+        'on_tap.RecipeIndexPage',
+    ]
 
     class Meta:
         indexes = [
@@ -761,6 +778,10 @@ class BatchStatus:
     IN_PROGRESS_STATUSES = [PLANNED, BREWING, FERMENTING]
 
 
+class BatchLogPageTag(TaggedItemBase):
+    content_object = ParentalKey("on_tap.batchLogPage", on_delete=models.CASCADE, related_name="tagged_items")
+
+
 class BatchLogPage(IdAndSlugUrlMixin, Page):
     """
     A homebrew batch intended for use within Wagtail
@@ -778,6 +799,8 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):
 
     template = 'on_tap/batch_log.html'
     id_and_slug_url_name = 'on_tap_batch_log_by_id_and_slug'
+
+    tags = ClusterTaggableManager(through=BatchLogPageTag, blank=True)
 
     recipe_page = models.ForeignKey(
         'on_tap.RecipePage', on_delete=models.PROTECT, related_name='batch_log_pages', blank=False, null=False,
@@ -799,7 +822,9 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):
     off_tap_date = models.DateField(blank=True, null=True, default=None)
     original_gravity = models.DecimalField(max_digits=4, decimal_places=3, blank=True, null=True, default=None)
     final_gravity = models.DecimalField(max_digits=4, decimal_places=3, blank=True, null=True, default=None)
-    volume_units = models.CharField(max_length=10, choices=VOLUME_UNIT_CHOICES, blank=False, default=VolumeUnit.GALLON.value)
+    volume_units = models.CharField(
+        max_length=10, choices=VOLUME_UNIT_CHOICES, blank=False, default=VolumeUnit.GALLON.value
+    )
     post_boil_volume = models.DecimalField(
         blank=True,
         null=True,
@@ -834,10 +859,15 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):
         StreamFieldPanel('body'),
     ]
 
+    promote_panels = Page.promote_panels + [
+        FieldPanel("tags"),
+    ]
+
     search_fields = Page.search_fields + [
         index.SearchField('recipe_page'),
         index.SearchField('body', partial_match=True),
         index.RelatedFields('recipe_page', RecipePage.search_fields,),
+        index.FilterField("tags"),
         index.FilterField('status'),
         index.FilterField('brewed_date'),
         index.FilterField('packaged_date'),
@@ -850,7 +880,9 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):
 
     # log multiple gravity checks?
     subpage_types = []
-    parent_page_types = ['on_tap.BatchLogIndexPage', ]
+    parent_page_types = [
+        'on_tap.BatchLogIndexPage',
+    ]
 
     class Meta:
         indexes = [
