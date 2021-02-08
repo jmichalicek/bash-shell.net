@@ -12,7 +12,7 @@ from wagtail.contrib.sitemaps.views import sitemap, index
 from wagtail.core import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
 
-from .feeds import BlogFeedRss
+from blog.feeds import BlogFeedRss
 from .sitemaps import BlogSitemap, ProjectSiteMap, ProjectsSiteMap, OnTapSitemap, RecipePageSitemap, BatchLogPageSitemap
 
 admin.autodiscover()
@@ -34,7 +34,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('sitemap.xml', index, {'sitemaps': sitemaps,}),
     path('sitemap-<section>.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
-    path('feeds/rss/', BlogFeedRss()),
+    path('feeds/blog/rss/', BlogFeedRss()),
     path('about/', TemplateView.as_view(template_name="about.html"), name="about"),
     path('opensource/', TemplateView.as_view(template_name="open_source.html"), name="opensource"),
     path('projects/', include('projects.urls')),

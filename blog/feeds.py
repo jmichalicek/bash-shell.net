@@ -21,4 +21,7 @@ class BlogFeedRss(Feed):
         # seems to be ok so far even though some things I read suggested
         # html in the rss could be bad
         # TODO: almost definitely needs updated for wagtail
-        return u'%s...' % (item.body[:250])
+        return '%s...' % (item.body[:250])
+
+    def item_link(self, item):
+        return item.id_and_slug_url
