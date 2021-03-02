@@ -3,7 +3,7 @@
   "model": "sites.site",
   "pk": 1,
   "fields": {
-    "domain": "example.com",
+    "domain": "localhost:8000",
     "name": "example.com"
   }
 },
@@ -23,71 +23,6 @@
     "username": "user@example.com",
     "groups": [],
     "user_permissions": []
-  }
-},
-{
-  "model": "blog.tag",
-  "pk": 1,
-  "fields": {
-    "name": "tag1",
-    "slug": "tag1"
-  }
-},
-{
-  "model": "blog.tag",
-  "pk": 2,
-  "fields": {
-    "name": "tag2",
-    "slug": "tag2"
-  }
-},
-{
-  "model": "blog.post",
-  "pk": 1,
-  "fields": {
-    "title": "Dev Post 1",
-    "content": "This is a fake post for dev stuff",
-    "created_date": "2017-11-03T01:20:26.172Z",
-    "updated_date": "2017-11-03T01:20:26.172Z",
-    "is_published": true,
-    "published_date": "2017-11-03T01:20:20Z",
-    "user": 1,
-    "slug": "dev-post-1",
-    "tags": [
-      1
-    ]
-  }
-},
-{
-  "model": "blog.post",
-  "pk": 2,
-  "fields": {
-    "title": "Dev Post 2",
-    "content": "Another post for dev stuff",
-    "created_date": "2017-11-03T01:20:50.351Z",
-    "updated_date": "2017-11-03T01:20:50.351Z",
-    "is_published": true,
-    "published_date": "2017-11-03T01:20:46Z",
-    "user": 1,
-    "slug": "dev-post-2",
-    "tags": [
-      2
-    ]
-  }
-},
-{
-  "model": "blog.post",
-  "pk": 3,
-  "fields": {
-    "title": "Unpublished Post",
-    "content": "This post is not published, for easy testing",
-    "created_date": "2017-11-03T01:21:15.665Z",
-    "updated_date": "2017-11-03T01:21:15.665Z",
-    "is_published": false,
-    "published_date": null,
-    "user": 1,
-    "slug": "unpublished-post",
-    "tags": []
   }
 },
 {
