@@ -89,6 +89,7 @@ class OnTapPageTest(WagtailPageTests):
                 'final_gravity': 1.016,
                 'status': status,
                 'body': streamfield([("paragraph", rich_text("<p>This is a test recipe.</p>"),)]),
+                'volume_units': 'gal',
             },
         )
         if not batch_index_page:
