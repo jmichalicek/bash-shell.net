@@ -10,7 +10,6 @@ from django.http import Http404, HttpRequest, HttpResponse, HttpResponseRedirect
 from django.utils import timezone
 from django.utils.functional import cached_property
 
-from base.mixins import IdAndSlugUrlIndexMixin, IdAndSlugUrlMixin
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from modelcluster.fields import ParentalKey
 from taggit.models import TaggedItemBase
@@ -28,6 +27,8 @@ from wagtail.core.models import Orderable, Page
 from wagtail.search import index
 from wagtail.snippets.edit_handlers import SnippetChooserPanel
 from wagtail.snippets.models import register_snippet
+
+from base.mixins import IdAndSlugUrlIndexMixin, IdAndSlugUrlMixin
 from wagtail_blocks.fields import STANDARD_STREAMFIELD_FIELDS
 
 
@@ -299,7 +300,7 @@ class RecipeYeast(Orderable, models.Model):
         ordering = ('recipe_page', 'sort_order')
 
     def amount_is_weight(self) -> bool:
-        return amount_units in ['g', 'oz']
+        return self.amount_units in ['g', 'oz']
 
     def __str__(self) -> str:
         return self.name
@@ -759,7 +760,7 @@ class RecipePage(IdAndSlugUrlMixin, Page):
         Returns the total weight of grains in pounds
         """
         # TODO: not sure where to put this on UI yet.
-        weight = decimal.Decimal('0')
+        weight = Decimal('0')
         for fermentable in self.fermentables.all():
             weight += fermentable.weight_in_pounds()
         return weight
@@ -856,6 +857,9 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):
             [FieldRowPanel([FieldPanel('original_gravity'), FieldPanel('final_gravity'),]),],
             heading='Gravity Information',
         ),
+        MultiFieldPanel(
+            [FieldPanel('volume_units'), FieldPanel('post_boil_volume'), FieldPanel('volume_in_fermenter')]
+        ),
         StreamFieldPanel('body'),
     ]
 
@@ -915,13 +919,16 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):
         """
         Returns the estimated color of this batch in SRM using Morey's equation of SRM = 1.4922 * (MCU ^ 0.6859).
 
-        This accounts for differences in actual volume versus the expected volume of the batch.
+        This accounts for differences in actual volume versus the expected volume of the batch. It is assumed that
+        the recipe fermentables were used exactly, so if the recipe is written for 2.5 gallons but the batch was scaled
+        to 5 gallons then this will not be accurate.
         """
         # TODO: maybe just store this like I am with everything else, grabbing the value from other software.
         # It was fun to learn and is here now, though.
         # TODO: I have this method in 2 places - can I de-duplicate it without just having a fairly pointless one line
         # function? Maybe a calculate_color_srm(fermentables: Iterable[RecipeFermentable], volume: Decimal) which
         # takes volume in gallons
+        # TODO: Handle an actual batch which has been scaled up or down to a different intended volume
         total_mcu = Decimal('0')
 
         for fermentable in self.recipe_page.fermentables.all():
@@ -929,6 +936,15 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):
 
         srm = Decimal('1.4922') * (total_mcu ** Decimal('0.6859'))
         return int(srm.quantize(Decimal('1')))
+
+    def get_actual_or_expected_srm(self) -> int:
+        """
+        Returns the actual SRM if final post boil volume is known, otherwise returns the expected SRM
+        for the recipe.
+        """
+        if self.post_boil_volume:
+            return self.calculate_color_srm()
+        return self.recipe_page.calculate_color_srm()
 
 
 class OnTapPage(Page):

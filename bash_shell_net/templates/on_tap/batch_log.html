@@ -13,10 +13,10 @@
     }
 
     .recipe-stats__srm {
-      background-color: {{ page.recipe_page.calculate_color_srm|floatformat:"0"|srm_to_hex }};
+      background-color: {{ page.get_actual_or_expected_srm|floatformat:"0"|srm_to_hex }};
       padding: .25rem .75rem;
       {# When srm is less than 7-10, the white text gets hard to read #}
-      {% if page.recipe_page.calculate_color_srm < 10 %}color: #2B3E50;{% endif %}
+      {% if page.get_actual_or_expected_srm < 10 %}color: #2B3E50;{% endif %}
     }
   </style>
 {% endblock page_stylesheets %}
@@ -88,7 +88,7 @@
             <td>{{ page.on_tap_date|default:"N/A" }}</td>
             <td>{{ page.original_gravity }}</td>
             <td>{{ page.final_gravity }}</td>
-            <td class="beer-style-guide__srm"><div class="text-center recipe-stats__srm">{{ page.recipe_page.calculate_color_srm|floatformat:"0" }} srm</div></td>
+            <td class="beer-style-guide__srm"><div class="text-center recipe-stats__srm">{{ page.get_actual_or_expected_srm|floatformat:"0" }} srm</div></td>
             {% comment %}
               I will want the batch specific details - how much did I really boil, end with, etc.
               also add packaging type? keg or bottle? What if I split it up?
@@ -96,7 +96,6 @@
               <td>{{ page.batch_size|floatformat:"2" }} {{ page.get_volume_units_display }}</td>
               <td>{{ page.boil_time }} Minutes</td>
               <td>{{ page.efficiency }}%</td>
-              <td class="beer-style-guide__srm"><div class="text-center recipe-stats__srm">{{ page.calculate_color_srm|floatformat:"0" }} srm</div></td>
             {% endcomment %}
           </tr>
         </tbody>
