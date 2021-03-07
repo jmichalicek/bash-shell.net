@@ -29,5 +29,7 @@ if __name__ == "__main__":
         cov.save()
         covered = cov.report()
         # Keep bumping this up as I add more tests
-        if covered < 73:
+        print('Actual coverage percent:', covered)
+        if covered < 74.7:  # Keep this up to date with actual coverage as it increases
+            print('Test coverage below minimum. Failure.')
             sys.exit(1)
