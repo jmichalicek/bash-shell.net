@@ -407,7 +407,6 @@ class BatchLogPageTest(WagtailPageTests):
         page = BatchLogPage.objects.first()
         page.post_boil_volume = None
         page.save()
-        print(page.get_actual_or_expected_srm())
         test_matrix = [
             {'volume': None, 'expected_srm': 26},  # the recipe srm
             {'volume': Decimal('2.75'), 'expected_srm': 24},
