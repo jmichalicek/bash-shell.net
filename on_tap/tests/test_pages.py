@@ -394,14 +394,31 @@ class BatchLogPageTest(WagtailPageTests):
     def test_calculate_color_srm(self):
         page = BatchLogPage.objects.first()
         test_matrix = [
-            {'volume': '2.75', 'expected_srm': '24'},
-            {'volume': '3.00', 'expected_srm': '23'},
-            {'volume': '5.00', 'expected_srm': '16'},
+            {'volume': Decimal('2.75'), 'expected_srm': 24},
+            {'volume': Decimal('3.00'), 'expected_srm': 23},
+            {'volume': Decimal('5.00'), 'expected_srm': 16},
         ]
         for t in test_matrix:
             page.post_boil_volume = Decimal(t['volume'])
             with self.subTest(volume=page.post_boil_volume):
                 self.assertEqual(Decimal(t['expected_srm']), page.calculate_color_srm())
+
+    def test_get_actual_or_expected_srm(self):
+        page = BatchLogPage.objects.first()
+        page.post_boil_volume = None
+        page.save()
+        print(page.get_actual_or_expected_srm())
+        test_matrix = [
+            {'volume': None, 'expected_srm': 26},  # the recipe srm
+            {'volume': Decimal('2.75'), 'expected_srm': 24},
+            {'volume': Decimal('3.00'), 'expected_srm': 23},
+            {'volume': Decimal('5.00'), 'expected_srm': 16},
+        ]
+        for t in test_matrix:
+            page.post_boil_volume = t['volume']
+            with self.subTest(volume=page.post_boil_volume):
+                self.assertEqual(t['expected_srm'], page.get_actual_or_expected_srm())
+
 
 
 class RecipeFermentableTest(TestCase):
