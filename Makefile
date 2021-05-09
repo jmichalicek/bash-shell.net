@@ -4,7 +4,7 @@ setup-and-run:	setup migrate run
 
 venv:
 	 python -m venv .venv
-	 pip install pip==21.0.1
+	 pip install pip==21.1.1
 
 run:
 	python manage.py runserver 0.0.0.0:8000
