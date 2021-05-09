@@ -29,13 +29,15 @@ WORKDIR /django/bash-shell.net/
 # I am being lazy and installing dev requirements here to make it easy to run my tests on the prod image
 # since they don't add much size
 RUN pip install -r requirements.txt -r requirements.dev.txt --no-cache-dir
-COPY --chown=django ./ /django/bash-shell.net
-RUN DJANGO_SETTINGS_MODULE=bash_shell_net.settings.production python manage.py collectstatic -l --noinput -i *.scss
+COPY --chown=django ./app /django/bash-shell.net
+RUN DJANGO_SETTINGS_MODULE=config.settings.production python manage.py collectstatic -l --noinput -i *.scss
+COPY --chown=django ./wait-for-it.sh /django/bash-shell.net/wait-for-it.sh
 
+# Production image
 FROM python:3.9.2-slim-buster AS prod
 RUN useradd -ms /bin/bash -d /django django
 COPY --chown=django --from=build /django/bash-shell.net /django/bash-shell.net
 USER django
-ENV DJANGO_SETTINGS_MODULE=bash_shell_net.settings.production HOME=/django/.local/bin:/django PATH=/django/bash-shell.net/.venv/bin:$PATH LC_ALL=C.UTF-8 LANG=C.UTF-8 PYTHONIOENCODING=utf-8
+ENV DJANGO_SETTINGS_MODULE=config.settings.production HOME=/django/.local/bin:/django PATH=/django/bash-shell.net/.venv/bin:$PATH LC_ALL=C.UTF-8 LANG=C.UTF-8 PYTHONIOENCODING=utf-8
 WORKDIR /django/bash-shell.net/
 EXPOSE 8000

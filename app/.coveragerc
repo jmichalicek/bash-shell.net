@@ -1,0 +1,43 @@
+[run]
+branch = True
+source = .
+omit =
+    */migrations/*
+    config/wsgi.py
+    config/asgi.py
+    config/settings/staging.py
+    config/settings/production.py
+    config/storages.py
+    config/templates/404.html
+    config/templates/flatpages/*
+    manage.py
+    */apps.py
+    */admin.py
+    */node_modules/*
+    */factories.py
+    */tests/*.py
+    .venv/*
+
+plugins =
+    django_coverage_plugin
+
+[report]
+fail_under = 80
+show_missing = True
+skip_covered = True
+exclude_lines =
+    pragma: no cover
+
+    if self\.debug
+
+    raise AssertionError
+    raise NotImplementedError
+
+    if 0:
+    if __name__ == .__main__.:
+
+
+ignore_errors = True
+
+[html]
+directory = coverage_html_report

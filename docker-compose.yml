@@ -35,7 +35,7 @@ services:
     environment:
       - REDIS_HOST=redis
       - PIPENV_VENV_IN_PROJECT=1
-      - DJANGO_SETTINGS_MODULE=bash_shell_net.settings.local
+      - DJANGO_SETTINGS_MODULE=config.settings.local
       - SHELL=/bin/bash
       - DATABASE_URL=postgres://developer:developer@database:5432/bash_shell_net
       - LOG_LEVEL=DEBUG
