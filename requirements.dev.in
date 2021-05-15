@@ -3,3 +3,7 @@
 coverage
 django_coverage_plugin
 factory-boy
+flake8
+pylint
+black
+isort

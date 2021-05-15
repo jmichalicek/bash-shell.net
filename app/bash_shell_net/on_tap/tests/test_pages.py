@@ -161,6 +161,13 @@ class RecipePageTest(WagtailPageTests):
         publish_page(cls.index_page)
         cls.recipe_page = RecipePage.objects.first()
 
+    def setUp(self, *args, **kwargs):
+        super().setUp(*args, **kwargs)
+        # Otherwise I get weird errors
+        # see https://github.com/jmichalicek/bash-shell.net/commit/928bbd2d35e92aaca293ab0873dd5001c79c80e1#diff-ca9c96ccc066402806c6ad539615860324119d2bb9550592df76f0e803e8ee59R233
+        self.index_page.refresh_from_db()
+        self.recipe_page.refresh_from_db()
+
     @unittest.skip('Skipped because I have not written this but at least I will see skipped tests now.')
     def test_calculate_color_srm(self):
         pass
