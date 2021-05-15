@@ -1,19 +1,16 @@
 .PHONY: requirements.txt
 
-setup-and-run:	setup migrate run
+setup-and-run:	venv install migrate run
 
 venv:
 	 python -m venv .venv
 	 pip install pip==21.1.1
 
 run:
-	python manage.py runserver 0.0.0.0:8000
-
-setup:
-	pipenv sync
+	python app/manage.py runserver 0.0.0.0:8000
 
 migrate:
-	python manage.py migrate
+	python app/manage.py migrate
 
 dev:
 	docker-compose run --service-ports django /bin/bash
@@ -32,3 +29,6 @@ requirements.txt:
 	# about allow-unsafe. In this case, to pin setuptools.
 	pip-compile requirements.in --generate-hashes --upgrade --allow-unsafe
 	pip-compile requirements.dev.in --generate-hashes --upgrade --allow-unsafe
+
+install:
+	 pip-sync requirements.txt requirements.dev.txt --pip-args '--no-cache-dir --no-deps'
