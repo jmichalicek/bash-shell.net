@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.9'
 services:
   database:
     image: "postgres:11.2"
@@ -32,9 +32,11 @@ services:
       context: .
       dockerfile: Dockerfile
       target: dev
+    # I have learned python takes a big performance hit when not run privileged.
+    # I still won't do it for production, but I'm going to see how it works out in dev
+    privileged: true
     environment:
       - REDIS_HOST=redis
-      - PIPENV_VENV_IN_PROJECT=1
       - DJANGO_SETTINGS_MODULE=config.settings.local
       - SHELL=/bin/bash
       - DATABASE_URL=postgres://developer:developer@database:5432/bash_shell_net

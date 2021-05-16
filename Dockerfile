@@ -11,7 +11,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteract
   && apt-get autoremove && apt-get clean
 
 RUN pip install pip==21.1.1
-RUN pip install pip-tools
 RUN useradd -ms /bin/bash -d /django django && echo "django ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 USER django
 ENV HOME=/django/.local/bin:/django PATH=/django/bash-shell.net/.venv/bin:$PATH LC_ALL=C.UTF-8 LANG=C.UTF-8 PYTHONIOENCODING=utf-8
@@ -28,7 +27,9 @@ WORKDIR /django/bash-shell.net/
 # pip install rather than pip-sync here. This should be fresh, so no need to use pip-sync
 # I am being lazy and installing dev requirements here to make it easy to run my tests on the prod image
 # since they don't add much size
-RUN pip install -r requirements.txt -r requirements.dev.txt --no-cache-dir
+RUN pip install pip==21.1.1
+RUN pip install pip-tools
+RUN pip-sync requirements.txt requirements.dev.txt --pip-args '--no-cache-dir --no-deps'
 COPY --chown=django ./app /django/bash-shell.net
 RUN DJANGO_SETTINGS_MODULE=config.settings.production python manage.py collectstatic -l --noinput -i *.scss
 COPY --chown=django ./wait-for-it.sh /django/bash-shell.net/wait-for-it.sh

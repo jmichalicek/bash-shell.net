@@ -15,6 +15,7 @@ TESTING = sys.argv[1:2] == ['test']
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 DEFENSE_LEAGUE = True
 AUTH_USER_MODEL = 'accounts.User'
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 DEBUG = True
 ADMINS = (('Justin Michalicek', 'jmichalicek@gmail.com'),)
 MANAGERS = ADMINS
@@ -107,7 +108,7 @@ MIDDLEWARE = (
 ROOT_URLCONF = 'config.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'bash_shell_net.wsgi.application'
+WSGI_APPLICATION = 'config.wsgi.application'
 
 TEMPLATES = [
     {
