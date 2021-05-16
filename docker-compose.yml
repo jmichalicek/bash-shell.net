@@ -19,7 +19,7 @@ services:
     image: bash-shell-net:dev
     #image: blog:test
     command: /bin/bash -ic 'make setup-and-run'
-    #command: gunicorn --workers 2 --bind 0.0.0.0:8000 --name django --max-requests=1000 bash_shell_net.wsgi:application
+    #command: gunicorn --workers 2 --bind 0.0.0.0:8000 --name django --max-requests=1000 config.wsgi:application
     # command: /bin/bash
     stdin_open: true
     tty: true
