@@ -11,7 +11,7 @@ AWS_STORAGE_BUCKET_NAME = 'bash-shell-net'
 # STATICFILES_LOCATION = 'static'  # this is an s3/boto thing and shouldn't be needed now
 # STATICFILES_STORAGE = 'bash_shell_net.storages.StaticStorage'
 MEDIAFILES_LOCATION = 'uploads'
-DEFAULT_FILE_STORAGE = 'bash_shell_net.storages.MediaStorage'
+DEFAULT_FILE_STORAGE = 'config.storages.MediaStorage'
 
 
 sentry_sdk.init(
