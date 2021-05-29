@@ -130,7 +130,8 @@ class DetailImageChooserBlockTest(WagtailTestUtils, TestCase):
 
     def test_render(self):
         # img_tag = image.get_rendition('max-500x500').img_tag(alt=t['caption'])
-        image_rendition = self.image.get_rendition('max-500x500')
+        image_rendition = self.image.get_rendition('max-500x500|format-webp')
+        full_size_rendition = self.image.get_rendition('original|format-webp')
 
         # First test case has considerable mucking about to get the empty line because code editor trailing whitespace
         # cleanup was screwing it all up with a plain f string and textwrap.dedent()
@@ -143,8 +144,8 @@ class DetailImageChooserBlockTest(WagtailTestUtils, TestCase):
                 'license_name': '',
                 'expected': (
                     """<div class="col-12 text-center mb-2 js-lightbox">\n"""
-                    f"""  <a href="{self.image.file.url}" title="" data-caption="">\n"""
-                    f"""  {image_rendition.img_tag(extra_attributes={'alt': '', 'class': 'mx-auto d-block'})}\n  \n"""
+                    f"""  <a href="{full_size_rendition.url}" title="" data-caption="">\n"""
+                    f"""  {image_rendition.img_tag(extra_attributes={'alt': '', 'class': 'mx-auto d-block', 'loading': 'lazy'})}\n  \n"""
                     """  </a>\n"""
                     """</div>"""
                 ),
@@ -158,8 +159,8 @@ class DetailImageChooserBlockTest(WagtailTestUtils, TestCase):
                 'expected': textwrap.dedent(
                     f"""
                     <div class="col-12 text-center mb-2 js-lightbox">
-                      <a href="{self.image.file.url}" title="foobar" data-caption="foobar">
-                      {image_rendition.img_tag(extra_attributes={'alt': 'foobar', 'class': 'mx-auto d-block'})}
+                      <a href="{full_size_rendition.url}" title="foobar" data-caption="foobar">
+                      {image_rendition.img_tag(extra_attributes={'alt': 'foobar', 'class': 'mx-auto d-block', 'loading': 'lazy'})}
                       <span>foobar</span>
                       </a>
                     </div>
@@ -172,11 +173,11 @@ class DetailImageChooserBlockTest(WagtailTestUtils, TestCase):
 
         for t in test_matrix:
             with self.subTest(**t):
-
                 render_values = block.get_default()
                 render_values.update(t)
                 del render_values['expected']
-                self.assertEqual(t['expected'].strip(), block.render(render_values).strip())
+                # there's actually a built in way to do this in wagtail tests but I am too lazy to look it up now
+                self.assertHTMLEqual(t['expected'], block.render(render_values).strip())
 
     def test_child_blocks(self):
         """
