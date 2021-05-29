@@ -2,7 +2,7 @@
 {# TODO: the rest of the image details #}
 <div class="col-12 text-center mb-2 js-lightbox">
   <a href="{{ value.image.file.url }}" title="{{ value.caption }}" data-caption="{{ value.caption }}">
-  {% image value.image max-500x500 class="mx-auto d-block" alt=value.caption %}
-  {% if value.caption %}<span>{{ value.caption }}</span>{% endif %}
+    {% image value.image max-500x500 class="mx-auto d-block" alt=value.caption %}
+    {% if value.caption %}<span>{{ value.caption }}</span>{% endif %}
   </a>
 </div>

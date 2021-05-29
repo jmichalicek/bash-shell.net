@@ -13,24 +13,24 @@
   </div>
   <div class="col-12 pl-0 pr-0 mt-2">
     <div class="row mr-0">
-    {% for batch in currently_on_tap %}
-      <div class="col-md-4 col-12 mt-3 mt-md-0 pr-0">
-        <div class="card" style="min-height: 275px">
-          <div class="card-header text-center">
-            <div class="w-100"><a href="{{ batch.recipe_page.id_and_slug_url }}">{{ batch.recipe_page.name }}</a></div>
-            <small>{{ batch.recipe_page.style.name }}{% if batch.recipe_page.style.bjcp_category %} ({{ batch.recipe_page.style.bjcp_category }}){% endif %}</small>
-          </div>
-          <div class="card-body">
-            <p class="card-text">{{ batch.recipe_page.short_description }}</p>
-            <p class="card-text">On Tap {{ batch.on_tap_date }}</p>
-            <!-- <a href="{% pageurl batch.recipe_page %}" class="btn btn-primary">recipe</a> -->
-          </div>
-          <div class="card-footer">
-            <a href="{{ batch.id_and_slug_url }}" class="card-link">Details</a>
+      {% for batch in currently_on_tap %}
+        <div class="col-md-4 col-12 mt-3 mt-md-0 pr-0">
+          <div class="card" style="min-height: 275px">
+            <div class="card-header text-center">
+              <div class="w-100"><a href="{{ batch.recipe_page.id_and_slug_url }}">{{ batch.recipe_page.name }}</a></div>
+              <small>{{ batch.recipe_page.style.name }}{% if batch.recipe_page.style.bjcp_category %} ({{ batch.recipe_page.style.bjcp_category }}){% endif %}</small>
+            </div>
+            <div class="card-body">
+              <p class="card-text">{{ batch.recipe_page.short_description }}</p>
+              <p class="card-text">On Tap {{ batch.on_tap_date }}</p>
+              <!-- <a href="{% pageurl batch.recipe_page %}" class="btn btn-primary">recipe</a> -->
+            </div>
+            <div class="card-footer">
+              <a href="{{ batch.id_and_slug_url }}" class="card-link">Details</a>
+            </div>
           </div>
         </div>
-      </div>
-    {% endfor %}
+      {% endfor %}
     </div>
   </div>
   {% if upcoming_batches is not None %}
@@ -69,7 +69,7 @@
           {% endfor %}
         </tbody>
       </table>
-      </div>
+    </div>
   {% endif %}
   <div class="col-12 mt-4">
     <h3>Past Brews</h3>
