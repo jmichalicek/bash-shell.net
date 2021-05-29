@@ -13,18 +13,19 @@
 </div>
 {% endcomment %}
 <div class="image-gallery mb-2 js-lightbox" id="{{ value.id }}">
-    <h4 class="image-gallery__title">{{ value.title }}</h4>
-    <ul class="image-gallery__list">
-      {% for image_item in value.image_items %}
-        <li class="image-gallery__list-item col-lg-3 col-md-4 col-6">
-          <a class="image-gallery__link" href="{{ image_item.image.file.url }}" title="{{ image_item.caption }}" data-caption="{{ image_item.caption }}">
-            <div class="image-gallery__wrapper">
-              <!-- <img width="250" class="image-gallery__image" src="{{ image_item.image.file.url }}" alt="{{ image_item.title }}"> -->
-              {% image image_item.image max-200x200 class="image-gallery__image" alt=image_item.caption %}
-            </div>
-            <span class="image-gallery__caption w-100 d-block mx-auto">{{ image_item.caption }}</span>
-          </a>
-        </li>
-      {% endfor %}
-    </ul>
+  <h4 class="image-gallery__title">{{ value.title }}</h4>
+  <ul class="image-gallery__list">
+    {% for image_item in value.image_items %}
+      <li class="image-gallery__list-item col-lg-3 col-md-4 col-6">
+        {% image image_item.image original format-webp as original_webp %}
+        <a class="image-gallery__link" href="{{ original_webp.url }}" title="{{ image_item.caption }}" data-caption="{{ image_item.caption }}">
+          <div class="image-gallery__wrapper">
+            <!-- <img width="250" class="image-gallery__image" src="{{ image_item.image.file.url }}" alt="{{ image_item.title }}"> -->
+            {% image image_item.image max-200x200 format-webp class="image-gallery__image" alt=image_item.caption loading="lazy" %}
+          </div>
+          <span class="image-gallery__caption w-100 d-block mx-auto">{{ image_item.caption }}</span>
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
 </div>

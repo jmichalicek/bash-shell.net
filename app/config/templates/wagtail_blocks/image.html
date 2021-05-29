@@ -1,8 +1,9 @@
 {% load wagtailimages_tags %}
 <div class="col-12 text-center mb-2 js-lightbox">
-  <a href="{{ value.file.url }}" title="{{ value.title }}">
-  <!-- <img class="mx-auto d-block w-100" src="{{ value.image.file.url }}" alt="{{ value.image.title }}"> -->
-  {% image value max-500x500 class="mx-auto d-block" alt=image.title %}
-  {% if value.title %}<span>{{ value.title }}</span>{% endif %}
+  {% image value.image original format-webp as original_webp %}
+  <a href="{{ original_webp.url }}" title="{{ value.title }}">
+    <!-- <img class="mx-auto d-block w-100" src="{{ value.image.file.url }}" alt="{{ value.image.title }}"> -->
+    {% image value max-500x500 format-webp class="mx-auto d-block" alt=image.title loading="lazy" %}
+    {% if value.title %}<span>{{ value.title }}</span>{% endif %}
   </a>
 </div>

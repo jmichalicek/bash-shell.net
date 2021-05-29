@@ -5,15 +5,15 @@
   {% endwith %}
   <div class="blog-post col-12">
     {% regroup object_list by primary_language as languages %}
-      {% for language in languages %}
-        <div id="{{ language.grouper }}" class="blog-post">
-          <h3>{{ language.grouper }}</h3>
-          <ul>
-            {% for project in language.list %}
-              <li><a href="{{ project.get_absolute_url }}">{{ project.name }}</a></li>
-      	    {% endfor %}
-      	  </ul>
-        </div>
-      {% endfor %}
-    </div>
+    {% for language in languages %}
+      <div id="{{ language.grouper }}" class="blog-post">
+        <h3>{{ language.grouper }}</h3>
+        <ul>
+          {% for project in language.list %}
+            <li><a href="{{ project.get_absolute_url }}">{{ project.name }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endfor %}
+  </div>
 {% endblock %}
