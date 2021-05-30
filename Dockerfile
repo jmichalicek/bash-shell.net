@@ -5,7 +5,7 @@ ENV PYTHONUNBUFFERED 1
 RUN wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O - | apt-key add - \
     && echo "deb http://apt.postgresql.org/pub/repos/apt/ buster-pgdg main" >> /etc/apt/sources.list.d/pgdg.list
 
-RUN curl -sL https://deb.nodesource.com/setup_15.x | bash
+RUN curl -sL https://deb.nodesource.com/setup_16.x | bash
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-unauthenticated \
   software-properties-common \
@@ -16,7 +16,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteract
   nodejs \
   && apt-get autoremove && apt-get clean
 
-RUN pip install pip==21.1.1
+RUN pip install pip==21.1.2
 RUN useradd -ms /bin/bash -d /django django && echo "django ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 USER django
 ENV HOME=/django/ \
@@ -31,7 +31,7 @@ RUN mkdir /django/bash-shell.net/ && python -m venv /django/bash-shell.net/.venv
 # https://stackoverflow.com/a/28210626
 # python -m venv only copies the bundled pip, even if you've done a pip install -U pip to get
 # a newer version installed, so update it in the virtualenv
-RUN pip install pip==21.1.1
+RUN pip install pip==21.1.2
 RUN pip install pip-tools
 COPY --chown=django ./requirements.txt ./requirements.dev.txt /django/bash-shell.net/
 WORKDIR /django/bash-shell.net/
@@ -39,7 +39,7 @@ WORKDIR /django/bash-shell.net/
 # since they don't add much size
 RUN pip-sync requirements.txt requirements.dev.txt --pip-args '--no-cache-dir --no-deps'
 
-COPY --chown=django ./package.json ./package-lock.json /django/bash-shell.net/
+COPY --chown=django ./app/package.json ./app/package-lock.json /django/bash-shell.net/
 RUN npm ci
 RUN mkdir -p /django/bash-shell.net/app/config/static
 COPY --chown=django ./app/config/static/ /django/bash-shell.net/app/config/static

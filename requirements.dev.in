@@ -8,3 +8,4 @@ pylint
 black
 isort
 djhtml
+honcho

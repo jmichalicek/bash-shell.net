@@ -7,7 +7,7 @@ venv:
 	 pip install pip==21.1.1
 
 run:
-	python app/manage.py runserver 0.0.0.0:8000
+	honcho start
 
 migrate:
 	python app/manage.py migrate

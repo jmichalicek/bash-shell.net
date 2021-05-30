@@ -1,0 +1,38 @@
+{
+    "name": "bash-shell-net",
+    "version": "1.0.0",
+    "description": "bash-shell.net blog site",
+    "private": "true",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "webpack",
+        "dev": "webpack --progress --watch --stats-error-details true --stats-children"
+    },
+    "repository": {
+        "type": "git",
+        "url": ""
+    },
+    "bugs": {
+        "url": ""
+    },
+    "homepage": "",
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "css-loader": "",
+        "css-minimizer-webpack-plugin": "",
+        "mini-css-extract-plugin": "",
+        "postcss": "",
+        "postcss-loader": "",
+        "postcss-pxtorem": "",
+        "sass": "",
+        "sass-loader": "",
+        "stylelint": "",
+        "stylelint-config-standard": "",
+        "stylelint-scss": "",
+        "stylelint-webpack-plugin": "",
+        "webpack": "",
+        "webpack-cli": ""
+    }
+}
