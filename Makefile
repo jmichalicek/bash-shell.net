@@ -32,3 +32,9 @@ requirements.txt:
 
 install:
 	 pip-sync requirements.txt requirements.dev.txt --pip-args '--no-cache-dir --no-deps'
+
+djhtml:
+	find . -path */.venv -prune -o -path node_modules -prune -o -wholename '*/templates*.html' -exec djhtml -t2 -i '{}' +
+
+djhtml-check:
+	find . -path */.venv -prune -path node_modules -prune -o -wholename '*/templates*.html' -exec djhtml -t2 -c '{}' +
