@@ -40,15 +40,16 @@ WORKDIR /django/bash-shell.net/
 # since they don't add much size
 RUN pip-sync requirements.txt requirements.dev.txt --pip-args '--no-cache-dir --no-deps'
 
-COPY --chown=django ./app/package.json ./app/package-lock.json /django/bash-shell.net/
+COPY --chown=django ./package.json ./package-lock.json /django/bash-shell.net/
 RUN npm ci
 RUN mkdir -p /django/bash-shell.net/app/config/static
 COPY --chown=django ./app/config/static/ /django/bash-shell.net/app/config/static
-COPY --chown=django ./app/webpack.config.js ./app/.stylelintrc.json /django/bash-shell.net/app/
+COPY --chown=django ./webpack.config.js ./.stylelintrc.json /django/bash-shell.net/
 RUN webpack build --mode=production --stats-children
 
 COPY --chown=django ./app /django/bash-shell.net
 RUN DJANGO_SETTINGS_MODULE=config.settings.production python manage.py collectstatic -l --noinput -i *.scss
+RUN rm -rf webpack_assets ./app/config/static/scss/
 COPY --chown=django ./wait-for-it.sh /django/bash-shell.net/wait-for-it.sh
 
 # Production image

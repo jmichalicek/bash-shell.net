@@ -17,17 +17,14 @@ services:
       - redis:/data
   django:
     image: bash-shell-net:dev
-    #image: blog:test
     command: /bin/bash -ic 'make setup-and-run'
     #command: gunicorn --workers 2 --bind 0.0.0.0:8000 --name django --max-requests=1000 config.wsgi:application
-    # command: /bin/bash
     stdin_open: true
     tty: true
     depends_on:
       - database
       - redis
     working_dir: /django/bash-shell.net
-    # command: /home/developer/docker_entrypoints/dev_entrypoint.sh
     build:
       context: .
       dockerfile: Dockerfile
