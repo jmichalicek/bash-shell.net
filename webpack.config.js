@@ -5,31 +5,35 @@ const path = require('path');
 
 var config = {
   mode: 'development',
+  devtool: 'source-map',
   entry: [
-    './config/static/js/index.js',
-    './config/static/scss/main.scss',
+    './app/config/static/js/index.js',
+    './app/config/static/scss/main.scss',
   ],
   output: {
-    path: path.resolve(__dirname, 'webpack_assets/'),
+    path: path.resolve(__dirname , 'webpack_assets/'),
     // filename: './config/static/js/bundled/index.bundle.js',
     // where we want it to write relative to path above or maybe we should use path.resolve here as well
-    filename: '../config/static/js/bundled/index.bundle.js',
+    filename: '..app/config/static/js/bundled/index.bundle.js',
     publicPath: "/static/", // Should match Django STATIC_URL
+  },
+  devServer: {
+    writeToDisk: true, // Write files to disk in dev mode, so Django can serve the assets
   },
   module: {
     rules: [
       {
         test: /\.scss$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'sass-loader'],
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'resolve-url-loader', 'sass-loader'],
       },
       {
         test: /\.css$/,
         loader: 'css-loader',
       },
-      // These create copies of files which there is really no need to. See if we can find a way to not even copy
-      // the files either by sym linking or just using them in place.
-      // The old config used `asset/inline` for the images and `url-loader` for the fonts and images.
-      // This resulted in inlining all of these which made for HUGE css files which were several MB in size.
+      // These create copies of files which there is really no need to. Can't figure out how to
+      // make these work without doing that, though. Possibly `asset/source` to leave as is.
+      // The old config used `asset/inline` for the images and `url-loader` for the fonts.
+      // This resulted in inlining all of these which made for HUGE css files, several MB in size.
       // This also specifies the filename so that webpack will not use the hashes. Django already
       // hashes these when we run collectstatic and updates the css files. We want the non-hashed
       // names so that we know what the real filenmes django sees will be so that we can preload them
@@ -46,23 +50,18 @@ var config = {
         generator: {
           filename: '[name][ext]',
         },
-    ],
-  },
-  optimization: {
-    minimize: true,
-    minimizer: [
-      new CssMinimizerPlugin({
-        test: /\.css$/,
-      }),
+      }
+
     ],
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: './config/static/css/main.css',
+      // filename: './config/static/css/index.css',
+      filename: '../app/config/static/css/main.css', // where we want it to write relative to path above
     }),
-    new StylelintPlugin({
-      files: path.join('config/static/scss', '**/*.s?(a|c)ss'),
-    }),
+    // new StylelintPlugin({
+    //   files: path.join('config/static/scss', '**/*.s?(a|c)ss'),
+    // }),
   ],
   watch: true
 };

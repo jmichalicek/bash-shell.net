@@ -14,6 +14,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteract
   telnet \
   postgresql-client \
   nodejs \
+  bash-completion \
   && apt-get autoremove && apt-get clean
 
 RUN pip install pip==21.1.2

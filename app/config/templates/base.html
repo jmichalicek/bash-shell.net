@@ -15,9 +15,12 @@
       {% comment %}<meta property="og:image" content="https://ia.media-imdb.com/images/rock.jpg" />{% endcomment %}
     {% endblock og_tags %}
     {% block stylesheets %}
+      <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}" />
       {# <link rel="stylesheet" type="text/css" href="{% static 'css/superhero/bootstrap.min.css' %}" /> #}
-      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.0/superhero/bootstrap.min.css" integrity="sha384-rvwYMW9Z/bbxZfgxHQEKx6D91KwffWAG+XnsoYNCGWi/qL1P9dIVYm1HBiHFqQEt" crossorigin="anonymous">
-      <link rel="stylesheet" type="text/css" href="{% static 'css/superhero/superhero_tweak.css' %}" />
+      {% comment %}
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.0/superhero/bootstrap.min.css" integrity="sha384-rvwYMW9Z/bbxZfgxHQEKx6D91KwffWAG+XnsoYNCGWi/qL1P9dIVYm1HBiHFqQEt" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" href="{% static 'css/superhero/superhero_tweak.css' %}" />
+      {% endcomment %}
       <link rel="stylesheet" type="text/css" href="{% static 'css/pygments.css' %}" />
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.0/baguetteBox.min.css" integrity="sha256-cKiyvRKpm8RaTdU71Oq2RUVgvfWrdIXjvVdQF2oZ1Y4=" crossorigin="anonymous" />
 
@@ -47,6 +50,9 @@
               Using a couple known paths here rather than wagtail slugurl which hits the db for each one while
               requiring the exact same known info - the slug. slugurl would only be useful if I know the slug
               but the overall url might be nested further down the path.
+              I could also load an object into the template context which has my base pages so I can just use
+              somepage.url, but no matter what, some knowledge has to be assumed, so keep it the lightest
+              weight option.
             {% endcomment %}
             <li class="nav-item"><a class="nav-link" href="/blog">Home</a></li>
             <li class="nav-item"><a class="nav-link" href="/on-tap">On Tap</a></li>
