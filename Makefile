@@ -7,7 +7,7 @@ venv:
 	 pip install pip==21.1.1
 
 run:
-	python app/manage.py runserver 0.0.0.0:8000
+	honcho start
 
 migrate:
 	python app/manage.py migrate
@@ -32,3 +32,9 @@ requirements.txt:
 
 install:
 	 pip-sync requirements.txt requirements.dev.txt --pip-args '--no-cache-dir --no-deps'
+
+djhtml:
+	find . -path */.venv -prune -o -path node_modules -prune -o -wholename '*/templates*.html' -exec djhtml -t2 -i '{}' +
+
+djhtml-check:
+	find . -path */.venv -prune -path node_modules -prune -o -wholename '*/templates*.html' -exec djhtml -t2 -c '{}' +

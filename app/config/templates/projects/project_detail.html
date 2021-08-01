@@ -4,8 +4,12 @@
   <div class="w-100">
     <div class="col-sm-12 project_detail__nav_row">
       <ul class="nav nav-tabs" role="tablist">
-        <li class="nav-item"><a id="info-tab" class="nav-link active" href="#info-content" data-toggle="tab" role="tabpanel" aria-controls="info-content">Info</a></li>
-        <li class="nav-item"><a id="news-tab" class="nav-link" href="#news-content" data-toggle="tab" role="tabpanel" aria-control="news-content">News</a></li>
+        <li class="nav-item" role="presentation">
+          <a id="info-tab" class="nav-link active" href="#info-content" data-bs-content="#info-content" data-bs-toggle="tab" role="tabpanel" aria-controls="info" aria-selected="true">Info</a>
+        </li>
+        <li class="nav-item" role="presentation">
+          <a id="news-tab" class="nav-link" href="#news-content" data-bs-target="#news-content" data-bs-toggle="tab" role="tabpanel" aria-control="news" aria-selected="false">News</a>
+        </li>
       </ul>
     </div>
     <div class="col-12">

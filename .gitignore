@@ -1,17 +1,34 @@
+# Python and venv stuff
 .venv/
 .envrc
 .venv
 *.pyc
 .python-version
+__pycache__
+
+# django dirs of user created or compiled stuff
 static_collected
 media
-*~
-*.sqlite
-src/
-.DS_Store
-__pycache__
-.vscode
-*.code-workspace
-tmp/
+
+# compiled static files
+main.css
+main.css.map
+**/static/js/bundled/*
+
+# secrets and stuff
 codeship.aes
+
+# code editors/ides
+*.code-workspace
+.vscode
+
+# temp files and similar
+tmp/
+*~
+
+# other
+node_modules/
 .coverage
+.DS_Store
+src/
+*.sqlite

@@ -1,0 +1,45 @@
+{
+    "name": "bash-shell-net",
+    "version": "1.0.0",
+    "description": "bash-shell.net blog site",
+    "private": "true",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "webpack",
+        "dev": "webpack --mode development --config ./webpack.config.js --progress --watch --stats-error-details true --stats-children"
+    },
+    "repository": {
+        "type": "git",
+        "url": ""
+    },
+    "bugs": {
+        "url": "https://bash-shell.net/"
+    },
+    "homepage": "",
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "autoprefixer": "",
+        "bootstrap": "^5.0.2",
+        "bootswatch": "^5.0.1",
+        "css-loader": "",
+        "css-minimizer-webpack-plugin": "",
+        "mini-css-extract-plugin": "",
+        "postcss": "",
+        "postcss-loader": "",
+        "postcss-pxtorem": "",
+        "resolve-url-loader": "^3.1.2",
+        "sass": "",
+        "sass-loader": "",
+        "stylelint": "",
+        "stylelint-config-standard": "",
+        "stylelint-scss": "",
+        "stylelint-webpack-plugin": "",
+        "webpack": "",
+        "webpack-cli": ""
+    },
+    "dependencies": {
+        "@popperjs/core": "^2.9.2"
+    }
+}

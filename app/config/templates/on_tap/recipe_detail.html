@@ -35,13 +35,19 @@
   {% endwith %}
   <div class="blog-post col-12">
     <!--
-      some hackery going on here - use display: block on larger screens so that I can float these to the right and get
-      long intro text text to wrap around them but use display: flex and column-reverse on smaller screens so that
-      I can drop the floated div down below the introduction text. This way I don't have to duplicate data in elements
-      which get hidden or shown on different screen sizes.
-    -->
+        some hackery going on here - use display: block on larger screens so that I can float these to the right and get
+        long intro text text to wrap around them but use display: flex and column-reverse on smaller screens so that
+        I can drop the floated div down below the introduction text. This way I don't have to duplicate data in elements
+        which get hidden or shown on different screen sizes.
+      -->
     <div class="d-flex flex-column-reverse d-lg-block">
-      <div class="d-lg-block col-12 col-lg-4 float-right">
+      <div class="d-lg-block col-12 col-lg-4 float-lg-end ps-lg-3 pe-2">
+        {% comment %}
+          This outter div does not QUITE line up on the right with the tables below
+          as it did with bootstrap 4.5, but is within a couple of px. Probably due
+          to something being a bit off due to the switch to rem for everything.
+          Figure it out at some point or possibly completely rework the structure.
+          {% endcomment %}
         <div class="card row">
           <div class="card-header">
             Style Profile
