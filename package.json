@@ -21,7 +21,7 @@
     "license": "ISC",
     "devDependencies": {
         "autoprefixer": "",
-        "bootstrap": "",
+        "bootstrap": "^5.0.2",
         "bootswatch": "^5.0.1",
         "css-loader": "",
         "css-minimizer-webpack-plugin": "",
@@ -38,5 +38,8 @@
         "stylelint-webpack-plugin": "",
         "webpack": "",
         "webpack-cli": ""
+    },
+    "dependencies": {
+        "@popperjs/core": "^2.9.2"
     }
 }

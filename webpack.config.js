@@ -14,7 +14,7 @@ var config = {
     path: path.resolve(__dirname , 'webpack_assets/'),
     // filename: './config/static/js/bundled/index.bundle.js',
     // where we want it to write relative to path above or maybe we should use path.resolve here as well
-    filename: '..app/config/static/js/bundled/index.bundle.js',
+    filename: '../app/config/static/js/bundled/index.bundle.js',
     publicPath: "/static/", // Should match Django STATIC_URL
   },
   devServer: {
