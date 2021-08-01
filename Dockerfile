@@ -53,7 +53,10 @@ RUN webpack build --mode=production --stats-children
 
 COPY --chown=django ./app /django/bash-shell.net/app
 WORKDIR /django/bash-shell.net/app/
-RUN DJANGO_SETTINGS_MODULE=config.settings.production python manage.py collectstatic -l --noinput -i *.scss
+# temporarily stop sym linking so that all files will be where needed. Definitely going to just move everything within app
+# because the relative path differences are causing way more issues than putting the files where I really want them solves.
+#RUN DJANGO_SETTINGS_MODULE=config.settings.production python manage.py collectstatic -l --noinput -i *.scss
+RUN DJANGO_SETTINGS_MODULE=config.settings.production python manage.py collectstatic --noinput -i *.scss
 RUN rm -rf webpack_assets ./config/static/scss/
 COPY --chown=django ./wait-for-it.sh /django/bash-shell.net/app/wait-for-it.sh
 
