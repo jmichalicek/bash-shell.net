@@ -50,15 +50,14 @@ RUN webpack build --mode=production --stats-children
 
 COPY --chown=django ./app /django/bash-shell.net/
 RUN DJANGO_SETTINGS_MODULE=config.settings.production python manage.py collectstatic -l --noinput -i *.scss -i *.map -i index.js
-RUN rm -rf webpack_assets ./config/static/scss/ ./config/static/js/index.js
-COPY --chown=django ./wait-for-it.sh /django/bash-shell.net/app/wait-for-it.sh
+RUN rm -rf webpack_assets ./config/static/scss/ ./config/static/js/index.js node_modules
+COPY --chown=django ./wait-for-it.sh /django/bash-shell.net/wait-for-it.sh
 
 # Production image
 FROM python:3.9.6-slim-buster AS prod
 RUN useradd -ms /bin/bash -d /django django
-COPY --chown=django --from=build /django/bash-shell.net/config /django/bash-shell.net/config
-COPY --chown=django --from=build /django/bash-shell.net/bash_shell_net /django/bash-shell.net/bash_shell_net
-COPY --chown=django --from=build /django/bash-shell.net/.venv /django/bash-shell.net/.venv
+# Instead of copying the whole dir, just copy the known needed bits
+COPY --chown=django --from=build /django/bash-shell.net /django/bash-shell.net/
 USER django
 ENV DJANGO_SETTINGS_MODULE=config.settings.production \
     HOME=/django/.local/bin:/django PATH=/django/bash-shell.net/.venv/bin:$PATH \
