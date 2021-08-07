@@ -6,9 +6,8 @@ from django.contrib.postgres.fields import CICharField
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db import models
 from django.db.models.query import QuerySet
-from django.http import Http404, HttpRequest, HttpResponse, HttpResponseRedirect
+from django.http import HttpRequest, HttpResponse
 from django.utils import timezone
-from django.utils.functional import cached_property
 
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from modelcluster.fields import ParentalKey
@@ -69,8 +68,8 @@ class VolumeUnit(Enum):
 
 def convert_volume_to_gallons(volume: Decimal, unit: VolumeUnit) -> Decimal:
     """
-        Converts the batch volume to gallons for use in SRM estimation using Morey's equation
-        """
+    Converts the batch volume to gallons for use in SRM estimation using Morey's equation
+    """
     # Probably makes sense to live on either VolumeUnit or VolumeToGallonsConverter now.
     return volume * VolumeToGallonsConverter[unit.name].value
 
@@ -107,7 +106,11 @@ class RecipeHop(Orderable, models.Model):
     # Might FK this to a set of hops
     # would be good for name, type, substitutes, and origin
     recipe_page = ParentalKey(
-        'on_tap.RecipePage', on_delete=models.CASCADE, related_name='hops', blank=False, null=False,
+        'on_tap.RecipePage',
+        on_delete=models.CASCADE,
+        related_name='hops',
+        blank=False,
+        null=False,
     )
     name = CICharField(max_length=100, blank=False)
     # A couple extra digits and decimal places to play it safe
@@ -169,7 +172,10 @@ class RecipeFermentable(Orderable, models.Model):
     # TODO: usage? such as mash, vorlauf, or steep?
 
     UNIT_CHOICES = (
-        ('g', 'Grams',),
+        (
+            'g',
+            'Grams',
+        ),
         ('oz', 'Ounces'),
         ('kg', 'Kilograms'),
         ('lb', 'Pounds'),
@@ -183,10 +189,18 @@ class RecipeFermentable(Orderable, models.Model):
         ('adjunct', 'Adjunct'),
     )
     recipe_page = ParentalKey(
-        'on_tap.RecipePage', on_delete=models.CASCADE, blank=False, null=False, related_name='fermentables',
+        'on_tap.RecipePage',
+        on_delete=models.CASCADE,
+        blank=False,
+        null=False,
+        related_name='fermentables',
     )
     amount = models.DecimalField(max_digits=6, decimal_places=3, blank=False, null=False)
-    amount_units = models.CharField(max_length=5, blank=False, choices=UNIT_CHOICES,)
+    amount_units = models.CharField(
+        max_length=5,
+        blank=False,
+        choices=UNIT_CHOICES,
+    )
     # may add a static amount in kilograms to auto sort by amount
     notes = RichTextField(
         blank=True,
@@ -268,8 +282,25 @@ class RecipeYeast(Orderable, models.Model):
 
     UNIT_CHOICES = (
         ('', '---------'),
-        ('Weight', (('g', 'Grams',), ('oz', 'Ounces'),),),
-        ('Volume', (('tsp', 'Teaspoons'), ('tbsp', 'Tablespoons'), ('fl_oz', 'Fluid Oz'), ('l', 'Liters'),),),
+        (
+            'Weight',
+            (
+                (
+                    'g',
+                    'Grams',
+                ),
+                ('oz', 'Ounces'),
+            ),
+        ),
+        (
+            'Volume',
+            (
+                ('tsp', 'Teaspoons'),
+                ('tbsp', 'Tablespoons'),
+                ('fl_oz', 'Fluid Oz'),
+                ('l', 'Liters'),
+            ),
+        ),
     )
 
     YEAST_TYPE_CHOICES = (
@@ -315,7 +346,15 @@ class RecipeMiscIngredient(Orderable, models.Model):
     """
 
     UNIT_CHOICES = (
-        ('Weight', (('g', 'Grams'), ('oz', 'Ounces'), ('kg', 'Kilograms'), ('lb', 'Pounds'),),),
+        (
+            'Weight',
+            (
+                ('g', 'Grams'),
+                ('oz', 'Ounces'),
+                ('kg', 'Kilograms'),
+                ('lb', 'Pounds'),
+            ),
+        ),
         (
             'Volume',
             (
@@ -500,13 +539,26 @@ class BeverageStyle(models.Model):
             classname='collapsible collapsed',
         ),
         MultiFieldPanel(
-            [FieldPanel('color_min'), FieldPanel('color_max'),], heading='Color', classname='collapsible collapsed',
+            [
+                FieldPanel('color_min'),
+                FieldPanel('color_max'),
+            ],
+            heading='Color',
+            classname='collapsible collapsed',
         ),
         MultiFieldPanel(
-            [FieldPanel('ibu_min'), FieldPanel('ibu_max'),], heading='IBUs', classname='collapsible collapsed',
+            [
+                FieldPanel('ibu_min'),
+                FieldPanel('ibu_max'),
+            ],
+            heading='IBUs',
+            classname='collapsible collapsed',
         ),
         MultiFieldPanel(
-            [FieldPanel('carbonation_min'), FieldPanel('carbonation_max'),],
+            [
+                FieldPanel('carbonation_min'),
+                FieldPanel('carbonation_max'),
+            ],
             heading='Carbonation',
             classname='collapsible collapsed',
         ),
@@ -578,11 +630,16 @@ class RecipePage(IdAndSlugUrlMixin, Page):
     # I do not believe I do now, but here it is for now. I should remove it.
     name = CICharField(max_length=100, blank=False)
     short_description = models.TextField(
-        blank=True, default='', help_text='A one or two sentence description of the recipe.',
+        blank=True,
+        default='',
+        help_text='A one or two sentence description of the recipe.',
     )
     # extract, partial mash, or all grain
     recipe_type = models.CharField(
-        max_length=25, choices=RECIPE_TYPE_CHOICES, blank=False, default=RecipeType.ALL_GRAIN,
+        max_length=25,
+        choices=RECIPE_TYPE_CHOICES,
+        blank=False,
+        default=RecipeType.ALL_GRAIN,
     )
 
     # FK to a StylePage or snippet
@@ -590,7 +647,11 @@ class RecipePage(IdAndSlugUrlMixin, Page):
     # or use a snippet rather than Page for style?
     # or just enter the text and match up to the page by text in code?
     style = models.ForeignKey(
-        'on_tap.BeverageStyle', null=True, default=None, on_delete=models.SET_NULL, related_name='recipe_pages',
+        'on_tap.BeverageStyle',
+        null=True,
+        default=None,
+        on_delete=models.SET_NULL,
+        related_name='recipe_pages',
     )
     brewer = models.CharField(max_length=250, blank=True, default='')  # or fk to a user?
     assistant_brewer = models.CharField(max_length=250, blank=True, default='')
@@ -682,18 +743,38 @@ class RecipePage(IdAndSlugUrlMixin, Page):
             classname='collapsible collapsed',
         ),
         MultiFieldPanel(
-            [InlinePanel('fermentables', label="Fermentables", classname='collapsible collapsed',)],
+            [
+                InlinePanel(
+                    'fermentables',
+                    label="Fermentables",
+                    classname='collapsible collapsed',
+                )
+            ],
             classname='collapsible collapsed',
             heading='Fermentables',
         ),
-        MultiFieldPanel([InlinePanel('hops', label="Hops"),], classname='collapsible collapsed', heading='Hops',),
         MultiFieldPanel(
-            [InlinePanel('yeasts', label="Yeast", classname='collapsible collapsed',),],
+            [
+                InlinePanel('hops', label="Hops"),
+            ],
+            classname='collapsible collapsed',
+            heading='Hops',
+        ),
+        MultiFieldPanel(
+            [
+                InlinePanel(
+                    'yeasts',
+                    label="Yeast",
+                    classname='collapsible collapsed',
+                ),
+            ],
             classname='collapsible collapsed',
             heading='Yeast',
         ),
         MultiFieldPanel(
-            [InlinePanel('miscellaneous_ingredients', label="Miscellaneous Ingredients"),],
+            [
+                InlinePanel('miscellaneous_ingredients', label="Miscellaneous Ingredients"),
+            ],
             classname='collapsible collapsed',
             heading='Miscellaneous Ingredients',
         ),
@@ -716,7 +797,10 @@ class RecipePage(IdAndSlugUrlMixin, Page):
         index.RelatedFields('hops', [index.SearchField('name', partial_match=True)]),
         index.RelatedFields('yeasts', [index.SearchField('name', partial_match=True)]),
         index.RelatedFields('fermentables', [index.SearchField('name', partial_match=True)]),
-        index.RelatedFields('style', (index.SearchField('name', partial_match=True), index.FilterField('name')),),
+        index.RelatedFields(
+            'style',
+            (index.SearchField('name', partial_match=True), index.FilterField('name')),
+        ),
         index.FilterField('recipe_type'),
         index.FilterField("tags"),
     ]
@@ -804,7 +888,11 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):
     tags = ClusterTaggableManager(through=BatchLogPageTag, blank=True)
 
     recipe_page = models.ForeignKey(
-        'on_tap.RecipePage', on_delete=models.PROTECT, related_name='batch_log_pages', blank=False, null=False,
+        'on_tap.RecipePage',
+        on_delete=models.PROTECT,
+        related_name='batch_log_pages',
+        blank=False,
+        null=False,
     )
     status = models.CharField(
         max_length=25,
@@ -854,7 +942,14 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):
         FieldPanel('on_tap_date'),
         FieldPanel('off_tap_date'),
         MultiFieldPanel(
-            [FieldRowPanel([FieldPanel('original_gravity'), FieldPanel('final_gravity'),]),],
+            [
+                FieldRowPanel(
+                    [
+                        FieldPanel('original_gravity'),
+                        FieldPanel('final_gravity'),
+                    ]
+                ),
+            ],
             heading='Gravity Information',
         ),
         MultiFieldPanel(
@@ -870,7 +965,10 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):
     search_fields = Page.search_fields + [
         index.SearchField('recipe_page'),
         index.SearchField('body', partial_match=True),
-        index.RelatedFields('recipe_page', RecipePage.search_fields,),
+        index.RelatedFields(
+            'recipe_page',
+            RecipePage.search_fields,
+        ),
         index.FilterField("tags"),
         index.FilterField('status'),
         index.FilterField('brewed_date'),

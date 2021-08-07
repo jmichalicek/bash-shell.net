@@ -3,11 +3,12 @@ Extra wagtail blocks for the site.
 """
 from django.utils.safestring import mark_safe
 
+from wagtail.core import blocks
+from wagtail.images.blocks import ImageChooserBlock
+
 from pygments import highlight
 from pygments.formatters import get_formatter_by_name
 from pygments.lexers import get_lexer_by_name, guess_lexer
-from wagtail.core import blocks
-from wagtail.images.blocks import ImageChooserBlock
 
 
 class LineNumberStyle:
@@ -94,8 +95,9 @@ class CodeBlock(blocks.StructBlock):
         (LineNumberStyle.INLINE, 'Inline'),
     )
 
-    language = blocks.ChoiceBlock(choices=LANGUAGE_CHOICES, required=False, blank=True,
-                                  default=CodeHighlightLanguage.AUTO)
+    language = blocks.ChoiceBlock(
+        choices=LANGUAGE_CHOICES, required=False, blank=True, default=CodeHighlightLanguage.AUTO
+    )
     filename = blocks.CharBlock(required=False, default='')
     display_filename = blocks.BooleanBlock(required=False, default=True)
     code = blocks.TextBlock(required=False, default='')
@@ -105,6 +107,7 @@ class CodeBlock(blocks.StructBlock):
         """
         Set streamfield icon.
         """
+
         icon = 'code'
         template = 'wagtail_blocks/codeblock.html'
 
@@ -126,12 +129,14 @@ class CodeBlock(blocks.StructBlock):
             style='default',
             noclasses=False,
         )
-        context.update({
-            'filename': value.get('filename'),
-            'display_filename': value.get('display_filename'),
-            'language': value.get('lang'),
-            'code': mark_safe(highlight(src, lexer, formatter))
-        })
+        context.update(
+            {
+                'filename': value.get('filename'),
+                'display_filename': value.get('display_filename'),
+                'language': value.get('lang'),
+                'code': mark_safe(highlight(src, lexer, formatter)),
+            }
+        )
         return context
 
 
@@ -139,6 +144,7 @@ class DetailImageChooserBlock(blocks.StructBlock):
     """
     ImageBlock with more meta details
     """
+
     image = ImageChooserBlock()
     caption = blocks.CharBlock(label='Caption', max_length=200, required=False)
     attribution = blocks.CharBlock(required=False)
@@ -165,7 +171,8 @@ class DetailImageChooserBlock(blocks.StructBlock):
 
 class ImageGalleryBlock(blocks.StructBlock):
     image_items = blocks.ListBlock(
-        DetailImageChooserBlock(), label="Image",
+        DetailImageChooserBlock(),
+        label="Image",
     )
 
     class Meta:

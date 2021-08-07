@@ -1,11 +1,12 @@
-
 # This all needs fixed for wagtail
 from django.contrib.syndication.views import Feed
 
 from bash_shell_net.blog.models import BlogPage
 
+
 class BlogFeedRss(Feed):
     """RSS feed of latest posts"""
+
     title = "Bash-Shell.Net Posts"
     link = "/"
     description = "Latest bash-shell.net posts"

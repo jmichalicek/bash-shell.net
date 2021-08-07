@@ -1,10 +1,5 @@
 import unittest
 
-from django.test import TestCase
-from django.urls import reverse
-from django.utils.text import slugify
-
-from wagtail.core.models import Page
 from wagtail.tests.utils import WagtailPageTests
 
 from ..models import BlogPage, BlogPageIndex
@@ -35,7 +30,8 @@ class BlogPageTest(WagtailPageTests):
         """
         blog_page = BlogPage.objects.live().first()
         self.assertEqual(
-            f"/blog-index/{blog_page.pk}/{blog_page.slug}/", blog_page.get_id_and_slug_url(),
+            f"/blog-index/{blog_page.pk}/{blog_page.slug}/",
+            blog_page.get_id_and_slug_url(),
         )
 
     def test_request_by_id_and_slug_route(self):
@@ -51,5 +47,6 @@ class BlogPageTest(WagtailPageTests):
         url = f"{url[:-1]}1/"
         r = self.client.get(url)
         self.assertRedirects(
-            r, self.published_blog_page.get_id_and_slug_url(),
+            r,
+            self.published_blog_page.get_id_and_slug_url(),
         )

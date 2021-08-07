@@ -8,6 +8,7 @@ class SiteMapTest(TestCase):
     This does not really belong here, but I guess if I just move sitemaps.py to here, then it would.
     or perhaps it will get its own app because it will pull in stuff from any other app.
     """
+
     maxDiff = None
 
     def test_get(self):

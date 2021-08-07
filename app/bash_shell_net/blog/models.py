@@ -1,10 +1,7 @@
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db import models
 from django.db.models import Q
-from django.http import Http404, HttpResponse, HttpResponseRedirect
-from django.urls import reverse
-from django.utils import timezone
-from django.utils.text import slugify
+from django.http import HttpResponse
 
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from modelcluster.fields import ParentalKey
@@ -20,9 +17,7 @@ from bash_shell_net.wagtail_blocks.fields import STANDARD_STREAMFIELD_FIELDS
 
 
 class BlogPageTag(TaggedItemBase):
-    content_object = ParentalKey(
-        "blog.BlogPage", on_delete=models.CASCADE, related_name="tagged_items"
-    )
+    content_object = ParentalKey("blog.BlogPage", on_delete=models.CASCADE, related_name="tagged_items")
 
 
 class BlogPageIndex(RoutablePageMixin, IdAndSlugUrlIndexMixin, Page):
@@ -54,9 +49,7 @@ class BlogPageIndex(RoutablePageMixin, IdAndSlugUrlIndexMixin, Page):
         # TODO: move this to a mixin similar to django's ListView.  WagtailListView or something.
         # try with pagination
         context = super().get_context(request)
-        posts = (
-            BlogPage.objects.descendant_of(self).live().order_by("-last_published_at")
-        )
+        posts = BlogPage.objects.descendant_of(self).live().order_by("-last_published_at")
         paginator = Paginator(posts, 15)  # Show 5 resources per page
         page_number = request.GET.get("page")
         try:
@@ -75,9 +68,7 @@ class BlogPageIndex(RoutablePageMixin, IdAndSlugUrlIndexMixin, Page):
         return context
 
     @route(r"^(?P<id>\d+)/(?P<slug>[-_\w]+)/$", name="blog_post_by_id_and_slug")
-    def blog_post_by_id_and_slug(
-        self, request, id, slug, *args, **kwargs
-    ) -> HttpResponse:
+    def blog_post_by_id_and_slug(self, request, id, slug, *args, **kwargs) -> HttpResponse:
         """
         Look up BlogPage using the id and slug, using just the id for the actual lookup
         """
@@ -163,12 +154,8 @@ class BlogPage(IdAndSlugUrlMixin, Page):
             # TODO: Is this really going to happen? Same first published but id lower? or higher?
             # I think it would work just as well to just make this:
             # BP.live().filter(first_published_at__lte=self.first_published_at).exclude(pk=self.pk).order_by('-first_published_at', 'id')
-            previous_post_q = Q(
-                first_published_at=self.first_published_at, id__lt=self.id
-            )
-            previous_post_q = previous_post_q | Q(
-                first_published_at__lt=self.first_published_at
-            )
+            previous_post_q = Q(first_published_at=self.first_published_at, id__lt=self.id)
+            previous_post_q = previous_post_q | Q(first_published_at__lt=self.first_published_at)
             previous_post = (
                 BlogPage.objects.live()
                 .filter(previous_post_q)
@@ -177,22 +164,14 @@ class BlogPage(IdAndSlugUrlMixin, Page):
                 .first()
             )
         else:
-            previous_post = (
-                BlogPage.objects.live().order_by("-first_published_at", "id").first()
-            )
+            previous_post = BlogPage.objects.live().order_by("-first_published_at", "id").first()
 
         if self.first_published_at and self.pk:
             next_post_q = Q(first_published_at=self.first_published_at, id__gt=self.id)
             # is there a better way to handle this being used in unpublished previews?
-            next_post_q = next_post_q | Q(
-                first_published_at__gt=self.first_published_at
-            )
+            next_post_q = next_post_q | Q(first_published_at__gt=self.first_published_at)
             next_post = BlogPage.objects.live().filter(next_post_q)
-            next_post = (
-                next_post.exclude(pk=self.pk)
-                .order_by("first_published_at", "-id")
-                .first()
-            )
+            next_post = next_post.exclude(pk=self.pk).order_by("first_published_at", "-id").first()
         else:
             next_post = None
         context["previous_post"] = previous_post

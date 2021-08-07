@@ -14,20 +14,15 @@ class CustomUserAdmin(UserAdmin):
     fieldsets = (
         (None, {'fields': ('email', 'username', 'password')}),
         (_('Personal info'), {'fields': ('first_name', 'last_name')}),
-        (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
-                                       'groups', 'user_permissions')}),
+        (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
     )
-    add_fieldsets = (
-        (None, {
-            'classes': ('wide',),
-            'fields': ('email', 'password1', 'password2')}
-        ),
-    )
-#    form = CustomUserChangeForm
-#    add_form = CustomUserCreationForm
+    add_fieldsets = ((None, {'classes': ('wide',), 'fields': ('email', 'password1', 'password2')}),)
+    #    form = CustomUserChangeForm
+    #    add_form = CustomUserCreationForm
     list_display = ('email', 'username', 'first_name', 'last_name', 'is_staff')
     search_fields = ('email', 'username', 'first_name', 'last_name')
     ordering = ('email',)
+
 
 admin.site.register(User, CustomUserAdmin)

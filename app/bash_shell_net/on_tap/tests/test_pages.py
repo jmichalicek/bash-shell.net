@@ -88,7 +88,14 @@ class OnTapPageTest(WagtailPageTests):
                 'original_gravity': 1.050,
                 'final_gravity': 1.016,
                 'status': status,
-                'body': streamfield([("paragraph", rich_text("<p>This is a test recipe.</p>"),)]),
+                'body': streamfield(
+                    [
+                        (
+                            "paragraph",
+                            rich_text("<p>This is a test recipe.</p>"),
+                        )
+                    ]
+                ),
                 'volume_units': 'gal',
             },
         )
@@ -118,7 +125,10 @@ class OnTapPageTest(WagtailPageTests):
         )
         planned_batch = self._make_batch_log_page(slug='planned-batch', batch_index_page=batch_index, status='planned')
         fermenting_batch = self._make_batch_log_page(
-            slug='fermenting-batch', batch_index_page=batch_index, status='fermenting', brewed_date='2020-06-10',
+            slug='fermenting-batch',
+            batch_index_page=batch_index,
+            status='fermenting',
+            brewed_date='2020-06-10',
         )
         previous_batch = self._make_batch_log_page(
             slug='off-tap-batch',
@@ -212,7 +222,11 @@ class RecipePageTest(WagtailPageTests):
                         )
                     ]
                 ),
-                "conclusion": streamfield([("paragraph", rich_text("<p>Recipe conclusion.</p>")),],),
+                "conclusion": streamfield(
+                    [
+                        ("paragraph", rich_text("<p>Recipe conclusion.</p>")),
+                    ],
+                ),
                 "hops": inline_formset([]),
                 "yeasts": inline_formset([]),
                 "fermentables": inline_formset([]),
@@ -257,7 +271,8 @@ class RecipePageTest(WagtailPageTests):
         url = f'{url[:-1]}1/'
         r = self.client.get(url)
         self.assertRedirects(
-            r, page.get_id_and_slug_url(),
+            r,
+            page.get_id_and_slug_url(),
         )
 
 
@@ -322,7 +337,14 @@ class BatchLogPageTest(WagtailPageTests):
                 'original_gravity': 1.050,
                 'final_gravity': 1.016,
                 'status': 'complete',
-                'body': streamfield([("paragraph", rich_text("<p>This is a test recipe.</p>"),)]),
+                'body': streamfield(
+                    [
+                        (
+                            "paragraph",
+                            rich_text("<p>This is a test recipe.</p>"),
+                        )
+                    ]
+                ),
                 'volume_in_fermenter': 2.75,
                 'volume_units': 'gal',
             },
@@ -356,7 +378,8 @@ class BatchLogPageTest(WagtailPageTests):
         url = f'{url[:-1]}1/'
         r = self.client.get(url)
         self.assertRedirects(
-            r, page.get_id_and_slug_url(),
+            r,
+            page.get_id_and_slug_url(),
         )
 
     def test_get_id_and_slug_url(self):
@@ -372,12 +395,11 @@ class BatchLogPageTest(WagtailPageTests):
             VolumeUnit.FLUID_OZ: Decimal('0.0078125'),
             VolumeUnit.QUART: Decimal('0.25'),
             VolumeUnit.LITER: Decimal('0.26417287'),
-
         }
         page = BatchLogPage.objects.first()
         base_volume = Decimal('2.75')
         for unit in [VolumeUnit.GALLON, VolumeUnit.FLUID_OZ, VolumeUnit.QUART, VolumeUnit.LITER]:
-            page.volume_in_fermenter = Decimal(2.75 ) / expected_conversion[unit]
+            page.volume_in_fermenter = Decimal(2.75) / expected_conversion[unit]
             page.volume_units = unit.value
             with self.subTest(volume_units=page.get_volume_units_display(), volume=page.volume_in_fermenter):
                 self.assertEqual(base_volume, page.fermenter_volume_as_gallons().quantize(base_volume))
@@ -388,12 +410,11 @@ class BatchLogPageTest(WagtailPageTests):
             VolumeUnit.FLUID_OZ: Decimal('0.0078125'),
             VolumeUnit.QUART: Decimal('0.25'),
             VolumeUnit.LITER: Decimal('0.26417287'),
-
         }
         page = BatchLogPage.objects.first()
         base_volume = Decimal('2.75')
         for unit in [VolumeUnit.GALLON, VolumeUnit.FLUID_OZ, VolumeUnit.QUART, VolumeUnit.LITER]:
-            page.post_boil_volume = Decimal(2.75 ) / expected_conversion[unit]
+            page.post_boil_volume = Decimal(2.75) / expected_conversion[unit]
             page.volume_units = unit.value
             with self.subTest(volume_units=page.get_volume_units_display(), volume=page.volume_in_fermenter):
                 self.assertEqual(base_volume, page.post_boil_volume_as_gallons().quantize(base_volume))
@@ -424,7 +445,6 @@ class BatchLogPageTest(WagtailPageTests):
             page.post_boil_volume = t['volume']
             with self.subTest(volume=page.post_boil_volume):
                 self.assertEqual(t['expected_srm'], page.get_actual_or_expected_srm())
-
 
 
 class RecipeFermentableTest(TestCase):

@@ -10,14 +10,6 @@ indent_size = 2
 max_line_length = 120
 indent_style = space
 indent_size = 4
-# isort settings
-multi_line_output = 3
-include_trailing_comma = true
-line_length = 120
-skip = {{ project_name }}/settings.py
-known_django = django
-known_wagtail = wagtail,modelcluster,taggit
-sections = FUTURE,STDLIB,DJANGO,WAGTAIL,THIRDPARTY,FIRSTPARTY,LOCALFOLDER
 
 [Makefile]
 indent_style = tab

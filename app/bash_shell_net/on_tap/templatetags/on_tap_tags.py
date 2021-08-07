@@ -1,4 +1,4 @@
-from typing import Iterable, Tuple, TypeVar, Union
+from typing import Union
 
 from django import template
 
