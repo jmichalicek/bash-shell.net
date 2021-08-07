@@ -3,28 +3,41 @@ from django.contrib import admin
 from .models import *
 
 
-#inlines
+# inlines
 class ProjectHostingServiceInline(admin.StackedInline):
     model = ProjectHostingService
     extra = 1
 
 
-#admins
+# admins
 class HostingServiceAdmin(admin.ModelAdmin):
     list_display = ('name',)
     search_fields = ['name']
 
 
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('name','primary_language','created_date', 'modified_date')
+    list_display = ('name', 'primary_language', 'created_date', 'modified_date')
     search_fields = ['name', 'description']
     list_filter = ('primary_language',)
     fieldsets = (
-        (None,{'fields': ['name', 'slug', 'description','primary_language',
-                          'other_languages', 'created_date','modified_date', 'is_active']}),
+        (
+            None,
+            {
+                'fields': [
+                    'name',
+                    'slug',
+                    'description',
+                    'primary_language',
+                    'other_languages',
+                    'created_date',
+                    'modified_date',
+                    'is_active',
+                ]
+            },
+        ),
     )
     readonly_fields = ['created_date', 'modified_date']
-    prepopulated_fields = {"slug" : ['name']}
+    prepopulated_fields = {"slug": ['name']}
 
     inlines = [ProjectHostingServiceInline]
 
@@ -40,9 +53,7 @@ class ProjectNewsAdmin(admin.ModelAdmin):
     list_filter = ('project',)
     list_editable = ['is_published']
     search_fields = ['project__name', 'title']
-    fieldsets = (
-        (None, {'fields': ['title', 'project', 'content', 'is_published']}),
-    )
+    fieldsets = ((None, {'fields': ['title', 'project', 'content', 'is_published']}),)
 
 
 admin.site.register(HostingService, HostingServiceAdmin)

@@ -1,9 +1,8 @@
-from django.test import TestCase
 from django.core.exceptions import ValidationError
+from django.test import TestCase
 from django.urls import reverse
-from django.test.client import Client
 
-from .factories import ProjectFactory, ActiveProjectFactory
+from .factories import ActiveProjectFactory, ProjectFactory
 from .models import *
 
 
@@ -66,7 +65,6 @@ class ProjectTests(TestCase):
         self.assertEqual('asdf-1234', p.slug)
 
 
-
 class ProjectListViewTests(TestCase):
     """Tests the full_project_list view"""
 
@@ -89,8 +87,7 @@ class ProjectViewTest(TestCase):
 
     def setUp(self):
         self.project = ActiveProjectFactory()
-        pnews = ProjectNews(is_published=True, project=self.project,
-                            content='fake news!', title='whee')
+        pnews = ProjectNews(is_published=True, project=self.project, content='fake news!', title='whee')
         pnews.full_clean()
         pnews.save()
 

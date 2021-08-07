@@ -22,7 +22,7 @@ def markdown_tag(parser, token):
     The style arg could be updated to allow using specific markdown extensions - I assume that is what it does
     in markdown_deux anyway.
     """
-    nodelist = parser.parse(('endmarkdown', ))
+    nodelist = parser.parse(('endmarkdown',))
     bits = token.split_contents()
     if len(bits) == 1:
         style = "default"
@@ -38,6 +38,7 @@ class MarkdownNode(template.Node):
     """
     For rendering markdown blocks
     """
+
     def __init__(self, style, nodelist):
         self.style = style
         self.nodelist = nodelist

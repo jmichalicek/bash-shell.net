@@ -1,5 +1,4 @@
 import textwrap
-import unittest
 
 from django.test import SimpleTestCase, TestCase
 

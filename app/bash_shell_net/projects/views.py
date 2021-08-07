@@ -1,9 +1,6 @@
-from __future__ import absolute_import, unicode_literals, division
+from django.views.generic import DetailView, ListView
 
-from django.shortcuts import render
-from django.views.generic import ListView, DetailView
-
-from .models import Project, ProjectNews
+from .models import Project
 
 
 class ProjectListView(ListView):
@@ -23,8 +20,6 @@ class ProjectDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(ProjectDetailView, self).get_context_data(**kwargs)
-        context.update({
-            'project_news': self.object.project_news.filter(is_published=True).order_by('-created_date')
-        })
+        context.update({'project_news': self.object.project_news.filter(is_published=True).order_by('-created_date')})
 
         return context

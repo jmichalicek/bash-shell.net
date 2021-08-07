@@ -12,7 +12,7 @@ cms:
   volumes:
     - ./:/tmp
 database:
-  image: "postgres:11.2"
+  image: "postgres:13.3"
   environment:
       - POSTGRES_PASSWORD=developer
       - POSTGRES_USER=developer

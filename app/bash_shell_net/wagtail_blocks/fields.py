@@ -2,14 +2,37 @@ from wagtail.core import blocks
 from wagtail.documents.blocks import DocumentChooserBlock
 from wagtail.embeds.blocks import EmbedBlock
 from wagtail.images.blocks import ImageChooserBlock
-from .blocks import CodeBlock, ImageGalleryBlock, DetailImageChooserBlock
+
+from .blocks import CodeBlock, DetailImageChooserBlock, ImageGalleryBlock
 
 STANDARD_STREAMFIELD_FIELDS = [
     ('heading', blocks.CharBlock(classname="full title")),
-    ('paragraph', blocks.RichTextBlock(features=[
-        'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ol', 'ul', 'bold', 'italic', 'code', 'superscript', 'subscript',
-        'strikethrough', 'blockquote', 'link', 'documentlink', 'image', 'embed'
-    ])),
+    (
+        'paragraph',
+        blocks.RichTextBlock(
+            features=[
+                'h1',
+                'h2',
+                'h3',
+                'h4',
+                'h5',
+                'h6',
+                'ol',
+                'ul',
+                'bold',
+                'italic',
+                'code',
+                'superscript',
+                'subscript',
+                'strikethrough',
+                'blockquote',
+                'link',
+                'documentlink',
+                'image',
+                'embed',
+            ]
+        ),
+    ),
     ('code', CodeBlock()),
     ('quote', blocks.BlockQuoteBlock()),
     ('other_page', blocks.PageChooserBlock()),

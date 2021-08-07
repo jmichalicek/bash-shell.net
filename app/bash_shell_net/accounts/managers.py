@@ -1,8 +1,8 @@
 from django.contrib.auth.models import BaseUserManager
 from django.utils import timezone
 
-class UserManager(BaseUserManager):
 
+class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         """
         Creates and saves a User with the given username, email, and password.
@@ -12,9 +12,7 @@ class UserManager(BaseUserManager):
             raise ValueError('The given email must be set')
 
         email = UserManager.normalize_email(email)
-        user = self.model(email=email, is_active=True,
-                          is_staff=False, is_superuser=False,
-                          **extra_fields)
+        user = self.model(email=email, is_active=True, is_staff=False, is_superuser=False, **extra_fields)
 
         user.set_password(password)
         user.save(using=self._db)
