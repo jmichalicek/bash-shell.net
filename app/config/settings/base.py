@@ -82,6 +82,7 @@ STATICFILES_FINDERS = (
     # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
+# May drop the Compressed part of this to reduce image size since nginz gzips them on the way out
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Make this unique, and don't share it with anybody.

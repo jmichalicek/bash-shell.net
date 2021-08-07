@@ -3,10 +3,10 @@ services:
   database:
     image: "postgres:11.2"
     environment:
-        - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-developer}
-        - POSTGRES_USER=${POSTGRES_USER:-developer}
-        - POSTGRES_DB=${POSTGRES_DB:-bash_shell_net}
-        - PGDATA=${PGDATA:-/var/lib/postgresql/data/pgdata}
+        - POSTGRES_PASSWORD=developer
+        - POSTGRES_USER=developer
+        - POSTGRES_DB=bash_shell_net
+        - PGDATA=/var/lib/postgresql/data/pgdata
     privileged: true
     volumes:
       - db:/var/lib/postgresql/data
@@ -18,7 +18,7 @@ services:
   django:
     image: bash-shell-net:dev
     command: /bin/bash -ic 'make setup-and-run'
-    #command: gunicorn --workers 2 --bind 0.0.0.0:8000 --name django --max-requests=1000 config.wsgi:application
+    # command: ["gunicorn", "--workers", "2", "--bind", "0.0.0.0:8000", "--name", "django", "--max-requests=1000", "config.wsgi:application"]
     stdin_open: true
     tty: true
     depends_on:
