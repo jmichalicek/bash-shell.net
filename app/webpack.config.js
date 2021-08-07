@@ -1,5 +1,4 @@
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const StylelintPlugin = require('stylelint-webpack-plugin');
 const path = require('path');
 
@@ -7,14 +6,14 @@ var config = {
   mode: 'development',
   devtool: 'source-map',
   entry: [
-    './app/config/static/js/index.js',
-    './app/config/static/scss/main.scss',
+    './config/static/js/index.js',
+    './config/static/scss/main.scss',
   ],
   output: {
     path: path.resolve(__dirname , 'webpack_assets/'),
     // filename: './config/static/js/bundled/index.bundle.js',
     // where we want it to write relative to path above or maybe we should use path.resolve here as well
-    filename: '../app/config/static/js/bundled/index.bundle.js',
+    filename: '../config/static/js/bundled/index.bundle.js',
     publicPath: "/static/", // Should match Django STATIC_URL
   },
   devServer: {
@@ -24,7 +23,23 @@ var config = {
     rules: [
       {
         test: /\.scss$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'resolve-url-loader', 'sass-loader'],
+        // use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'resolve-url-loader', 'sass-loader'],
+        use: [
+          MiniCssExtractPlugin.loader,          
+          { loader: 'css-loader', options: { sourceMap: true, importLoaders: 1 } },
+          { loader: 'postcss-loader', options: {
+            postcssOptions: {
+              plugins: {
+                autoprefixer: {},
+                "postcss-pxtorem": {
+                  propList: ['font', 'font-size', 'line-height', 'letter-spacing', 'margin*', "padding*", "*width", "*height", "grid-template*"]
+                }
+              }
+            }
+          }},
+          { loader: 'resolve-url-loader'},
+          { loader: 'sass-loader', options: { sourceMap: true } },
+        ]
       },
       {
         test: /\.css$/,
@@ -57,7 +72,7 @@ var config = {
   plugins: [
     new MiniCssExtractPlugin({
       // filename: './config/static/css/index.css',
-      filename: '../app/config/static/css/main.css', // where we want it to write relative to path above
+      filename: '../config/static/css/main.css', // where we want it to write relative to path above
     }),
     // new StylelintPlugin({
     //   files: path.join('config/static/scss', '**/*.s?(a|c)ss'),

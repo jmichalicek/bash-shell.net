@@ -1,2 +1,2 @@
 web: python app/manage.py runserver 0.0.0.0:8000
-webpack: npm run dev
+webpack: cd app && npm run dev
