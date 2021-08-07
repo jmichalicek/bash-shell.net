@@ -15,6 +15,8 @@ requests
 https://github.com/jmichalicek/django-internetdefenseleague/archive/master.zip
 # django-internetdefenseleague-master = {git = "https://github.com/jmichalicek/django-internetdefenseleague.git",ref = "d9849b553885d36b3650d8f36c8a86f79b0cd37e"}
 pygments
+django-deprecate-fields
+django-add-default-value
 
 # Logging
 structlog
