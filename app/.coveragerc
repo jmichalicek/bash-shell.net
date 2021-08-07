@@ -17,6 +17,8 @@ omit =
     */factories.py
     */tests/*.py
     .venv/*
+    *.txt
+
 
 plugins =
     django_coverage_plugin
