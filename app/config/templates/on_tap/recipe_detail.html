@@ -149,7 +149,7 @@
         {% for fermentable in page.fermentables.all %}
           <tr>
             <td>{{ fermentable.name }}</td>
-            <td>{{ fermentable.amount|floatformat:"2" }} {{ fermentable.amount_units }}</td>
+            <td>{{ fermentable.scaled_amount|default:fermentable.amount|floatformat:"2" }} {{ fermentable.amount_units }}</td>
             <td>{{ fermentable.get_type_display }}</td>
             <td>{{ fermentable.color|floatformat:"0" }} srm</td>
             <tr>

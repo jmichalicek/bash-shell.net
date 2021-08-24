@@ -5,6 +5,7 @@ from typing import List, Tuple
 from django.contrib.postgres.fields import CICharField
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db import models
+from django.db.models import F
 from django.db.models.query import QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.utils import timezone
@@ -47,6 +48,22 @@ class VolumeToGallonsConverter(Enum):
     LITER = Decimal('0.26417287')
 
 
+class WeightUnits(models.TextChoices):
+    GRAMS = 'g', 'Gram'
+    OUNCES = 'oz', 'Ounce'
+    POUNDS = 'lbs', 'Pound'
+    KILOGRAMS = 'kg', 'Kilogram'
+
+
+class VolumeUnits(models.TextChoices):
+    TEASPOON = 'tsp', 'Teaspoon'
+    TABLESPOON = 'tbsp', 'Tablespoon'
+    FLUID_OUNCE = 'fl_oz', 'Fluid Oz'
+    LITER = 'l', 'Liter'
+    QUART = 'quart'
+    GALLON = 'gal', 'Gallon'
+
+
 class RecipeType:
     """
     The type of beer recipe
@@ -74,11 +91,37 @@ def convert_volume_to_gallons(volume: Decimal, unit: VolumeUnit) -> Decimal:
     return volume * VolumeToGallonsConverter[unit.name].value
 
 
+class ScalableAmountMixin:
+    """
+    Allows having a property `amount` and an optional `scaled_amount` property. If `scaled_amount` exists
+    then it will be used whenever `amount` is called
+    """
+    def __getattribute__(self, attr):
+        # this might be super bad, but I'm going to do it. This allows annotating
+        # this django object with a scaled amount but accessing it as just `amount`
+        # I am particularly curious as to what happens when trying to set `amount`
+        # and suspect maybe an @property and @scaled_amount.setter need to exist but I am not sure
+        # how that plays with `scaled_amount` coming in as a django queryset annotation
+        # but perhaps `__setattr__()` could handle that
+        if attr == 'amount' and hasattr(self, 'scaled_amount'):
+            attr = 'scaled_amount'
+        return super().__getattribute__(attr)
+
+    def __setattr__(self, name, value):
+        # TODO: I think I mixed this up and it should check for name == 'amount' and if so,
+        # then set scaled_amount if that already exists
+        if name == 'scaled_amount':
+            # using super() instead of self to reduce risk of wonky things resulting in recursive calls
+            # such as self.__getattribute__() also getting called by this
+            super().__setattr__('amount', value)
+        super().__setattr__(name, value)
+
+
 class RecipePageTag(TaggedItemBase):
     content_object = ParentalKey("on_tap.RecipePage", on_delete=models.CASCADE, related_name="tagged_items")
 
 
-class RecipeHop(Orderable, models.Model):
+class RecipeHop(ScalableAmountMixin, Orderable, models.Model):
     """
     A single amount of hops in a recipe
     """
@@ -161,7 +204,7 @@ class RecipeHop(Orderable, models.Model):
         return self.amount
 
 
-class RecipeFermentable(Orderable, models.Model):
+class RecipeFermentable(ScalableAmountMixin, Orderable, models.Model):
     """
     A fermentable such as a grain or malt extract used in a recipe
 
@@ -172,10 +215,7 @@ class RecipeFermentable(Orderable, models.Model):
     # TODO: usage? such as mash, vorlauf, or steep?
 
     UNIT_CHOICES = (
-        (
-            'g',
-            'Grams',
-        ),
+        ('g', 'Grams'),
         ('oz', 'Ounces'),
         ('kg', 'Kilograms'),
         ('lb', 'Pounds'),
@@ -271,7 +311,7 @@ class RecipeFermentable(Orderable, models.Model):
         return (self.weight_in_pounds() * self.color) / Decimal(gallons)
 
 
-class RecipeYeast(Orderable, models.Model):
+class RecipeYeast(ScalableAmountMixin, Orderable, models.Model):
     """
     A yeast used in a recipe.
 
@@ -337,7 +377,7 @@ class RecipeYeast(Orderable, models.Model):
         return self.name
 
 
-class RecipeMiscIngredient(Orderable, models.Model):
+class RecipeMiscIngredient(ScalableAmountMixin, Orderable, models.Model):
     """
     The term "misc" encompasses all non-fermentable miscellaneous ingredients that are not hops or yeast and do not
     significantly change the gravity of the beer.  For example: spices, clarifying agents, water treatments, etc…
@@ -663,7 +703,7 @@ class RecipePage(IdAndSlugUrlMixin, Page):
         default=Decimal(0.0),
         max_digits=5,
         decimal_places=2,
-        # Is this into fermenter after boil and trub losses or is this out of the fermenter?
+        # into fermenter
         help_text='Target size of finished batch in liters.',
     )
     boil_size = models.DecimalField(
@@ -819,6 +859,23 @@ class RecipePage(IdAndSlugUrlMixin, Page):
     def __str__(self) -> str:
         return self.name
 
+    def get_context(self, request):
+        print('here')
+        context = super().get_context(request)
+        print('context is:', context)
+        scale_volume = request.GET.get('scale_volume', None)
+        scale_unit = request.GET.get('scale_unit', None)
+        print(request.GET)
+        if scale_volume and scale_unit:
+            print('scaling')
+            # scaled_page =
+            self.scale_to_volume(Decimal(scale_volume), VolumeUnit(scale_unit))
+            # context['page'] = scaled_page
+        print('context:', context)
+        for f in context['page'].fermentables.all():
+            print(f.amount)
+        return context
+
     def batch_volume_in_gallons(self) -> Decimal:
         """
         Converts the batch volume to gallons for use in SRM estimation using Morey's equation
@@ -848,6 +905,29 @@ class RecipePage(IdAndSlugUrlMixin, Page):
         for fermentable in self.fermentables.all():
             weight += fermentable.weight_in_pounds()
         return weight
+
+    def scale_to_volume(self, target_volume: Decimal, unit: VolumeUnit) -> None:
+        target_volume_gallons = convert_volume_to_gallons(volume=target_volume, unit=unit)
+        scale_factor = target_volume_gallons / self.batch_volume_in_gallons()
+        volume_difference = target_volume_gallons - self.batch_volume_in_gallons()
+
+        self.batch_size = target_volume
+        self.boil_size = self.boil_size + volume_difference  # TODO: check this
+        self.volume_units = VolumeUnit.GALLON.value  # TODO: need to make this TextChoices
+
+        # setting these like this keeps the modified values from the cached queryset
+        # rather than a new query the next time self.fermentables.all() (or hops, etc)
+        # gets called to iterate later.
+        # relying on these having ScalableAmountMixin on them to allow this scaled value to be accessed as `amount`
+        # I'm sure I'm doing something unspeakable with that mixin + this here and it's a lot of magic, but it serves my current purpose nicely
+        self.fermentables = self.fermentables.all().annotate(scaled_amount=F('amount') * scale_factor)
+        self.hops = self.hops.all().annotate(scaled_amount=F('amount') * scale_factor)
+        self.miscellaneous_ingredients = self.miscellaneous_ingredients.all().annotate(
+            scaled_amount=F('amount') * scale_factor
+        )
+
+        # scale yeast? It's pretty close to linear, but I have been lazy about my yeast amounts and just putting a whole 11.5g packet
+        # even for small, low gravity batches in the recipes.
 
 
 class BatchStatus:
