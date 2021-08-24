@@ -93,27 +93,20 @@ def convert_volume_to_gallons(volume: Decimal, unit: VolumeUnit) -> Decimal:
 
 class ScalableAmountMixin:
     """
-    Allows having a property `amount` and an optional `scaled_amount` property. If `scaled_amount` exists
-    then it will be used whenever `amount` is called
+    Allows having a property `amount` and an optional `scaled_amount` property. Keeps the values in sync
+    by using `__setattr__()`
     """
-    def __getattribute__(self, attr):
-        # this might be super bad, but I'm going to do it. This allows annotating
-        # this django object with a scaled amount but accessing it as just `amount`
-        # I am particularly curious as to what happens when trying to set `amount`
-        # and suspect maybe an @property and @scaled_amount.setter need to exist but I am not sure
-        # how that plays with `scaled_amount` coming in as a django queryset annotation
-        # but perhaps `__setattr__()` could handle that
-        if attr == 'amount' and hasattr(self, 'scaled_amount'):
-            attr = 'scaled_amount'
-        return super().__getattribute__(attr)
+
+    # This can also be implemented with `__getattribute__()` checking for `scaled_amount` and returning it
+    # whenever `amount` is called for, which works in read only situations, but if `scaled_amount` does exist
+    # then things get wonky saving forms.
 
     def __setattr__(self, name, value):
-        # TODO: I think I mixed this up and it should check for name == 'amount' and if so,
-        # then set scaled_amount if that already exists
         if name == 'scaled_amount':
-            # using super() instead of self to reduce risk of wonky things resulting in recursive calls
-            # such as self.__getattribute__() also getting called by this
+            # using super() instead of self.<attr> to avoid infinite loop alternating between these two
             super().__setattr__('amount', value)
+        elif name == 'amount':
+            super().__setattr__('scaled_amount', value)
         super().__setattr__(name, value)
 
 
@@ -860,20 +853,11 @@ class RecipePage(IdAndSlugUrlMixin, Page):
         return self.name
 
     def get_context(self, request):
-        print('here')
         context = super().get_context(request)
-        print('context is:', context)
         scale_volume = request.GET.get('scale_volume', None)
         scale_unit = request.GET.get('scale_unit', None)
-        print(request.GET)
         if scale_volume and scale_unit:
-            print('scaling')
-            # scaled_page =
             self.scale_to_volume(Decimal(scale_volume), VolumeUnit(scale_unit))
-            # context['page'] = scaled_page
-        print('context:', context)
-        for f in context['page'].fermentables.all():
-            print(f.amount)
         return context
 
     def batch_volume_in_gallons(self) -> Decimal:
@@ -913,6 +897,7 @@ class RecipePage(IdAndSlugUrlMixin, Page):
 
         self.batch_size = target_volume
         self.boil_size = self.boil_size + volume_difference  # TODO: check this
+        # TODO: set specified volume units
         self.volume_units = VolumeUnit.GALLON.value  # TODO: need to make this TextChoices
 
         # setting these like this keeps the modified values from the cached queryset
