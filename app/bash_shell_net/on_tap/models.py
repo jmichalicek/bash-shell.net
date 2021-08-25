@@ -29,6 +29,7 @@ from wagtail.snippets.edit_handlers import SnippetChooserPanel
 from wagtail.snippets.models import register_snippet
 
 from bash_shell_net.base.mixins import IdAndSlugUrlIndexMixin, IdAndSlugUrlMixin
+from bash_shell_net.on_tap.forms import BatchLogPageForm
 from bash_shell_net.wagtail_blocks.fields import STANDARD_STREAMFIELD_FIELDS
 
 
@@ -318,10 +319,7 @@ class RecipeYeast(ScalableAmountMixin, Orderable, models.Model):
         (
             'Weight',
             (
-                (
-                    'g',
-                    'Grams',
-                ),
+                ('g', 'Grams'),
                 ('oz', 'Ounces'),
             ),
         ),
@@ -898,21 +896,23 @@ class RecipePage(IdAndSlugUrlMixin, Page):
         self.batch_size = target_volume
         self.boil_size = self.boil_size + volume_difference  # TODO: check this
         # TODO: set specified volume units
-        self.volume_units = VolumeUnit.GALLON.value  # TODO: need to make this TextChoices
+        self.volume_units = unit.value  # TODO: need to make this TextChoices
 
         # setting these like this keeps the modified values from the cached queryset
         # rather than a new query the next time self.fermentables.all() (or hops, etc)
         # gets called to iterate later.
         # relying on these having ScalableAmountMixin on them to allow this scaled value to be accessed as `amount`
         # I'm sure I'm doing something unspeakable with that mixin + this here and it's a lot of magic, but it serves my current purpose nicely
-        self.fermentables = self.fermentables.all().annotate(scaled_amount=F('amount') * scale_factor)
-        self.hops = self.hops.all().annotate(scaled_amount=F('amount') * scale_factor)
-        self.miscellaneous_ingredients = self.miscellaneous_ingredients.all().annotate(
-            scaled_amount=F('amount') * scale_factor
+        # model_cluster.FakeQuerySet mucks with this stuff, so need to call `get_live_queryset()` first, otherwise this method works once
+        # but not on any further calls
+        self.fermentables = (
+            self.fermentables.get_live_queryset().annotate(scaled_amount=F('amount') * scale_factor).all()
         )
-
-        # scale yeast? It's pretty close to linear, but I have been lazy about my yeast amounts and just putting a whole 11.5g packet
-        # even for small, low gravity batches in the recipes.
+        self.hops = self.hops.get_live_queryset().all().annotate(scaled_amount=F('amount') * scale_factor)
+        self.miscellaneous_ingredients = (
+            self.miscellaneous_ingredients.get_live_queryset().all().annotate(scaled_amount=F('amount') * scale_factor)
+        )
+        self.yeasts = self.yeasts.get_live_queryset().all().annotate(scaled_amount=F('amount') * scale_factor)
 
 
 class BatchStatus:
@@ -995,10 +995,20 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):
         decimal_places=2,
         help_text='Volume of finished batch in the fermenter.',
     )
+    target_post_boil_volume = models.DecimalField(
+        blank=True,
+        null=True,
+        default=None,
+        max_digits=5,
+        decimal_places=2,
+        help_text='Expected volume of finished batch prior to transfer to fermenter. Defaults to the target volume of the selected recipe if not specified.',
+    )
+
     body = StreamField(STANDARD_STREAMFIELD_FIELDS, blank=True, null=True, default=None)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    base_form_class = BatchLogPageForm
     content_panels = Page.content_panels + [
         PageChooserPanel('recipe_page'),
         FieldPanel('status'),
@@ -1018,7 +1028,12 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):
             heading='Gravity Information',
         ),
         MultiFieldPanel(
-            [FieldPanel('volume_units'), FieldPanel('post_boil_volume'), FieldPanel('volume_in_fermenter')]
+            [
+                FieldPanel('volume_units'),
+                FieldPanel('target_post_boil_volume'),
+                FieldPanel('post_boil_volume'),
+                FieldPanel('volume_in_fermenter'),
+            ]
         ),
         StreamFieldPanel('body'),
     ]
@@ -1043,6 +1058,7 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):
         index.FilterField('original_gravity'),
         index.FilterField('final_gravity'),
         index.FilterField('volume_in_fermenter'),
+        index.FilterField('target_post_boil_volume'),
     ]
 
     # log multiple gravity checks?
@@ -1105,9 +1121,17 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):
         Returns the actual SRM if final post boil volume is known, otherwise returns the expected SRM
         for the recipe.
         """
+        if self.target_post_boil_volume:
+            # because old data may not have a target_post_boil_volume
+            self.recipe_page.scale_to_volume(self.target_post_boil_volume, VolumeUnit(self.volume_units))
         if self.post_boil_volume:
             return self.calculate_color_srm()
         return self.recipe_page.calculate_color_srm()
+
+    def get_context(self: 'OnTapPage', request: HttpRequest) -> dict:
+        context = super().get_context(request)
+        context['calculated_srm'] = self.get_actual_or_expected_srm()
+        return context
 
 
 class OnTapPage(Page):
