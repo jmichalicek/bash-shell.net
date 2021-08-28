@@ -1,6 +1,6 @@
 import unittest
 
-from django.test import TestCase
+from django.test import RequestFactory, TestCase
 
 from wagtail.core.models import Page
 from wagtail.tests.utils import WagtailPageTests
@@ -275,6 +275,59 @@ class RecipePageTest(WagtailPageTests):
             page.get_id_and_slug_url(),
         )
 
+    def test_scale_to_volume(self):
+        """
+        Test that recipe_page.scale_to_volume() scales all measurements for itself up to the specified volume
+        """
+        original_recipe = copy.copy(self.recipe_page)
+        self.recipe_page.scale_to_volume(
+            target_volume=self.recipe_page.batch_size * Decimal('2.00'), unit=VolumeUnit(self.recipe_page.volume_units)
+        )
+        self.assertEqual(original_recipe.batch_size * 2, self.recipe_page.batch_size)
+        self.assertEqual(
+            [{f.pk: f.amount * 2} for f in original_recipe.fermentables.all()],
+            [{f.pk: f.amount} for f in self.recipe_page.fermentables.all()],
+        )
+        self.assertEqual(
+            [{f.pk: f.amount * 2} for f in original_recipe.hops.all()],
+            [{f.pk: f.amount} for f in self.recipe_page.hops.all()],
+        )
+        self.assertEqual(
+            [{f.pk: f.amount * 2} for f in original_recipe.miscellaneous_ingredients.all()],
+            [{f.pk: f.amount} for f in self.recipe_page.miscellaneous_ingredients.all()],
+        )
+        self.assertEqual(
+            [{f.pk: f.amount * 2} for f in original_recipe.yeasts.all()],
+            [{f.pk: f.amount} for f in self.recipe_page.yeasts.all()],
+        )
+
+    def test_get_scaled_recipe(self):
+        """
+        Test that recipe_page.get_scaled_recipe() returns a new instance of RecipePage which has been scaled to the specified volume
+        """
+        scaled_recipe = self.recipe_page.get_scaled_recipe(
+            target_volume=self.recipe_page.batch_size * Decimal('2.00'), unit=VolumeUnit(self.recipe_page.volume_units)
+        )
+        self.assertEqual(self.recipe_page.pk, scaled_recipe.pk)
+        self.assertFalse(self.recipe_page is scaled_recipe)
+        self.assertEqual(self.recipe_page.batch_size * 2, scaled_recipe.batch_size)
+        self.assertEqual(
+            [{f.pk: f.amount * 2} for f in self.recipe_page.fermentables.all()],
+            [{f.pk: f.amount} for f in scaled_recipe.fermentables.all()],
+        )
+        self.assertEqual(
+            [{f.pk: f.amount * 2} for f in self.recipe_page.hops.all()],
+            [{f.pk: f.amount} for f in scaled_recipe.hops.all()],
+        )
+        self.assertEqual(
+            [{f.pk: f.amount * 2} for f in self.recipe_page.miscellaneous_ingredients.all()],
+            [{f.pk: f.amount} for f in scaled_recipe.miscellaneous_ingredients.all()],
+        )
+        self.assertEqual(
+            [{f.pk: f.amount * 2} for f in self.recipe_page.yeasts.all()],
+            [{f.pk: f.amount} for f in scaled_recipe.yeasts.all()],
+        )
+
 
 class RecipeIndexPageTest(WagtailPageTests):
     fixtures = ['bash_shell_net/on_tap/fixtures/test_pages']
@@ -309,11 +362,20 @@ class BatchLogPageTest(WagtailPageTests):
 
     @classmethod
     def setUpTestData(cls):
+        super().setUpTestData()
         cls.index_page = BatchLogIndexPage.objects.first()
         publish_page(cls.index_page)
         cls.recipe_page = RecipePage.objects.first()
         publish_page(cls.recipe_page)
         cls.batch_log_page = BatchLogPage.objects.first()
+
+    def setUp(self):
+        super().setUp()
+        self.request_factory = RequestFactory()
+        # MUST refresh recipe_page before batch_log_page or things go weird and there are
+        # completely random, intermittent failures due to incorrect db data
+        self.recipe_page.refresh_from_db()
+        self.batch_log_page.refresh_from_db()
 
     def test_can_create_page(self):
         """
@@ -347,6 +409,7 @@ class BatchLogPageTest(WagtailPageTests):
                 ),
                 'volume_in_fermenter': 2.75,
                 'volume_units': 'gal',
+                'target_post_boil_volume': '',
             },
         )
         self.assertCanCreate(self.index_page, BatchLogPage, form_data)
@@ -386,7 +449,8 @@ class BatchLogPageTest(WagtailPageTests):
         """
         Test that BatchLogPage.get_id_and_slug_url() returns the url route we expect.
         """
-        page = BatchLogPage.objects.first()
+        # page = BatchLogPage.objects.first()
+        page = self.batch_log_page
         self.assertEqual(f'{self.index_page.get_url()}{page.pk}/{page.slug}/', page.get_id_and_slug_url())
 
     def test_fermenter_volume_as_gallons(self):
@@ -396,7 +460,8 @@ class BatchLogPageTest(WagtailPageTests):
             VolumeUnit.QUART: Decimal('0.25'),
             VolumeUnit.LITER: Decimal('0.26417287'),
         }
-        page = BatchLogPage.objects.first()
+        # page = BatchLogPage.objects.first()
+        page = self.batch_log_page
         base_volume = Decimal('2.75')
         for unit in [VolumeUnit.GALLON, VolumeUnit.FLUID_OZ, VolumeUnit.QUART, VolumeUnit.LITER]:
             page.volume_in_fermenter = Decimal(2.75) / expected_conversion[unit]
@@ -404,14 +469,15 @@ class BatchLogPageTest(WagtailPageTests):
             with self.subTest(volume_units=page.get_volume_units_display(), volume=page.volume_in_fermenter):
                 self.assertEqual(base_volume, page.fermenter_volume_as_gallons().quantize(base_volume))
 
-    def test_post_boil_volume_in_gallons(self):
+    def test_post_boil_volume_as_gallons(self):
         expected_conversion = {
             VolumeUnit.GALLON: Decimal(1),
             VolumeUnit.FLUID_OZ: Decimal('0.0078125'),
             VolumeUnit.QUART: Decimal('0.25'),
             VolumeUnit.LITER: Decimal('0.26417287'),
         }
-        page = BatchLogPage.objects.first()
+        # page = BatchLogPage.objects.first()
+        page = self.batch_log_page
         base_volume = Decimal('2.75')
         for unit in [VolumeUnit.GALLON, VolumeUnit.FLUID_OZ, VolumeUnit.QUART, VolumeUnit.LITER]:
             page.post_boil_volume = Decimal(2.75) / expected_conversion[unit]
@@ -420,7 +486,8 @@ class BatchLogPageTest(WagtailPageTests):
                 self.assertEqual(base_volume, page.post_boil_volume_as_gallons().quantize(base_volume))
 
     def test_calculate_color_srm(self):
-        page = BatchLogPage.objects.first()
+        # page = BatchLogPage.objects.first()
+        page = self.batch_log_page
         test_matrix = [
             {'volume': Decimal('2.75'), 'expected_srm': 24},
             {'volume': Decimal('3.00'), 'expected_srm': 23},
@@ -432,19 +499,118 @@ class BatchLogPageTest(WagtailPageTests):
                 self.assertEqual(Decimal(t['expected_srm']), page.calculate_color_srm())
 
     def test_get_actual_or_expected_srm(self):
-        page = BatchLogPage.objects.first()
-        page.post_boil_volume = None
-        page.save()
+        # page = BatchLogPage.objects.first()
+        page = self.batch_log_page
+        # page.post_boil_volume = None  # do I care?
+        # page.save()
         test_matrix = [
-            {'volume': None, 'expected_srm': 26},  # the recipe srm
-            {'volume': Decimal('2.75'), 'expected_srm': 24},
-            {'volume': Decimal('3.00'), 'expected_srm': 23},
-            {'volume': Decimal('5.00'), 'expected_srm': 16},
+            {'volume': None, 'expected_srm': 26, 'target_post_boil_volume': None},  # the recipe srm
+            {'volume': Decimal('2.75'), 'expected_srm': 24, 'target_post_boil_volume': None},
+            # Everything scaled evenly, so srm should match the recipe expected srm
+            {'volume': Decimal('5.00'), 'expected_srm': 26, 'target_post_boil_volume': Decimal('5.00')},
+            {'volume': Decimal('3.00'), 'expected_srm': 23, 'target_post_boil_volume': None},
+            {'volume': Decimal('5.00'), 'expected_srm': 16, 'target_post_boil_volume': None},
         ]
         for t in test_matrix:
             page.post_boil_volume = t['volume']
-            with self.subTest(volume=page.post_boil_volume):
+            page.target_post_boil_volume = t['target_post_boil_volume']
+            with self.subTest(**t):
                 self.assertEqual(t['expected_srm'], page.get_actual_or_expected_srm())
+
+        # add test for a scaled recipe
+
+    def test_uses_scaled_recipe(self):
+        page = self.batch_log_page
+        test_matrix = [
+            {
+                'target_post_boil_volume': None,
+                'batch_size': Decimal(2.5),
+                'batch_volume_units': VolumeUnit('gal'),
+                'recipe_volume_units': VolumeUnit('gal'),
+                'expected': False,
+            },
+            {
+                'target_post_boil_volume': Decimal(2.5),
+                'batch_size': Decimal(2.5),
+                'batch_volume_units': VolumeUnit('gal'),
+                'recipe_volume_units': VolumeUnit('gal'),
+                'expected': False,
+            },
+            {
+                'target_post_boil_volume': Decimal(2.5),
+                'batch_size': Decimal(2.5),
+                'batch_volume_units': VolumeUnit('fl_oz'),
+                'recipe_volume_units': VolumeUnit('gal'),
+                'expected': True,
+            },
+            {
+                'target_post_boil_volume': Decimal(2.6),
+                'batch_size': Decimal(2.5),
+                'batch_volume_units': VolumeUnit('gal'),
+                'recipe_volume_units': VolumeUnit('gal'),
+                'expected': True,
+            },
+        ]
+
+        for t in test_matrix:
+            page.target_post_boil_volume = t['target_post_boil_volume']
+            page.volume_units = t['batch_volume_units']
+            page.recipe_page.batch_size = t['batch_size']
+            page.recipe_page.volume_units = t['recipe_volume_units']
+            with self.subTest(**t):
+                self.assertEqual(t['expected'], page.uses_scaled_recipe)
+
+    def test_get_abv(self):
+        page = self.batch_log_page
+        test_matrix = [
+            {'final_gravity': Decimal('1.010'), 'original_gravity': Decimal('1.050'), 'expected_abv': Decimal('5.250')},
+            {
+                'final_gravity': Decimal('1.010'),
+                'original_gravity': Decimal('1.060'),
+                'expected_abv': Decimal('6.56250'),
+            },
+            {
+                'final_gravity': Decimal('1.015'),
+                'original_gravity': Decimal('1.050'),
+                'expected_abv': Decimal('4.59375'),
+            },
+        ]
+        for t in test_matrix:
+            page.final_gravity = t['final_gravity']
+            page.original_gravity = t['original_gravity']
+            with self.subTest(**t):
+                self.assertEqual(t['expected_abv'], page.get_abv())
+
+    def test_get_context(self):
+        request = self.request_factory.get(self.batch_log_page.url)
+        test_matrix = [
+            # scaled recipe
+            {
+                'target_post_boil_volume': Decimal(2.6),
+                'batch_size': Decimal(2.5),
+                'batch_volume_units': VolumeUnit('gal'),
+                'recipe_volume_units': VolumeUnit('gal'),
+                'expected': True,
+            },
+            # not scaled recipe
+            {
+                'target_post_boil_volume': None,
+                'batch_size': Decimal(2.5),
+                'batch_volume_units': VolumeUnit('gal'),
+                'recipe_volume_units': VolumeUnit('gal'),
+                'expected': True,
+            },
+        ]
+
+        for t in test_matrix:
+            self.batch_log_page.target_post_boil_volume = t['target_post_boil_volume']
+            self.batch_log_page.volume_units = t['batch_volume_units']
+            self.batch_log_page.recipe_page.batch_size = t['batch_size']
+            self.batch_log_page.recipe_page.volume_units = t['recipe_volume_units']
+            with self.subTest(**t):
+                context = self.batch_log_page.get_context(request=request)
+                self.assertEqual(self.batch_log_page.get_actual_or_expected_srm(), context['calculated_srm'])
+                self.assertEqual(self.batch_log_page.recipe_page, context['recipe_page'])
 
 
 class RecipeFermentableTest(TestCase):

@@ -1,6 +1,7 @@
+import copy
 from decimal import Decimal
 from enum import Enum
-from typing import List, Tuple
+from typing import Any, Dict, List, Tuple
 
 from django.contrib.postgres.fields import CICharField
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
@@ -914,6 +915,15 @@ class RecipePage(IdAndSlugUrlMixin, Page):
         )
         self.yeasts = self.yeasts.get_live_queryset().all().annotate(scaled_amount=F('amount') * scale_factor)
 
+    def get_scaled_recipe(self, target_volume: Decimal, unit: VolumeUnit) -> 'RecipePage':
+        """
+        Returns a copy of self with volumes scaled to the target volume and units and all ingredient querysets annotated and set up
+        for their amounts scaled accordingly
+        """
+        scaled_recipe = copy.copy(self)
+        scaled_recipe.scale_to_volume(target_volume, unit)
+        return scaled_recipe
+
 
 class BatchStatus:
     """
@@ -1079,6 +1089,25 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):
     def __str__(self) -> str:
         return self.title
 
+    @property
+    def uses_scaled_recipe(self) -> bool:
+        # might replace this with a BooleanField
+        return bool(
+            self.target_post_boil_volume
+            and (
+                self.target_post_boil_volume != self.recipe_page.batch_size
+                or self.volume_units != self.recipe_page.volume_units
+            )
+        )
+
+    def recipe_scaled_to_target_volume(self) -> RecipePage:
+        """
+        Returns a new RecipePage matching self.recipe_page which has been scaled to the batches target volume.
+        """
+        if self.uses_scaled_recipe:
+            return self.recipe_page.get_scaled_recipe(self.target_post_boil_volume, VolumeUnit(self.volume_units))
+        return self.recipe_page
+
     def get_abv(self) -> Decimal:
         """
         Returns the calculated ABV from gravity readings using the formula (OG-FG) x 131.25 = ABV
@@ -1109,8 +1138,13 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):
         # takes volume in gallons
         # TODO: Handle an actual batch which has been scaled up or down to a different intended volume
         total_mcu = Decimal('0')
-
-        for fermentable in self.recipe_page.fermentables.all():
+        if self.uses_scaled_recipe:
+            recipe_page = self.recipe_page.get_scaled_recipe(
+                self.target_post_boil_volume, VolumeUnit(self.volume_units)
+            )
+        else:
+            recipe_page = self.recipe_page
+        for fermentable in recipe_page.fermentables.all():
             total_mcu += fermentable.calculate_mcu(self.post_boil_volume_as_gallons())
 
         srm = Decimal('1.4922') * (total_mcu ** Decimal('0.6859'))
@@ -1121,16 +1155,19 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):
         Returns the actual SRM if final post boil volume is known, otherwise returns the expected SRM
         for the recipe.
         """
-        if self.target_post_boil_volume:
-            # because old data may not have a target_post_boil_volume
-            self.recipe_page.scale_to_volume(self.target_post_boil_volume, VolumeUnit(self.volume_units))
         if self.post_boil_volume:
             return self.calculate_color_srm()
         return self.recipe_page.calculate_color_srm()
 
-    def get_context(self: 'OnTapPage', request: HttpRequest) -> dict:
+    def get_context(self: 'OnTapPage', request: HttpRequest) -> Dict[str, Any]:
         context = super().get_context(request)
         context['calculated_srm'] = self.get_actual_or_expected_srm()
+        if self.target_post_boil_volume:
+            context['recipe_page'] = self.recipe_page.get_scaled_recipe(
+                self.target_post_boil_volume, VolumeUnit(self.volume_units)
+            )
+        else:
+            context['recipe_page'] = self.recipe_page
         return context
 
 
