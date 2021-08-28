@@ -42,7 +42,11 @@ services:
       - "8000:8000"
     restart: on-failure
     volumes:
-      - .:/django/bash-shell.net/
+      - type: bind
+        source: .
+        target: /django/bash-shell.net/
+        #bind-propagation: shared
+
       - ~/.git-hooks:/django/.git-hooks:ro
       - ~/.gitconfig:/django/.gitconfig:ro
       - ~/.ssh:/django/.ssh:ro
