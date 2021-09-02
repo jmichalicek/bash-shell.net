@@ -13,16 +13,16 @@ migrate:
 	python app/manage.py migrate
 
 dev:
-	docker-compose run --service-ports django /bin/bash
+	docker compose run --service-ports django /bin/bash
 
 docker_django:
-	docker-compose exec django python manage.py runserver 0.0.0.0:8000
+	docker compose exec django python manage.py runserver 0.0.0.0:8000
 
 docker_migrate:
-	docker-compose exec django python manage.py migrate ${args}
+	docker compose exec django python manage.py migrate ${args}
 
 docker_test:
-	docker-compose exec django python manage.py test ${args}
+	docker compose exec django python manage.py test ${args}
 
 requirements.txt:
 	# See https://stackoverflow.com/questions/58843905/what-is-the-proper-way-to-decide-whether-to-allow-unsafe-package-versions-in-pip

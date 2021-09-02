@@ -1,10 +1,12 @@
+import copy
 from decimal import Decimal
 from enum import Enum
-from typing import List, Tuple
+from typing import Any, Dict, List, Tuple
 
 from django.contrib.postgres.fields import CICharField
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db import models
+from django.db.models import F
 from django.db.models.query import QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.utils import timezone
@@ -28,6 +30,7 @@ from wagtail.snippets.edit_handlers import SnippetChooserPanel
 from wagtail.snippets.models import register_snippet
 
 from bash_shell_net.base.mixins import IdAndSlugUrlIndexMixin, IdAndSlugUrlMixin
+from bash_shell_net.on_tap.forms import BatchLogPageForm
 from bash_shell_net.wagtail_blocks.fields import STANDARD_STREAMFIELD_FIELDS
 
 
@@ -45,6 +48,22 @@ class VolumeToGallonsConverter(Enum):
     FLUID_OZ = Decimal('0.0078125')
     QUART = Decimal('0.25')
     LITER = Decimal('0.26417287')
+
+
+class WeightUnits(models.TextChoices):
+    GRAMS = 'g', 'Gram'
+    OUNCES = 'oz', 'Ounce'
+    POUNDS = 'lbs', 'Pound'
+    KILOGRAMS = 'kg', 'Kilogram'
+
+
+class VolumeUnits(models.TextChoices):
+    TEASPOON = 'tsp', 'Teaspoon'
+    TABLESPOON = 'tbsp', 'Tablespoon'
+    FLUID_OUNCE = 'fl_oz', 'Fluid Oz'
+    LITER = 'l', 'Liter'
+    QUART = 'quart'
+    GALLON = 'gal', 'Gallon'
 
 
 class RecipeType:
@@ -74,11 +93,30 @@ def convert_volume_to_gallons(volume: Decimal, unit: VolumeUnit) -> Decimal:
     return volume * VolumeToGallonsConverter[unit.name].value
 
 
+class ScalableAmountMixin:
+    """
+    Allows having a property `amount` and an optional `scaled_amount` property. Keeps the values in sync
+    by using `__setattr__()`
+    """
+
+    # This can also be implemented with `__getattribute__()` checking for `scaled_amount` and returning it
+    # whenever `amount` is called for, which works in read only situations, but if `scaled_amount` does exist
+    # then things get wonky saving forms.
+
+    def __setattr__(self, name, value):
+        if name == 'scaled_amount':
+            # using super() instead of self.<attr> to avoid infinite loop alternating between these two
+            super().__setattr__('amount', value)
+        elif name == 'amount':
+            super().__setattr__('scaled_amount', value)
+        super().__setattr__(name, value)
+
+
 class RecipePageTag(TaggedItemBase):
     content_object = ParentalKey("on_tap.RecipePage", on_delete=models.CASCADE, related_name="tagged_items")
 
 
-class RecipeHop(Orderable, models.Model):
+class RecipeHop(ScalableAmountMixin, Orderable, models.Model):
     """
     A single amount of hops in a recipe
     """
@@ -161,7 +199,7 @@ class RecipeHop(Orderable, models.Model):
         return self.amount
 
 
-class RecipeFermentable(Orderable, models.Model):
+class RecipeFermentable(ScalableAmountMixin, Orderable, models.Model):
     """
     A fermentable such as a grain or malt extract used in a recipe
 
@@ -172,10 +210,7 @@ class RecipeFermentable(Orderable, models.Model):
     # TODO: usage? such as mash, vorlauf, or steep?
 
     UNIT_CHOICES = (
-        (
-            'g',
-            'Grams',
-        ),
+        ('g', 'Grams'),
         ('oz', 'Ounces'),
         ('kg', 'Kilograms'),
         ('lb', 'Pounds'),
@@ -271,7 +306,7 @@ class RecipeFermentable(Orderable, models.Model):
         return (self.weight_in_pounds() * self.color) / Decimal(gallons)
 
 
-class RecipeYeast(Orderable, models.Model):
+class RecipeYeast(ScalableAmountMixin, Orderable, models.Model):
     """
     A yeast used in a recipe.
 
@@ -285,10 +320,7 @@ class RecipeYeast(Orderable, models.Model):
         (
             'Weight',
             (
-                (
-                    'g',
-                    'Grams',
-                ),
+                ('g', 'Grams'),
                 ('oz', 'Ounces'),
             ),
         ),
@@ -337,7 +369,7 @@ class RecipeYeast(Orderable, models.Model):
         return self.name
 
 
-class RecipeMiscIngredient(Orderable, models.Model):
+class RecipeMiscIngredient(ScalableAmountMixin, Orderable, models.Model):
     """
     The term "misc" encompasses all non-fermentable miscellaneous ingredients that are not hops or yeast and do not
     significantly change the gravity of the beer.  For example: spices, clarifying agents, water treatments, etc…
@@ -663,7 +695,7 @@ class RecipePage(IdAndSlugUrlMixin, Page):
         default=Decimal(0.0),
         max_digits=5,
         decimal_places=2,
-        # Is this into fermenter after boil and trub losses or is this out of the fermenter?
+        # into fermenter
         help_text='Target size of finished batch in liters.',
     )
     boil_size = models.DecimalField(
@@ -819,6 +851,14 @@ class RecipePage(IdAndSlugUrlMixin, Page):
     def __str__(self) -> str:
         return self.name
 
+    def get_context(self, request):
+        context = super().get_context(request)
+        scale_volume = request.GET.get('scale_volume', None)
+        scale_unit = request.GET.get('scale_unit', None)
+        if scale_volume and scale_unit:
+            self.scale_to_volume(Decimal(scale_volume), VolumeUnit(scale_unit))
+        return context
+
     def batch_volume_in_gallons(self) -> Decimal:
         """
         Converts the batch volume to gallons for use in SRM estimation using Morey's equation
@@ -848,6 +888,41 @@ class RecipePage(IdAndSlugUrlMixin, Page):
         for fermentable in self.fermentables.all():
             weight += fermentable.weight_in_pounds()
         return weight
+
+    def scale_to_volume(self, target_volume: Decimal, unit: VolumeUnit) -> None:
+        target_volume_gallons = convert_volume_to_gallons(volume=target_volume, unit=unit)
+        scale_factor = target_volume_gallons / self.batch_volume_in_gallons()
+        volume_difference = target_volume_gallons - self.batch_volume_in_gallons()
+
+        self.batch_size = target_volume
+        self.boil_size = self.boil_size + volume_difference  # TODO: check this
+        # TODO: set specified volume units
+        self.volume_units = unit.value  # TODO: need to make this TextChoices
+
+        # setting these like this keeps the modified values from the cached queryset
+        # rather than a new query the next time self.fermentables.all() (or hops, etc)
+        # gets called to iterate later.
+        # relying on these having ScalableAmountMixin on them to allow this scaled value to be accessed as `amount`
+        # I'm sure I'm doing something unspeakable with that mixin + this here and it's a lot of magic, but it serves my current purpose nicely
+        # model_cluster.FakeQuerySet mucks with this stuff, so need to call `get_live_queryset()` first, otherwise this method works once
+        # but not on any further calls
+        self.fermentables = (
+            self.fermentables.get_live_queryset().annotate(scaled_amount=F('amount') * scale_factor).all()
+        )
+        self.hops = self.hops.get_live_queryset().all().annotate(scaled_amount=F('amount') * scale_factor)
+        self.miscellaneous_ingredients = (
+            self.miscellaneous_ingredients.get_live_queryset().all().annotate(scaled_amount=F('amount') * scale_factor)
+        )
+        self.yeasts = self.yeasts.get_live_queryset().all().annotate(scaled_amount=F('amount') * scale_factor)
+
+    def get_scaled_recipe(self, target_volume: Decimal, unit: VolumeUnit) -> 'RecipePage':
+        """
+        Returns a copy of self with volumes scaled to the target volume and units and all ingredient querysets annotated and set up
+        for their amounts scaled accordingly
+        """
+        scaled_recipe = copy.copy(self)
+        scaled_recipe.scale_to_volume(target_volume, unit)
+        return scaled_recipe
 
 
 class BatchStatus:
@@ -930,10 +1005,20 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):
         decimal_places=2,
         help_text='Volume of finished batch in the fermenter.',
     )
+    target_post_boil_volume = models.DecimalField(
+        blank=True,
+        null=True,
+        default=None,
+        max_digits=5,
+        decimal_places=2,
+        help_text='Expected volume of finished batch prior to transfer to fermenter. Defaults to the target volume of the selected recipe if not specified.',
+    )
+
     body = StreamField(STANDARD_STREAMFIELD_FIELDS, blank=True, null=True, default=None)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    base_form_class = BatchLogPageForm
     content_panels = Page.content_panels + [
         PageChooserPanel('recipe_page'),
         FieldPanel('status'),
@@ -953,7 +1038,12 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):
             heading='Gravity Information',
         ),
         MultiFieldPanel(
-            [FieldPanel('volume_units'), FieldPanel('post_boil_volume'), FieldPanel('volume_in_fermenter')]
+            [
+                FieldPanel('volume_units'),
+                FieldPanel('target_post_boil_volume'),
+                FieldPanel('post_boil_volume'),
+                FieldPanel('volume_in_fermenter'),
+            ]
         ),
         StreamFieldPanel('body'),
     ]
@@ -978,6 +1068,7 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):
         index.FilterField('original_gravity'),
         index.FilterField('final_gravity'),
         index.FilterField('volume_in_fermenter'),
+        index.FilterField('target_post_boil_volume'),
     ]
 
     # log multiple gravity checks?
@@ -997,6 +1088,25 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):
 
     def __str__(self) -> str:
         return self.title
+
+    @property
+    def uses_scaled_recipe(self) -> bool:
+        # might replace this with a BooleanField
+        return bool(
+            self.target_post_boil_volume
+            and (
+                self.target_post_boil_volume != self.recipe_page.batch_size
+                or self.volume_units != self.recipe_page.volume_units
+            )
+        )
+
+    def recipe_scaled_to_target_volume(self) -> RecipePage:
+        """
+        Returns a new RecipePage matching self.recipe_page which has been scaled to the batches target volume.
+        """
+        if self.uses_scaled_recipe:
+            return self.recipe_page.get_scaled_recipe(self.target_post_boil_volume, VolumeUnit(self.volume_units))
+        return self.recipe_page
 
     def get_abv(self) -> Decimal:
         """
@@ -1028,8 +1138,13 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):
         # takes volume in gallons
         # TODO: Handle an actual batch which has been scaled up or down to a different intended volume
         total_mcu = Decimal('0')
-
-        for fermentable in self.recipe_page.fermentables.all():
+        if self.uses_scaled_recipe:
+            recipe_page = self.recipe_page.get_scaled_recipe(
+                self.target_post_boil_volume, VolumeUnit(self.volume_units)
+            )
+        else:
+            recipe_page = self.recipe_page
+        for fermentable in recipe_page.fermentables.all():
             total_mcu += fermentable.calculate_mcu(self.post_boil_volume_as_gallons())
 
         srm = Decimal('1.4922') * (total_mcu ** Decimal('0.6859'))
@@ -1043,6 +1158,17 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):
         if self.post_boil_volume:
             return self.calculate_color_srm()
         return self.recipe_page.calculate_color_srm()
+
+    def get_context(self: 'OnTapPage', request: HttpRequest) -> Dict[str, Any]:
+        context = super().get_context(request)
+        context['calculated_srm'] = self.get_actual_or_expected_srm()
+        if self.target_post_boil_volume:
+            context['recipe_page'] = self.recipe_page.get_scaled_recipe(
+                self.target_post_boil_volume, VolumeUnit(self.volume_units)
+            )
+        else:
+            context['recipe_page'] = self.recipe_page
+        return context
 
 
 class OnTapPage(Page):
