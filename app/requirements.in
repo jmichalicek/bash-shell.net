@@ -27,4 +27,3 @@ sentry_sdk
 structlog-sentry
 django-debug-toolbar
 django-watchman
-

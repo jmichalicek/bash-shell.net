@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y --allow-unauthenticated \
   bash-completion \
   && apt-get autoremove && apt-get clean
 
-RUN pip install pip==21.2.3
+RUN pip install pip==21.2.4
 RUN useradd -ms /bin/bash -d /django django && echo "django ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 USER django
 ENV HOME=/django/ \

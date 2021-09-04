@@ -4,7 +4,8 @@ setup-and-run:	venv install migrate run
 
 venv:
 	 python -m venv app/.venv
-	 pip install pip==21.2.3
+	 pip install pip==21.2.4
+	 pip install pip-tools
 
 run:
 	honcho start
