@@ -1,9 +1,9 @@
-FROM python:3.9.6-buster AS dev
+FROM python:3.9.7-bullseye AS dev
 LABEL maintainer="Justin Michalicek <jmichalicek@gmail.com>"
 ENV PYTHONUNBUFFERED=1 DEBIAN_FRONTEND=noninteractive
 
 RUN wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O - | apt-key add - \
-    && echo "deb http://apt.postgresql.org/pub/repos/apt/ buster-pgdg main" >> /etc/apt/sources.list.d/pgdg.list
+    && echo "deb http://apt.postgresql.org/pub/repos/apt/ bullseye-pgdg main" >> /etc/apt/sources.list.d/pgdg.list
 
 RUN curl -sL https://deb.nodesource.com/setup_16.x | bash
 
@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y --allow-unauthenticated \
   bash-completion \
   && apt-get autoremove && apt-get clean
 
-RUN pip install pip==21.2.3
+RUN pip install pip==21.2.4
 RUN useradd -ms /bin/bash -d /django django && echo "django ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 USER django
 ENV HOME=/django/ \
@@ -54,7 +54,7 @@ RUN rm -rf webpack_assets ./config/static/scss/ ./config/static/js/index.js node
 COPY --chown=django ./wait-for-it.sh /django/bash-shell.net/wait-for-it.sh
 
 # Production image
-FROM python:3.9.6-slim-buster AS prod
+FROM python:3.9.7-slim-bullseye AS prod
 RUN useradd -ms /bin/bash -d /django django
 # Instead of copying the whole dir, just copy the known needed bits
 COPY --chown=django --from=build /django/bash-shell.net /django/bash-shell.net/
