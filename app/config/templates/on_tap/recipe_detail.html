@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load wagtailcore_tags on_tap_tags %}
 {% block page_stylesheets %}
-  <style>
+  <style nonce="{{ request.csp_nonce }}">
     {# extra specificity needed here or bootstrap padding values override this #}
     td.beer-style-guide__srm {
       padding: .5rem .75rem 0;

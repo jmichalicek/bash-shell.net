@@ -1,24 +1,30 @@
+# Base system
 django
-pillow
-dj-database-url
+django-add-default-value
+django-csp
+django-deprecate-fields
 django-redis
-whitenoise
+django-storages
+gunicorn
+pillow
 psycopg2-binary
 wagtail
 wagtailfontawesome
-pytz
-gunicorn
-boto3
-django-storages
-markdown
-requests
-https://github.com/jmichalicek/django-internetdefenseleague/archive/master.zip
-# django-internetdefenseleague-master = {git = "https://github.com/jmichalicek/django-internetdefenseleague.git",ref = "d9849b553885d36b3650d8f36c8a86f79b0cd37e"}
-pygments
-django-deprecate-fields
-django-add-default-value
+whitenoise
 
-# Logging
+# Extra tools
+pygments  # code highlight blocks
+boto3  # for django-storages
+markdown  # markdown in templates - a few things using this still
+pytz  # I'm sure this is pulled in without me specifying it...
+requests # I'm sure this is pulled in without me specifying it...
+https://github.com/jmichalicek/django-internetdefenseleague/archive/master.zip
+
+# Configuration tools
+django-environ
+dj-database-url
+
+# Logging and monitoring
 structlog
 django-structlog
 sentry_sdk

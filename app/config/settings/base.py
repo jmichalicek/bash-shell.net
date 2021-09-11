@@ -4,8 +4,11 @@ import os
 import sys
 
 import dj_database_url
+import environ
 import structlog
 from structlog_sentry import SentryJsonProcessor
+
+env = environ.Env()
 
 # This checks that the first arg to `manage.py` is `test`
 # The main use case is to turn off caching specifically for tests because it makes things unpredictable
@@ -13,10 +16,11 @@ TESTING = sys.argv[1:2] == ['test']
 
 # the dir with manage.py
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+CONFIG_DIR = os.path.dirname(os.path.dirname(__file__))
 DEFENSE_LEAGUE = True
 AUTH_USER_MODEL = 'accounts.User'
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
-DEBUG = True
+DEBUG = env('DEBUG', bool, False)
 ADMINS = (('Justin Michalicek', 'jmichalicek@gmail.com'),)
 MANAGERS = ADMINS
 
@@ -37,7 +41,7 @@ SITE_ID = 1
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
-USE_I18N = True
+USE_I18N = False
 
 # If you set this to False, Django will not format dates, numbers and
 # calendars according to the current locale.
@@ -103,6 +107,7 @@ MIDDLEWARE = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',  # Should this go higher in the list?
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'wagtail.contrib.redirects.middleware.RedirectMiddleware',
+    'csp.middleware.CSPMiddleware',
     'django_structlog.middlewares.RequestMiddleware',
 )
 
@@ -114,7 +119,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(os.path.dirname(os.path.dirname(__file__)), 'templates'),],
+        'DIRS': [os.path.join(CONFIG_DIR, 'templates'),],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -212,7 +217,7 @@ MARKDOWN_EXTENSIONS = ['markdown.extensions.extra', 'markdown.extensions.toc', '
 
 # wagtail settings
 WAGTAIL_SITE_NAME = 'bash-shell.net'
-TAGGIT_CASE_INSENSITIVE = True  # might avoid taggit anyway.  I do not care for it
+TAGGIT_CASE_INSENSITIVE = True
 
 structlog.configure(
     processors=[
@@ -283,3 +288,27 @@ WATCHMAN_CHECKS = (
     'watchman.checks.databases',
 )
 
+WHITENOISE_ROOT = os.path.join(CONFIG_DIR, 'whitenoise_root_files')
+
+# Security settings
+SECURE_HSTS_SECONDS = env('SECURE_HSTS_SECONDS', int, 0)
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = True  # proxy handles this anyway, so just double checking
+
+# CSP
+# env.url() ?
+CSP_REPORT_URI = env('CSP_REPORT_URI', str, None)
+# Using defaults which match sources at the time of writing just to ensure things work at initial release with easy non-code fixes if I goofed up. May remove defaults later.
+CSP_DEFAULT_SRC = env('CSP_DEFAULT_SRC', list, ["'self'"])
+CSP_SCRIPT_SRC = env('CSP_SCRIPT_SRC', list, [
+    "'self'",
+    'https://cdnjs.cloudflare.com',
+    'https://static.getclicky.com',
+])
+CSP_STYLE_SRC = env('CSP_STYLE_SRC', list, ["'self'", 'https://cdnjs.cloudflare.com', 'https://fonts.googleapis.com', 'https://fonts.gstatic.com'])
+CSP_IMG_SRC = env('CSP_IMG_SRC', list, [
+    "'self'",
+    'https://bash-shell-net.nyc3.cdn.digitaloceanspaces.com'
+])
+CSP_FONT_SRC = env('CSP_FONT_SRC', list, ['https://fonts.gstatic.com'])
+CSP_INCLUDE_NONCE_IN = ['script-src', 'img-src', 'style-src', 'font-src']

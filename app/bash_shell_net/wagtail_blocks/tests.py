@@ -132,8 +132,6 @@ class DetailImageChooserBlockTest(WagtailTestUtils, TestCase):
         image_rendition = self.image.get_rendition('max-500x500|format-webp')
         full_size_rendition = self.image.get_rendition('original|format-webp')
 
-        # First test case has considerable mucking about to get the empty line because code editor trailing whitespace
-        # cleanup was screwing it all up with a plain f string and textwrap.dedent()
         test_matrix = [
             {
                 'image': self.image,
@@ -141,13 +139,14 @@ class DetailImageChooserBlockTest(WagtailTestUtils, TestCase):
                 'attribution': '',
                 'license_url': '',
                 'license_name': '',
-                'expected': (
-                    """<div class="col-12 text-center mb-2 js-lightbox">\n"""
-                    f"""  <a href="{full_size_rendition.url}" title="" data-caption="">\n"""
-                    f"""  {image_rendition.img_tag(extra_attributes={'alt': '', 'class': 'mx-auto d-block', 'loading': 'lazy'})}\n  \n"""
-                    """  </a>\n"""
-                    """</div>"""
-                ),
+                'expected':
+                    f"""
+                    <div class="col-12 text-center mb-2 js-lightbox">
+                      <a href="{full_size_rendition.url}" title="" data-caption="">
+                        {image_rendition.img_tag(extra_attributes={'alt': '', 'class': 'mx-auto d-block', 'loading': 'lazy', 'nonce': ''})}
+                      </a>
+                    </div>
+                    """,
             },
             {
                 'image': self.image,
@@ -155,16 +154,15 @@ class DetailImageChooserBlockTest(WagtailTestUtils, TestCase):
                 'attribution': 'Justin Michalicek',
                 'license_url': 'https://example.com/',
                 'license_name': 'a license',
-                'expected': textwrap.dedent(
+                'expected':
                     f"""
                     <div class="col-12 text-center mb-2 js-lightbox">
                       <a href="{full_size_rendition.url}" title="foobar" data-caption="foobar">
-                      {image_rendition.img_tag(extra_attributes={'alt': 'foobar', 'class': 'mx-auto d-block', 'loading': 'lazy'})}
+                      {image_rendition.img_tag(extra_attributes={'alt': 'foobar', 'class': 'mx-auto d-block', 'loading': 'lazy', 'nonce': ''})}
                       <span>foobar</span>
                       </a>
                     </div>
-                    """
-                ),
+                    """,
             },
         ]
 
