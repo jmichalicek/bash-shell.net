@@ -3,6 +3,8 @@ import structlog
 
 WAGTAIL_SITE_NAME = 'bash-shell.net development'
 CACHES = {'default': {'BACKEND': 'django.core.cache.backends.dummy.DummyCache',}}
+DEBUG = True
+SECURE_SSL_REDIRECT = False
 
 structlog.configure(
     processors=[

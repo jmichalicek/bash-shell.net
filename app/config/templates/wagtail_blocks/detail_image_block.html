@@ -2,8 +2,9 @@
 {# TODO: the rest of the image details #}
 <div class="col-12 text-center mb-2 js-lightbox">
   {% image value.image original format-webp as original_webp %}
+
   <a href="{{ original_webp.url }}" title="{{ value.caption }}" data-caption="{{ value.caption }}">
-    {% image value.image max-500x500 format-webp class="mx-auto d-block" alt=value.caption loading="lazy" %}
+    {% image value.image max-500x500 format-webp class="mx-auto d-block" alt=value.caption loading="lazy" nonce=request.csp_nonce %}
     {% if value.caption %}<span>{{ value.caption }}</span>{% endif %}
   </a>
 </div>
