@@ -294,6 +294,8 @@ WHITENOISE_ROOT = os.path.join(CONFIG_DIR, 'whitenoise_root_files')
 SECURE_HSTS_SECONDS = env('SECURE_HSTS_SECONDS', int, 0)
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECURE_SSL_REDIRECT = True  # proxy handles this anyway, so just double checking
+SESSION_COOKIE_SECURE = env('SESSION_COOKIE_SECURE', bool, True)
+CSRF_COOKIE_SECURE = env('CSRF_COOKIE_SECURE', bool, True)
 
 # CSP
 # env.url() ?

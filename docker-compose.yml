@@ -38,6 +38,8 @@ services:
       - SHELL=/bin/bash
       - DATABASE_URL=postgres://developer:developer@database:5432/bash_shell_net
       - LOG_LEVEL=DEBUG
+      - CSRF_COOKIE_SECURE=False
+      - SESSION_COOKIE_SECURE=False
     ports:
       - "8000:8000"
     restart: on-failure
