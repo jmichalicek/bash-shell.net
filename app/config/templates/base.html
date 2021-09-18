@@ -15,9 +15,9 @@
       {% comment %}<meta property="og:image" content="https://ia.media-imdb.com/images/rock.jpg" />{% endcomment %}
     {% endblock og_tags %}
     {% block stylesheets %}
-      <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}" nonce="{{ request.csp_nonce }}" />
-      <link rel="stylesheet" type="text/css" href="{% static 'css/pygments.css' %}" nonce="{{ request.csp_nonce }}" />
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.0/baguetteBox.min.css" integrity="sha256-cKiyvRKpm8RaTdU71Oq2RUVgvfWrdIXjvVdQF2oZ1Y4=" crossorigin="anonymous" nonce="{{ request.csp_nonce }}" />
+      <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}" />
+      <link rel="stylesheet" type="text/css" href="{% static 'css/pygments.css' %}" />
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.0/baguetteBox.min.css" integrity="sha256-cKiyvRKpm8RaTdU71Oq2RUVgvfWrdIXjvVdQF2oZ1Y4=" crossorigin="anonymous" />
 
       <style nonce="{{ request.csp_nonce }}">
         html, body {
@@ -27,7 +27,7 @@
     {% endblock stylesheets %}
     {% block page_stylesheets %}{% endblock page_stylesheets %}
     <script nonce="{{ request.csp_nonce }}">var clicky_site_ids = clicky_site_ids || []; clicky_site_ids.push(101271437);</script>
-    <script async src="//static.getclicky.com/js" nonce="{{ request.csp_nonce }}"></script>
+    <script async src="//static.getclicky.com/js"></script>
   </head>
   <body>
     <div class="container-lg pb-5">
@@ -86,8 +86,8 @@
         <div class="col">
           <h6>Social</h6>
           <ol class="list-unstyled">
-            <li><a href="https://github.com/jmichalicek/"><img nonce="{{ request.csp_nonce }}" type="image/svg+xml" src="{% static 'img/github.svg' %}" class="github-svg" height="16" width="16" loading="lazy" alt="GitHub Logo"></img> GitHub</a></li>
-            <li><a href="https://twitter.com/zingaya"><img nonce="{{ request.csp_nonce }}" type="image/svg+xml" src="{% static 'img/twitter.svg' %}" class="twitter-svg" height="16" width="16" loading="lazy" alt="Twitter Logo"></img> Twitter</a></li>
+            <li><a href="https://github.com/jmichalicek/"><img type="image/svg+xml" src="{% static 'img/github.svg' %}" class="github-svg" height="16" width="16" loading="lazy" alt="GitHub Logo"></img> GitHub</a></li>
+            <li><a href="https://twitter.com/zingaya"><img type="image/svg+xml" src="{% static 'img/twitter.svg' %}" class="twitter-svg" height="16" width="16" loading="lazy" alt="Twitter Logo"></img> Twitter</a></li>
           </ol>
         </div>
         <div class="col">
@@ -102,8 +102,8 @@
       </footer>
     </div> {# end main container #}
     {% block javascript %}
-      <script src="{% static 'js/bundled/index.bundle.js' %}" nonce="{{ request.csp_nonce }}"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.0/baguetteBox.min.js" integrity="sha256-yQGjQhFs3LtyiN5hhr3k9s9TWZOh/RzCkD3gwwCKlkg=" crossorigin="anonymous" nonce="{{ request.csp_nonce }}"></script>
+      <script src="{% static 'js/bundled/index.bundle.js' %}"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.0/baguetteBox.min.js" integrity="sha256-yQGjQhFs3LtyiN5hhr3k9s9TWZOh/RzCkD3gwwCKlkg=" crossorigin="anonymous"></script>
       <script nonce="{{ request.csp_nonce }}">
         baguetteBox.run('.js-lightbox', {noScrollbars: true});
       </script>
