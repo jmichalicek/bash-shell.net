@@ -15,7 +15,7 @@
     <div class="row mr-0">
       {% for batch in currently_on_tap %}
         <div class="col-md-4 col-12 mt-3 mt-md-0 pr-0">
-          <div class="card" style="min-height: 275px">
+          <div class="card currently-on-tap">
             <div class="card-header text-center">
               <div class="w-100"><a href="{{ batch.recipe_page.id_and_slug_url }}">{{ batch.recipe_page.name }}</a></div>
               <small>{{ batch.recipe_page.style.name }}{% if batch.recipe_page.style.bjcp_category %} ({{ batch.recipe_page.style.bjcp_category }}){% endif %}</small>

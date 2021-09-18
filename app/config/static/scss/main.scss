@@ -300,6 +300,10 @@ a {
   border: 3px solid #df691a;
 }
 
+/* On tap stuff - should move to its own scss */
+.card.currently-on-tap {
+  min-height: 275px; // TODO: convert to rem
+}
 /* srm colors for background */
 .bg-srm-1 {
   background-color: #ffe699;
