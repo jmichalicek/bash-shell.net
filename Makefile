@@ -16,3 +16,6 @@ docker_migrate:
 
 docker_test:
 	docker compose exec django python manage.py test ${args}
+
+shell:
+	docker compose exec django /bin/bash
