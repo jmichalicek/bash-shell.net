@@ -4,6 +4,7 @@ develop.bat
 .vscode*
 tmp/
 *.code-workspace
+.devcontainer
 .python-version
 codeship.aes
 media

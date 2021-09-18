@@ -21,6 +21,8 @@ codeship.aes
 # code editors/ides
 *.code-workspace
 .vscode
+# vscode remote containers deal
+.devcontainer
 
 # temp files and similar
 tmp/
