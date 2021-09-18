@@ -143,7 +143,7 @@ class DetailImageChooserBlockTest(WagtailTestUtils, TestCase):
                     f"""
                     <div class="col-12 text-center mb-2 js-lightbox">
                       <a href="{full_size_rendition.url}" title="" data-caption="">
-                        {image_rendition.img_tag(extra_attributes={'alt': '', 'class': 'mx-auto d-block', 'loading': 'lazy', 'nonce': ''})}
+                        {image_rendition.img_tag(extra_attributes={'alt': '', 'class': 'mx-auto d-block', 'loading': 'lazy'})}
                       </a>
                     </div>
                     """,
@@ -158,7 +158,7 @@ class DetailImageChooserBlockTest(WagtailTestUtils, TestCase):
                     f"""
                     <div class="col-12 text-center mb-2 js-lightbox">
                       <a href="{full_size_rendition.url}" title="foobar" data-caption="foobar">
-                      {image_rendition.img_tag(extra_attributes={'alt': 'foobar', 'class': 'mx-auto d-block', 'loading': 'lazy', 'nonce': ''})}
+                      {image_rendition.img_tag(extra_attributes={'alt': 'foobar', 'class': 'mx-auto d-block', 'loading': 'lazy'})}
                       <span>foobar</span>
                       </a>
                     </div>

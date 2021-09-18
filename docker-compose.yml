@@ -40,6 +40,9 @@ services:
       - LOG_LEVEL=DEBUG
       - CSRF_COOKIE_SECURE=False
       - SESSION_COOKIE_SECURE=False
+      - CSP_IMG_SRC='self',http://www.gravatar.com
+      - CSP_SCRIPT_SRC='self',https://cdnjs.cloudflare.com,https://static.getclicky.com,'unsafe-inline'
+      - CSP_STYLE_SRC='self','unsafe-inline',https://cdnjs.cloudflare.com,https://fonts.googleapis.com,https://fonts.gstatic.com
     ports:
       - "8000:8000"
     restart: on-failure

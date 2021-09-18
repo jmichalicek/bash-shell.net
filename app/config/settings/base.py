@@ -119,7 +119,9 @@ WSGI_APPLICATION = 'config.wsgi.application'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(CONFIG_DIR, 'templates'),],
+        'DIRS': [
+            os.path.join(CONFIG_DIR, 'templates'),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -195,7 +197,9 @@ CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
         'LOCATION': 'redis://%s:6379' % REDIS_HOST,
-        'OPTIONS': {'DB': 2,},
+        'OPTIONS': {
+            'DB': 2,
+        },
     },
 }
 
@@ -242,14 +246,20 @@ LOGGING = {
     'version': 1,
     # 'disable_existing_loggers': True,
     'disable_existing_loggers': False,
-    'root': {'level': os.environ.get('LOG_LEVEL', 'INFO'), 'handlers': ['console_json'],},
+    'root': {
+        'level': os.environ.get('LOG_LEVEL', 'INFO'),
+        'handlers': ['console_json'],
+    },
     'formatters': {
         'verbose': {'format': '%(levelname)s %(asctime)s %(module)s ' '%(process)d %(thread)d %(message)s'},
         "json_formatter": {
             "()": structlog.stdlib.ProcessorFormatter,
             "processor": structlog.processors.JSONRenderer(),
         },
-        "plain_console": {"()": structlog.stdlib.ProcessorFormatter, "processor": structlog.dev.ConsoleRenderer(),},
+        "plain_console": {
+            "()": structlog.stdlib.ProcessorFormatter,
+            "processor": structlog.dev.ConsoleRenderer(),
+        },
         "key_value": {
             "()": structlog.stdlib.ProcessorFormatter,
             "processor": structlog.processors.KeyValueRenderer(key_order=['timestamp', 'level', 'event', 'logger']),
@@ -261,7 +271,11 @@ LOGGING = {
         'console_key_value': {'level': 'DEBUG', 'class': 'logging.StreamHandler', 'formatter': 'key_value'},
     },
     'loggers': {
-        'django': {'level': os.environ.get('LOG_LEVEL', 'INFO'), 'handlers': ['console_json'], 'propagate': False,},
+        'django': {
+            'level': os.environ.get('LOG_LEVEL', 'INFO'),
+            'handlers': ['console_json'],
+            'propagate': False,
+        },
         # only when not manage.py runserver
         'django.request': {
             'handlers': ['console_json'],
@@ -274,7 +288,11 @@ LOGGING = {
             'propagate': False,
         },
         # only happens with manage.py runserver
-        'django.server': {'handlers': ['console_json'], 'level': 'DEBUG', 'propagate': False,},
+        'django.server': {
+            'handlers': ['console_json'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
         # Log SQL queries - noisy, but sometimes useful
         # 'django.db.backends': {'handlers': ['console_plain'], 'level': 'DEBUG', 'propagate': False,},
     },
@@ -302,15 +320,10 @@ CSRF_COOKIE_SECURE = env('CSRF_COOKIE_SECURE', bool, True)
 CSP_REPORT_URI = env('CSP_REPORT_URI', str, None)
 # Using defaults which match sources at the time of writing just to ensure things work at initial release with easy non-code fixes if I goofed up. May remove defaults later.
 CSP_DEFAULT_SRC = env('CSP_DEFAULT_SRC', list, ["'self'"])
-CSP_SCRIPT_SRC = env('CSP_SCRIPT_SRC', list, [
-    "'self'",
-    'https://cdnjs.cloudflare.com',
-    'https://static.getclicky.com',
-])
-CSP_STYLE_SRC = env('CSP_STYLE_SRC', list, ["'self'", 'https://cdnjs.cloudflare.com', 'https://fonts.googleapis.com', 'https://fonts.gstatic.com'])
-CSP_IMG_SRC = env('CSP_IMG_SRC', list, [
-    "'self'",
-    'https://bash-shell-net.nyc3.cdn.digitaloceanspaces.com'
-])
-CSP_FONT_SRC = env('CSP_FONT_SRC', list, ['https://fonts.gstatic.com'])
-CSP_INCLUDE_NONCE_IN = ['script-src', 'img-src', 'style-src', 'font-src']
+CSP_SCRIPT_SRC = env('CSP_SCRIPT_SRC', list, ["'self'"])
+CSP_STYLE_SRC = env('CSP_STYLE_SRC', list, ["'self'"])
+CSP_IMG_SRC = env('CSP_IMG_SRC', list, ["'self'"])
+CSP_FONT_SRC = env('CSP_FONT_SRC', list, ["'self'"])
+CSP_STYLE_SRC_ATTR = env('CSP_STYLE_SRC_ATTR', list, ["'self'"])
+CSP_FRAME_SRC = env('CSP_FRAME_SRC', list, ["'self'"])
+CSP_INCLUDE_NONCE_IN = ['script-src', 'style-src']
