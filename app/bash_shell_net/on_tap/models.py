@@ -1,7 +1,7 @@
 import copy
 from decimal import Decimal
 from enum import Enum
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 from django.contrib.postgres.fields import CICharField
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
@@ -1159,7 +1159,7 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):
             return self.calculate_color_srm()
         return self.recipe_page.calculate_color_srm()
 
-    def get_context(self: 'OnTapPage', request: HttpRequest) -> Dict[str, Any]:
+    def get_context(self: 'OnTapPage', request: HttpRequest) -> dict[str, Any]:
         context = super().get_context(request)
         context['calculated_srm'] = self.get_actual_or_expected_srm()
         if self.target_post_boil_volume:
@@ -1240,7 +1240,7 @@ class OnTapPage(Page):
         )
         return batches
 
-    def paginate(self: 'OnTapPage', queryset: 'QuerySet', page_number: int = 1) -> Tuple[Paginator, 'QuerySet[Page]']:
+    def paginate(self: 'OnTapPage', queryset: 'QuerySet', page_number: int = 1) -> tuple[Paginator, 'QuerySet[Page]']:
         paginator = Paginator(queryset, 25)
         try:
             page = paginator.page(page_number)

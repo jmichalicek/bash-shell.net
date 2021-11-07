@@ -19,7 +19,7 @@ class ProjectDetailView(DetailView):
     template_name = 'projects/project_detail.html'
 
     def get_context_data(self, **kwargs):
-        context = super(ProjectDetailView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context.update({'project_news': self.object.project_news.filter(is_published=True).order_by('-created_date')})
 
         return context

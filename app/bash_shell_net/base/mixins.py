@@ -31,7 +31,7 @@ class IdAndSlugUrlIndexMixin:
         """
         return self.id_and_slug_url_name
 
-    def get_id_and_slug_url_class(self) -> Type:
+    def get_id_and_slug_url_class(self) -> type:
         """
         Returns the class specified by self.get_id_and_slug_url_class
 
@@ -128,7 +128,7 @@ class IdAndSlugUrlMixin:
 
         return root_url + self.id_and_slug_url
 
-    def get_sitemap_urls(self, request=None) -> List[dict]:
+    def get_sitemap_urls(self, request=None) -> list[dict]:
         """
         Returns url for the sitemap using the full id_and_slug_url instead of wagtail default full_url()
         """

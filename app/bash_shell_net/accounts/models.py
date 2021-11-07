@@ -1,7 +1,7 @@
-from django.db import models
-from django.utils.translation import ugettext_lazy as _
-from django.utils import timezone
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.db import models
+from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from .managers import UserManager
 
@@ -40,10 +40,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.first_name
 
     def get_full_name(self):
-        return '%s %s' % (self.first_name, self.last_name)
+        return f'{self.first_name} {self.last_name}'
 
     def save(self, *args, **kwargs):
         if not self.username:
             self.username = self.email
 
-        super(User, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)

@@ -4,7 +4,7 @@ setup-and-run:	venv install migrate run
 
 venv:
 	 python -m venv .venv
-	 pip install pip==21.2.4
+	 pip install pip -U
 	 pip install pip-tools
 
 run:

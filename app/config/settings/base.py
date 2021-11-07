@@ -189,7 +189,7 @@ ALLOWED_HOSTS = ['*']
 # CACHING AND STORAGE
 REDIS_HOST = os.environ.get('REDIS_HOST', '')
 DATABASES = {
-    'default': dj_database_url.config(default='sqlite:////{0}'.format(os.path.join(PROJECT_ROOT, 'bs_net.sqlite'))),
+    'default': dj_database_url.config(default='sqlite:////{}'.format(os.path.join(PROJECT_ROOT, 'bs_net.sqlite'))),
 }
 
 CACHES = {

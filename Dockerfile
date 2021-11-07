@@ -1,6 +1,6 @@
-FROM python:3.9.7-bullseye AS dev
+FROM python:3.10.0-bullseye AS dev
 LABEL maintainer="Justin Michalicek <jmichalicek@gmail.com>"
-ENV PYTHONUNBUFFERED=1 DEBIAN_FRONTEND=noninteractive
+ENV PYTHONUNBUFFERED=1 DEBIAN_FRONTEND=noninteractive PYTHONFAULTHANDLER=1
 
 RUN wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O - | apt-key add - \
     && echo "deb http://apt.postgresql.org/pub/repos/apt/ bullseye-pgdg main" >> /etc/apt/sources.list.d/pgdg.list
@@ -34,7 +34,7 @@ ENV PATH=/django/bash-shell.net/.venv/bin:$PATH
 # https://stackoverflow.com/a/28210626
 # python -m venv only copies the bundled pip, even if you've done a pip install -U pip to get
 # a newer version installed, so update it in the virtualenv
-RUN pip install pip==21.2.3
+RUN pip install pip -U
 RUN pip install pip-tools
 COPY --chown=django ./app/requirements.txt ./app/requirements.dev.txt /django/bash-shell.net/
 WORKDIR /django/bash-shell.net/
@@ -54,7 +54,9 @@ RUN rm -rf webpack_assets ./config/static/scss/ ./config/static/js/index.js node
 COPY --chown=django ./wait-for-it.sh /django/bash-shell.net/wait-for-it.sh
 
 # Production image
-FROM python:3.9.7-slim-bullseye AS prod
+FROM python:3.10.0-slim-bullseye AS prod
+LABEL maintainer="Justin Michalicek <jmichalicek@gmail.com>"
+RUN apt-get update && apt-get install -y --no-install-recommends && apt-get autoremove && apt-get clean
 RUN useradd -ms /bin/bash -d /django django
 # Instead of copying the whole dir, just copy the known needed bits
 COPY --chown=django --from=build /django/bash-shell.net /django/bash-shell.net/
@@ -65,6 +67,8 @@ ENV DJANGO_SETTINGS_MODULE=config.settings.production \
     LANG=C.UTF-8 \
     PYTHONIOENCODING=utf-8 \
     PYTHONUNBUFFERED=1 \
-    DEBIAN_FRONTEND=noninteractive
+    DEBIAN_FRONTEND=noninteractive \
+    PYTHONFAULTHANDLER=1
+
 WORKDIR /django/bash-shell.net/
 EXPOSE 8000

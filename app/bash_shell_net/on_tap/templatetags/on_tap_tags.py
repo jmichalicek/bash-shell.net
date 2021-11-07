@@ -1,5 +1,3 @@
-from typing import Union
-
 from django import template
 
 register = template.Library()
@@ -10,7 +8,7 @@ logger = structlog.getLogger(__name__)
 
 
 @register.filter
-def srm_to_hex(srm: Union[int, str]) -> str:
+def srm_to_hex(srm: int | str) -> str:
     """
     Takes an srm value as an int such as 1 or string such as '1' and returns a hex color code for it.
 
