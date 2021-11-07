@@ -6,7 +6,7 @@ class UserFactory(DjangoModelFactory):
     is_staff = False
     is_superuser = None
     email = factory.Sequence(lambda n: f'user{n}@example.org')
-    username = factory.Sequence(lambda n: 'user{n}')
+    username = factory.Sequence(lambda n: f'user{n}')
 
     class Meta:
         model = 'accounts.User'

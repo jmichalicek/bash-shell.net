@@ -1,5 +1,3 @@
-from typing import Union
-
 from django import template
 
 register = template.Library()

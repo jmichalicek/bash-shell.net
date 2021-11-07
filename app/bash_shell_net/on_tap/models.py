@@ -1,7 +1,7 @@
 import copy
 from decimal import Decimal
 from enum import Enum
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 from django.contrib.postgres.fields import CICharField
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
