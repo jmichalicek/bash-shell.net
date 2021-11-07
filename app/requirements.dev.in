@@ -9,3 +9,5 @@ black
 isort
 djhtml
 honcho
+mypy
+django-stubs
