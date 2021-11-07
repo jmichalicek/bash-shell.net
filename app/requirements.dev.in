@@ -11,3 +11,5 @@ djhtml
 honcho
 mypy
 django-stubs
+pyupgrade
+django-upgrade

@@ -9,3 +9,11 @@ skip = ['{{ project_name }}/settings.py']
 known_django = ['django']
 known_wagtail = ['wagtail', 'modelcluster', 'taggit']
 sections = ['FUTURE', 'STDLIB', 'DJANGO', 'WAGTAIL', 'THIRDPARTY', 'FIRSTPARTY', 'LOCALFOLDER']
+
+[tool.mypy]
+plugins = ["mypy_django_plugin.main"]
+exclude = 'migrations'
+
+[tool.django-stubs]
+django_settings_module = "config.settings.local"
+

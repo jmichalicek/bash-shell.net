@@ -70,7 +70,7 @@ class Project(models.Model):
             # duplicate slugs are not properly dealt with anywhere!
             self.slug = slugify(self.name.lower().strip())
 
-        super(Project, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     def get_absolute_url(self):
         return reverse('projects_project_detail', args=[self.slug])
@@ -81,7 +81,7 @@ class ProjectHostingService(models.Model):
     Where a project is hosted
     """
 
-    class VersionControlSystems(object):
+    class VersionControlSystems:
         GIT = 1
         MERCURIAL = 2
         SVN = 3
@@ -112,7 +112,7 @@ class ProjectHostingService(models.Model):
         ordering = ('project', 'hosting_service')
 
     def __str__(self):
-        return '%s: %s' % (self.project, self.hosting_service)
+        return f'{self.project}: {self.hosting_service}'
 
 
 class ProjectNews(models.Model):
