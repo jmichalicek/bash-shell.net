@@ -55,7 +55,6 @@ services:
       - ~/.git-hooks:/django/.git-hooks:ro
       - ~/.gitconfig:/django/.gitconfig:ro
       - ~/.ssh:/django/.ssh:ro
-
   django-ci:
     profiles:
     - ci

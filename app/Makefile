@@ -46,7 +46,7 @@ flake8:
 isort-check:
 	isort --check -q --sg **/migrations/* bash_shell_net/
 
-lint: flake8 isort-check djhtml-check
+lint: flake8 isort-check djhtml-check mypy
 
 pyupgrade:
 	find ./ -path '**/.venv' -prune -o -path node_modules -prune -o -path '**/migrations' -prune -o -wholename '*/*.py' -exec pyupgrade --py39-plus '{}' +

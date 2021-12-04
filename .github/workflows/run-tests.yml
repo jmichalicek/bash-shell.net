@@ -8,8 +8,10 @@ on:
     branches:
     - main
 env:
-  REGISTRY: registry.gitlab.com
-
+  DOCKER_IMAGE_REGISTRY: ${{ secrets.DOCKER_IMAGE_REGISTRY }}
+  DOCKER_IMAGE_REGISTRY_USER: ${{ secrets.DOCKER_IMAGE_REGISTRY_USER }}
+  DOCKER_IMAGE_REGISTRY_PASSWORD: ${{ secrets.DOCKER_IMAGE_REGISTRY_PASSWORD }}
+  DOCKER_IMAGE_REPOSITORY: ${{ secrets.DOCKER_IMAGE_REPOSITORY}}
 jobs:
   build_image:
     name: Build Docker Image
@@ -25,13 +27,13 @@ jobs:
       - name: Log in to the Container registry
         uses: docker/login-action@v1
         with:
-          registry: ${{ env.DOCKER_CONTAINER_REGISTRY }}
-          username: ${{ env.DOCKER_CONTAINER_REGISTRY_USER }}
-          password: ${{ env.DOCKER_CONTAINER_REGISTRY_PASSWORD }}
+          registry: ${{ env.DOCKER_IMAGE_REGISTRY }}
+          username: ${{ env.DOCKER_IMAGE_REGISTRY_USER }}
+          password: ${{ env.DOCKER_IMAGE_REGISTRY_PASSWORD }}
       - name: Build Docker Image
         run: |
-          docker build -t ${{ env.REGISTRY}}/${GITHUB_REPOSITORY,,}:${{ steps.extract_branch.outputs.branch }}_${GITHUB_SHA} .
-          docker push ${{ env.REGISTRY}}/${GITHUB_REPOSITORY,,}:${{ steps.extract_branch.outputs.branch }}_${GITHUB_SHA}
+          docker build -t ${{ env.DOCKER_IMAGE_REGISTRY}}/${{ env.DOCKER_IMAGE_REPOSITORY }}:${{ steps.extract_branch.outputs.branch }}_${GITHUB_SHA} .
+          docker push ${{ env.DOCKER_IMAGE_REGISTRY}}/${{ env.DOCKER_IMAGE_REPOSITORY }}:${{ steps.extract_branch.outputs.branch }}_${GITHUB_SHA}
   back_end_tests:
     name: Back End Tests
     needs: build_image
@@ -43,15 +45,15 @@ jobs:
     - name: Log in to the Container registry
       uses: docker/login-action@v1
       with:
-        registry: ${{ env.DOCKER_CONTAINER_REGISTRY }}
-        username: ${{ env.DOCKER_CONTAINER_REGISTRY_USER }}
-        password: ${{ env.DOCKER_CONTAINER_REGISTRY_PASSWORD }}
+        registry: ${{ env.DOCKER_IMAGE_REGISTRY }}
+        username: ${{ env.DOCKER_IMAGE_REGISTRY_USER }}
+        password: ${{ env.DOCKER_IMAGE_REGISTRY_PASSWORD }}
     - uses: actions/checkout@v2
     - name: Setup Image
       uses: ./.github/actions/setup-docker-image
     - name: Tests
       shell: bash
-      run: docker compose --profile=ci run --service-ports --rm django_ci python manage.py test
+      run: docker compose --profile=ci run --service-ports --rm django-ci python manage.py test
   flake8:
     name: Flake8
     needs: build_image
@@ -63,14 +65,14 @@ jobs:
     - name: Log in to the Container registry
       uses: docker/login-action@v1
       with:
-        registry: ${{ env.DOCKER_CONTAINER_REGISTRY }}
-        username: ${{ env.DOCKER_CONTAINER_REGISTRY_USER }}
-        password: ${{ env.DOCKER_CONTAINER_REGISTRY_PASSWORD }}
+        registry: ${{ env.DOCKER_IMAGE_REGISTRY }}
+        username: ${{ env.DOCKER_IMAGE_REGISTRY_USER }}
+        password: ${{ env.DOCKER_IMAGE_REGISTRY_PASSWORD }}
     - uses: actions/checkout@v2
     - name: Setup Image
       uses: ./.github/actions/setup-docker-image
     - name: Flake8
-      run: docker compose --profile=ci run --service-ports --rm django_ci make flake8
+      run: docker compose --profile=ci run --service-ports --rm django-ci make flake8
   isort:
     name: isort
     needs: build_image
@@ -82,14 +84,14 @@ jobs:
     - name: Log in to the Container registry
       uses: docker/login-action@v1
       with:
-        registry: ${{ env.DOCKER_CONTAINER_REGISTRY }}
-        username: ${{ env.DOCKER_CONTAINER_REGISTRY_USER }}
-        password: ${{ env.DOCKER_CONTAINER_REGISTRY_PASSWORD }}
+        registry: ${{ env.DOCKER_IMAGE_REGISTRY }}
+        username: ${{ env.DOCKER_IMAGE_REGISTRY_USER }}
+        password: ${{ env.DOCKER_IMAGE_REGISTRY_PASSWORD }}
     - uses: actions/checkout@v2
     - name: Setup Image
       uses: ./.github/actions/setup-docker-image
     - name: isort
-      run: docker compose --profile=ci run --service-ports --rm django_ci make isort-check
+      run: docker compose --profile=ci run --service-ports --rm django-ci make isort-check
   djhtml:
     name: djhtml
     needs: build_image
@@ -101,14 +103,14 @@ jobs:
     - name: Log in to the Container registry
       uses: docker/login-action@v1
       with:
-        registry: ${{ env.DOCKER_CONTAINER_REGISTRY }}
-        username: ${{ env.DOCKER_CONTAINER_REGISTRY_USER }}
-        password: ${{ env.DOCKER_CONTAINER_REGISTRY_PASSWORD }}
+        registry: ${{ env.DOCKER_IMAGE_REGISTRY }}
+        username: ${{ env.DOCKER_IMAGE_REGISTRY_USER }}
+        password: ${{ env.DOCKER_IMAGE_REGISTRY_PASSWORD }}
     - uses: actions/checkout@v2
     - name: Setup Image
       uses: ./.github/actions/setup-docker-image
     - name: djhtml
-      run: docker compose --profile=ci run --service-ports --rm django_ci make djhtml-check
+      run: docker compose --profile=ci run --service-ports --rm django-ci make djhtml-check
   static_analysis:
     name: Static Analysis
     needs: build_image
@@ -120,11 +122,11 @@ jobs:
     - name: Log in to the Container registry
       uses: docker/login-action@v1
       with:
-        registry: ${{ env.DOCKER_CONTAINER_REGISTRY }}
-        username: ${{ env.DOCKER_CONTAINER_REGISTRY_USER }}
-        password: ${{ env.DOCKER_CONTAINER_REGISTRY_PASSWORD }}
+        registry: ${{ env.DOCKER_IMAGE_REGISTRY }}
+        username: ${{ env.DOCKER_IMAGE_REGISTRY_USER }}
+        password: ${{ env.DOCKER_IMAGE_REGISTRY_PASSWORD }}
     - uses: actions/checkout@v2
     - name: Setup Image
       uses: ./.github/actions/setup-docker-image
     - name: mypy
-      run: docker compose --profile=ci run --service-ports --rm django_ci make mypy
+      run: docker compose --profile=ci run --service-ports --rm django-ci make mypy

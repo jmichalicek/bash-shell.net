@@ -9,5 +9,5 @@ runs:
     - name: Pull and Tag Image
       shell: bash
       run: |
-        docker pull ${{ env.REGISTRY}}/${GITHUB_REPOSITORY,,}:${{ steps.extract_branch.outputs.branch }}_${GITHUB_SHA}
-        docker tag ${{ env.REGISTRY}}/${GITHUB_REPOSITORY,,}:${{ steps.extract_branch.outputs.branch }}_${GITHUB_SHA} bash-shell-net:dev
+        docker pull ${{ env.DOCKER_IMAGE_REGISTRY}}/${{ env.DOCKER_IMAGE_REPOSITORY }}:${{ steps.extract_branch.outputs.branch }}_${GITHUB_SHA}
+        docker tag ${{ env.DOCKER_IMAGE_REGISTRY}}/${{ env.DOCKER_IMAGE_REPOSITORY }}:${{ steps.extract_branch.outputs.branch }}_${GITHUB_SHA} bash-shell-net:dev
