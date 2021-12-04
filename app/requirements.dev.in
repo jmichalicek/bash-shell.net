@@ -4,6 +4,7 @@ coverage
 django_coverage_plugin
 factory-boy
 flake8
+flake8-django
 pylint
 black
 isort

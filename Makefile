@@ -6,16 +6,7 @@ venv:
 	 pip install pip-tools
 
 dev:
-	docker compose run --service-ports django /bin/bash
-
-docker_django:
-	docker compose exec django python manage.py runserver 0.0.0.0:8000
-
-docker_migrate:
-	docker compose exec django python manage.py migrate ${args}
-
-docker_test:
-	docker compose exec django python manage.py test ${args}
+	docker compose --profile dev run --service-ports django /bin/bash
 
 shell:
-	docker compose exec django /bin/bash
+	docker compose --profile dev exec django /bin/bash

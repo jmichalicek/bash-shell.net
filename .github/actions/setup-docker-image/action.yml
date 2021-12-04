@@ -1,0 +1,13 @@
+name: 'Setup Docker Image'
+description: 'Pulls the docker image for this test run from ghcr.io and tags appropriately for the docker-compose stack.'
+runs:
+  using: "composite"
+  steps:
+    - name: Extract Branch Name
+      uses: ./.github/actions/extract-branch-name
+      id: extract_branch
+    - name: Pull and Tag Image
+      shell: bash
+      run: |
+        docker pull ${{ env.REGISTRY}}/${GITHUB_REPOSITORY,,}:${{ steps.extract_branch.outputs.branch }}_${GITHUB_SHA}
+        docker tag ${{ env.REGISTRY}}/${GITHUB_REPOSITORY,,}:${{ steps.extract_branch.outputs.branch }}_${GITHUB_SHA} bash-shell-net:dev

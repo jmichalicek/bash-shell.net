@@ -16,6 +16,8 @@ services:
     volumes:
       - redis:/data
   django:
+    profiles:
+    - dev
     image: bash-shell-net:dev
     command: /bin/bash -ic 'make setup-and-run'
     # command: ["gunicorn", "--workers", "2", "--bind", "0.0.0.0:8000", "--name", "django", "--max-requests=1000", "config.wsgi:application"]
@@ -50,11 +52,39 @@ services:
       - type: bind
         source: .
         target: /django/bash-shell.net/
-        #bind-propagation: shared
-
       - ~/.git-hooks:/django/.git-hooks:ro
       - ~/.gitconfig:/django/.gitconfig:ro
       - ~/.ssh:/django/.ssh:ro
+
+  django-ci:
+    profiles:
+    - ci
+    image: bash-shell-net:dev
+    command: /bin/bash -ic 'make setup-and-run'
+    stdin_open: true
+    tty: true
+    depends_on:
+      - database
+      - redis
+    working_dir: /django/bash-shell.net
+    # I have learned python takes a big performance hit when not run privileged.
+    # I still won't do it for production, but I'm going to see how it works out in dev
+    privileged: true
+    environment:
+      - REDIS_HOST=redis
+      - DJANGO_SETTINGS_MODULE=config.settings.local
+      - SHELL=/bin/bash
+      - DATABASE_URL=postgres://developer:developer@database:5432/bash_shell_net
+      - LOG_LEVEL=DEBUG
+      - CSRF_COOKIE_SECURE=False
+      - SESSION_COOKIE_SECURE=False
+      - CSP_IMG_SRC='self',http://www.gravatar.com
+      - CSP_SCRIPT_SRC='self',https://cdnjs.cloudflare.com,https://static.getclicky.com,'unsafe-inline'
+      - CSP_STYLE_SRC='self','unsafe-inline',https://cdnjs.cloudflare.com,https://fonts.googleapis.com,https://fonts.gstatic.com
+    ports:
+      - "8000:8000"
+    restart: on-failure
+
 volumes:
   db:
   redis:
