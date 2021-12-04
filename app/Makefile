@@ -44,7 +44,7 @@ flake8:
 	flake8 --ignore=E501,E123,E126,E128,E124,E133,W503,E121 --max-line-length=120 --exclude="documentation, .venv, node_modules, media, .parcel-cache, .git, __pycache__, webpack_assets, migrations" bash_shell_net/
 
 isort-check:
-	isort --check -q --sg **/migrations/* {{ cookiecutter.project_namespace}}/
+	isort --check -q --sg **/migrations/* bash_shell_net/
 
 lint: flake8 isort-check djhtml-check
 

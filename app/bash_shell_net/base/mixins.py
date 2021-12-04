@@ -2,11 +2,13 @@
 Reusable mixins - possibly should be its own app/package, but leaving in base for now.
 """
 import inspect
-from typing import List, Type
+from typing import TypeVar
 
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.utils.functional import cached_property
 from django.utils.module_loading import import_string
+
+T = TypeVar('T')
 
 
 class IdAndSlugUrlIndexMixin:
@@ -22,8 +24,8 @@ class IdAndSlugUrlIndexMixin:
     # For now, these are tested indirectly because I have written tests for the models which use these mixins.
 
     # I don't like duplicating this on IdAndSlugUrlMixin.  Maybe that can optionally take a IdAndSlugUrlIndexMixin parent class?
-    id_and_slug_url_name = ''
-    id_and_slug_url_class = None
+    id_and_slug_url_name: str = ''
+    id_and_slug_url_class: T | None = None
 
     def get_id_and_slug_url_name(self) -> str:
         """

@@ -1,4 +1,6 @@
+import copy
 import unittest
+from decimal import Decimal
 
 from django.test import RequestFactory, TestCase
 
@@ -6,8 +8,14 @@ from wagtail.core.models import Page
 from wagtail.tests.utils import WagtailPageTests
 from wagtail.tests.utils.form_data import inline_formset, nested_form_data, rich_text, streamfield
 
-from ..models import *
-from ..models import VolumeToGallonsConverter
+from bash_shell_net.on_tap.models import (
+    BatchLogIndexPage,
+    BatchLogPage,
+    OnTapPage,
+    RecipeIndexPage,
+    RecipePage,
+    VolumeUnit,
+)
 
 # TODO: These tests are a bit slow, I suspect due to creating pages and then publishing them separately
 # rather than just creating already published pages. Will sort this out when I implement factory_boy
@@ -63,13 +71,13 @@ class OnTapPageTest(WagtailPageTests):
 
     def _make_batch_log_page(self, slug: str, batch_index_page: BatchLogIndexPage = None, **kwargs) -> BatchLogPage:
         # FACTORIES!!!!!
-        status = kwargs.get('status', 'planned')
-        brewed_date = kwargs.get('brewed_date', '')
-        packaged_date = kwargs.get('packaged_date', '')
-        on_tap_date = kwargs.get('on_tap_date', '')
-        off_tap_date = kwargs.get('off_tap_date', '')
-        status = kwargs.get('status', '')
-        recipe_page = kwargs.get('recipe_page', RecipePage.objects.live().first())
+        status: str = kwargs.get('status', 'planned')
+        brewed_date: str = kwargs.get('brewed_date', '')
+        packaged_date: str = kwargs.get('packaged_date', '')
+        on_tap_date: str = kwargs.get('on_tap_date', '')
+        off_tap_date: str = kwargs.get('off_tap_date', '')
+        status: str = kwargs.get('status', '')
+        recipe_page: str = kwargs.get('recipe_page', RecipePage.objects.live().first())
 
         form_data = nested_form_data(
             {
