@@ -25,7 +25,7 @@ from wagtail.admin.edit_handlers import (
 )
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 from wagtail.core.fields import RichTextField, StreamField
-from wagtail.core.models import Orderable, Page, PageManager
+from wagtail.core.models import Orderable, Page
 from wagtail.search import index
 from wagtail.snippets.edit_handlers import SnippetChooserPanel
 from wagtail.snippets.models import register_snippet
