@@ -83,7 +83,7 @@ class BlogPage(IdAndSlugUrlMixin, Page):
     id_and_slug_url_name = "blog_post_by_id_and_slug"
 
     parent_page_types = ["BlogPageIndex"]
-    subpage_types = []
+    subpage_types: list[str] = []
 
     # body = StreamField(BaseStreamBlock(), verbose_name="Page body", blank=True)
 

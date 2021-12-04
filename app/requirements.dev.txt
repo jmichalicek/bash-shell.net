@@ -338,6 +338,14 @@ tomli==1.2.2 \
     --hash=sha256:c6ce0015eb38820eaf32b5db832dbc26deb3dd427bd5f6556cf0acac2c214fee \
     --hash=sha256:f04066f68f5554911363063a30b108d2b5a5b1a010aa8b6132af78489fe3aade
     # via black
+types-certifi==2021.10.8.0 \
+    --hash=sha256:33308fb722d28cad8ae19834dcc4d2593509ac80bcbabe77c6d8e9a25001c2de \
+    --hash=sha256:ca164939fe86b5f70988eed480b788162ee81f62e72f486a7b96cb53f4112355
+    # via -r requirements.dev.in
+types-markdown==3.3.9 \
+    --hash=sha256:0fd38830517560f88c2f460ce5dc7006d831f560ec2a73f50c4ac06efac06793 \
+    --hash=sha256:4ab46c58185796366fd0e0a83fa901fbe8107f141d1ac3f1bca6b31df0e8b86c
+    # via -r requirements.dev.in
 types-pytz==2021.3.1 \
     --hash=sha256:d58a0688094b768d8e21c044e45861cbcaecba0494fd5b9c5feb3e1739211606 \
     --hash=sha256:dffd77f3efecd3b1555f187a9bf3a638d55fac296700b829c41bd51ec72a6eb7

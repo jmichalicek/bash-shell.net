@@ -76,8 +76,7 @@ class OnTapPageTest(WagtailPageTests):
         packaged_date: str = kwargs.get('packaged_date', '')
         on_tap_date: str = kwargs.get('on_tap_date', '')
         off_tap_date: str = kwargs.get('off_tap_date', '')
-        status: str = kwargs.get('status', '')
-        recipe_page: str = kwargs.get('recipe_page', RecipePage.objects.live().first())
+        recipe_page: RecipePage = kwargs.get('recipe_page', RecipePage.objects.live().first())
 
         form_data = nested_form_data(
             {

@@ -13,6 +13,7 @@ sections = ['FUTURE', 'STDLIB', 'DJANGO', 'WAGTAIL', 'THIRDPARTY', 'FIRSTPARTY',
 [tool.mypy]
 plugins = ["mypy_django_plugin.main"]
 exclude = 'migrations'
+ignore_missing_imports = true
 
 [tool.django-stubs]
 django_settings_module = "config.settings.local"

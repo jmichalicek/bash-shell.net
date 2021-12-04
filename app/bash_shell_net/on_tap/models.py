@@ -4,15 +4,16 @@ from enum import Enum
 from typing import Any
 
 from django.contrib.postgres.fields import CICharField
-from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.core.paginator import EmptyPage
+from django.core.paginator import Page as PaginatorPage
+from django.core.paginator import PageNotAnInteger, Paginator
 from django.db import models
-from django.db.models import F
-from django.db.models.query import QuerySet
+from django.db.models import F, QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.utils import timezone
 
 from modelcluster.contrib.taggit import ClusterTaggableManager
-from modelcluster.fields import ParentalKey
+from modelcluster.fields import ParentalKey, create_deferring_foreign_related_manager
 from taggit.models import TaggedItemBase
 from wagtail.admin.edit_handlers import (
     FieldPanel,
@@ -24,7 +25,7 @@ from wagtail.admin.edit_handlers import (
 )
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 from wagtail.core.fields import RichTextField, StreamField
-from wagtail.core.models import Orderable, Page
+from wagtail.core.models import Orderable, Page, PageManager
 from wagtail.search import index
 from wagtail.snippets.edit_handlers import SnippetChooserPanel
 from wagtail.snippets.models import register_snippet
@@ -249,6 +250,7 @@ class RecipeFermentable(ScalableAmountMixin, Orderable, models.Model):
     name = CICharField(max_length=100, blank=False)
     maltster = CICharField(max_length=100, blank=True, default='')
     type = models.CharField(max_length=25, choices=TYPE_CHOICES, blank=False)
+    # TODO: Default these to 0 then can clean up null checking and rigging in self.calculate_mcu()
     color = models.DecimalField(
         max_digits=6,
         decimal_places=3,
@@ -284,15 +286,14 @@ class RecipeFermentable(ScalableAmountMixin, Orderable, models.Model):
         # I should maybe just convert to oz or g on save, then return converted value as desired
         # that would also let me do things like use db sum() methods instead of iterating to get totals
         # Keep it dumb and simple for now
-        if self.amount_units == 'lb':
-            return self.amount
-        elif self.amount_units == 'kg':
+        if self.amount_units == 'kg':
             return self.amount * Decimal('2.20462262')
         elif self.amount_units == 'oz':
             return self.amount / Decimal('16.0')
         elif self.amount_units == 'g':
             # grams to kilograms then kilograms to pounds
             return (self.amount / Decimal('1000')) * Decimal('2.2042262')
+        return self.amount
 
     def calculate_mcu(self, gallons: Decimal) -> Decimal:
         """
@@ -303,7 +304,11 @@ class RecipeFermentable(ScalableAmountMixin, Orderable, models.Model):
         if gallons <= Decimal('0'):
             raise ValueError('gallons must be a positive number greater than 0')
         # Ensuring we have gallons as Decimal
-        return (self.weight_in_pounds() * self.color) / Decimal(gallons)
+        if self.color is None:
+            color = Decimal(0)
+        else:
+            color = self.color
+        return (self.weight_in_pounds() * color) / gallons
 
 
 class RecipeYeast(ScalableAmountMixin, Orderable, models.Model):
@@ -837,7 +842,7 @@ class RecipePage(IdAndSlugUrlMixin, Page):
         index.FilterField("tags"),
     ]
 
-    subpage_types = []
+    subpage_types: list[str] = []
     parent_page_types = [
         'on_tap.RecipeIndexPage',
     ]
@@ -879,7 +884,7 @@ class RecipePage(IdAndSlugUrlMixin, Page):
         srm = Decimal('1.4922') * (total_mcu ** Decimal('0.6859'))
         return int(srm.quantize(Decimal('1')))
 
-    def calculate_grain_pounds(self) -> int:
+    def calculate_grain_pounds(self) -> Decimal:
         """
         Returns the total weight of grains in pounds
         """
@@ -906,14 +911,19 @@ class RecipePage(IdAndSlugUrlMixin, Page):
         # I'm sure I'm doing something unspeakable with that mixin + this here and it's a lot of magic, but it serves my current purpose nicely
         # model_cluster.FakeQuerySet mucks with this stuff, so need to call `get_live_queryset()` first, otherwise this method works once
         # but not on any further calls
-        self.fermentables = (
+        self.fermentables: create_deferring_foreign_related_manager.DeferringRelatedManager = (
             self.fermentables.get_live_queryset().annotate(scaled_amount=F('amount') * scale_factor).all()
         )
-        self.hops = self.hops.get_live_queryset().all().annotate(scaled_amount=F('amount') * scale_factor)
-        self.miscellaneous_ingredients = (
+        self.hops: create_deferring_foreign_related_manager.DeferringRelatedManager = (
+            self.hops.get_live_queryset().all().annotate(scaled_amount=F('amount') * scale_factor)
+        )
+
+        self.miscellaneous_ingredients: create_deferring_foreign_related_manager.DeferringRelatedManager = (
             self.miscellaneous_ingredients.get_live_queryset().all().annotate(scaled_amount=F('amount') * scale_factor)
         )
-        self.yeasts = self.yeasts.get_live_queryset().all().annotate(scaled_amount=F('amount') * scale_factor)
+        self.yeasts: create_deferring_foreign_related_manager.DeferringRelatedManager = (
+            self.yeasts.get_live_queryset().all().annotate(scaled_amount=F('amount') * scale_factor)
+        )
 
     def get_scaled_recipe(self, target_volume: Decimal, unit: VolumeUnit) -> 'RecipePage':
         """
@@ -1072,7 +1082,7 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):
     ]
 
     # log multiple gravity checks?
-    subpage_types = []
+    subpage_types: list[str] = []
     parent_page_types = [
         'on_tap.BatchLogIndexPage',
     ]
@@ -1105,6 +1115,7 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):
         Returns a new RecipePage matching self.recipe_page which has been scaled to the batches target volume.
         """
         if self.uses_scaled_recipe:
+            assert isinstance(self.target_post_boil_volume, Decimal)
             return self.recipe_page.get_scaled_recipe(self.target_post_boil_volume, VolumeUnit(self.volume_units))
         return self.recipe_page
 
@@ -1112,16 +1123,37 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):
         """
         Returns the calculated ABV from gravity readings using the formula (OG-FG) x 131.25 = ABV
         """
+        if self.original_gravity is None or self.final_gravity is None:
+            raise ValueError('original_gravity and final_gravity must be Decimal values')
+
         return (self.original_gravity - self.final_gravity) * Decimal('131.25')
 
     def fermenter_volume_as_gallons(self) -> Decimal:
         """
-        Converts the batch volume to gallons for use in SRM estimation using Morey's equation
+        Converts the batch volume to gallons for use in SRM estimation using Morey's equation.
+
+        If self.volume_in_fermenter is not specified then the entire recipe_page.batch_size is assumed.
         """
-        return convert_volume_to_gallons(volume=self.volume_in_fermenter, unit=VolumeUnit(self.volume_units))
+        # TODO: Raise exception if volume_in_fermenter is None?
+        if self.volume_in_fermenter is not None:
+            volume_in_fermenter: Decimal = self.volume_in_fermenter
+        else:
+            volume_in_fermenter = self.recipe_page.batch_size
+        return convert_volume_to_gallons(volume=volume_in_fermenter, unit=VolumeUnit(self.volume_units))
 
     def post_boil_volume_as_gallons(self) -> Decimal:
-        return convert_volume_to_gallons(volume=self.post_boil_volume, unit=VolumeUnit(self.volume_units))
+        """
+        Converts the post_boil_volume to gallons.
+
+        If self.post_boil_volume is not specified then the entire recipe_page.batch_size is assumed.
+        """
+        # TODO: Raise exception if post_boil_volume is None?
+        if self.post_boil_volume is not None:
+            post_boil_volume: Decimal = self.post_boil_volume
+        else:
+            post_boil_volume = self.recipe_page.batch_size
+
+        return convert_volume_to_gallons(volume=post_boil_volume, unit=VolumeUnit(self.volume_units))
 
     def calculate_color_srm(self) -> int:
         """
@@ -1139,6 +1171,9 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):
         # TODO: Handle an actual batch which has been scaled up or down to a different intended volume
         total_mcu = Decimal('0')
         if self.uses_scaled_recipe:
+            # we know self.target_post_boil_volume is a Decimal here because of the checks in self.uses_scaled_recipe
+            # but mypy doesn't seem to know that
+            assert isinstance(self.target_post_boil_volume, Decimal)
             recipe_page = self.recipe_page.get_scaled_recipe(
                 self.target_post_boil_volume, VolumeUnit(self.volume_units)
             )
@@ -1159,7 +1194,7 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):
             return self.calculate_color_srm()
         return self.recipe_page.calculate_color_srm()
 
-    def get_context(self: 'OnTapPage', request: HttpRequest) -> dict[str, Any]:
+    def get_context(self, request: HttpRequest) -> dict[str, Any]:
         context = super().get_context(request)
         context['calculated_srm'] = self.get_actual_or_expected_srm()
         if self.target_post_boil_volume:
@@ -1240,7 +1275,9 @@ class OnTapPage(Page):
         )
         return batches
 
-    def paginate(self: 'OnTapPage', queryset: 'QuerySet', page_number: int = 1) -> tuple[Paginator, 'QuerySet[Page]']:
+    def paginate(
+        self: 'OnTapPage', queryset: 'QuerySet[BatchLogPage]', page_number: int = 1
+    ) -> tuple[Paginator, PaginatorPage]:
         paginator = Paginator(queryset, 25)
         try:
             page = paginator.page(page_number)
@@ -1265,7 +1302,7 @@ class OnTapPage(Page):
             page_number = 1
 
         if page_number == 1:
-            upcoming_batches = self.get_upcoming_batches()
+            upcoming_batches: QuerySet[BatchLogPage] | None = self.get_upcoming_batches()
         else:
             upcoming_batches = None
         past_batches = self.get_past_batches()
