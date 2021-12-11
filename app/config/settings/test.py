@@ -6,7 +6,7 @@ PASSWORD_HASHERS = [
 ]
 
 # For django_coverage_plugin
-TEMPLATES[0]['OPTIONS']['debug'] = True
+TEMPLATES[0]['OPTIONS']['debug'] = True  # type: ignore
 
 WHITENOISE_AUTOREFRESH = True
 WHITENOISE_USE_FINDERS = True

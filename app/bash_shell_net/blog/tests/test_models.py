@@ -2,7 +2,7 @@ import unittest
 
 from wagtail.tests.utils import WagtailPageTests
 
-from ..models import BlogPage, BlogPageIndex
+from bash_shell_net.blog.models import BlogPage, BlogPageIndex
 
 
 class BlogPageTest(WagtailPageTests):
@@ -11,6 +11,9 @@ class BlogPageTest(WagtailPageTests):
     """
 
     fixtures = ["bash_shell_net/blog/fixtures/test_pages"]
+
+    index_page: BlogPageIndex
+    published_blog_page: BlogPage
 
     @classmethod
     def setUpTestData(cls):
@@ -22,7 +25,7 @@ class BlogPageTest(WagtailPageTests):
         """
         Test creating a BlogPage under the BlogPageIndex via form with expected data creates the page.
         """
-        index_page = BlogPageIndex.objects.live().first()
+        BlogPageIndex.objects.live().first()
 
     def test_get_id_and_slug_url(self):
         """
@@ -30,7 +33,7 @@ class BlogPageTest(WagtailPageTests):
         """
         blog_page = BlogPage.objects.live().first()
         self.assertEqual(
-            f"/blog-index/{blog_page.pk}/{blog_page.slug}/",
+            f'/blog-index/{blog_page.pk}/{blog_page.slug}/',
             blog_page.get_id_and_slug_url(),
         )
 

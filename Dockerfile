@@ -56,7 +56,7 @@ COPY --chown=django ./wait-for-it.sh /django/bash-shell.net/wait-for-it.sh
 # Production image
 FROM python:3.10.0-slim-bullseye AS prod
 LABEL maintainer="Justin Michalicek <jmichalicek@gmail.com>"
-RUN apt-get update && apt-get install -y --no-install-recommends && apt-get autoremove && apt-get clean
+RUN apt-get update && apt-get install -y --no-install-recommends make && apt-get autoremove && apt-get clean
 RUN useradd -ms /bin/bash -d /django django
 # Instead of copying the whole dir, just copy the known needed bits
 COPY --chown=django --from=build /django/bash-shell.net /django/bash-shell.net/

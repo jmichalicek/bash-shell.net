@@ -3,13 +3,22 @@
 coverage
 django_coverage_plugin
 factory-boy
+honcho
+
+# Linting and formatting
 flake8
+flake8-django
 pylint
 black
 isort
 djhtml
-honcho
-mypy
-django-stubs
+
+# Automatic code style upgrades
 pyupgrade
 django-upgrade
+
+# Static analysis
+mypy
+django-stubs
+types-Markdown
+types-certifi

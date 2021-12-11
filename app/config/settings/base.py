@@ -58,6 +58,7 @@ MEDIA_ROOT = os.environ.get('MEDIA_ROOT', os.path.join(PROJECT_ROOT, 'media'))
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
 MEDIA_URL = os.environ.get('MEDIA_URL', '/media/')
+MEDIAFILES_LOCATION = 'uploads'
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
@@ -214,6 +215,7 @@ AWS_QUERYSTRING_AUTH = False
 AWS_S3_CUSTOM_DOMAIN = os.environ.get('AWS_S3_CUSTOM_DOMAIN', None)
 AWS_PRELOAD_METADATA = True
 AWS_DEFAULT_ACL = 'public-read'
+AWS_STORAGE_BUCKET_NAME = 'bash-shell-net'
 
 # markdown extensions
 # Not using markdown anymore... not sure I need this. may still be using it in the projects pages, though.

@@ -1,8 +1,8 @@
 from django import template
 
-register = template.Library()
-
 import structlog
+
+register = template.Library()
 
 logger = structlog.getLogger(__name__)
 

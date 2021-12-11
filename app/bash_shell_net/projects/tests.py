@@ -2,12 +2,14 @@ from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.urls import reverse
 
-from .factories import ActiveProjectFactory, ProjectFactory
-from .models import *
+from bash_shell_net.projects.factories import ActiveProjectFactory, ProjectFactory
+from bash_shell_net.projects.models import HostingService, Language, Project, ProjectNews
 
 
 class HostingServiceTests(TestCase):
     """Test the HostingService model"""
+
+    hosting_service: HostingService
 
     def setUp(self):
         self.hosting_service = HostingService.objects.create(name='Test Code Host')
@@ -23,6 +25,8 @@ class HostingServiceTests(TestCase):
 
 class LanguageTests(TestCase):
     """Test the Language model"""
+
+    language: Language
 
     def setUp(self):
         self.language = Language.objects.create(name='Python')
@@ -41,6 +45,8 @@ class LanguageTests(TestCase):
 
 class ProjectTests(TestCase):
     """Test the Project model"""
+
+    project: Project
 
     def setUp(self):
         self.project = ProjectFactory()
@@ -68,6 +74,8 @@ class ProjectTests(TestCase):
 class ProjectListViewTests(TestCase):
     """Tests the full_project_list view"""
 
+    project: Project
+
     def setUp(self):
         self.project = ActiveProjectFactory()
 
@@ -84,6 +92,8 @@ class ProjectListViewTests(TestCase):
 
 class ProjectViewTest(TestCase):
     """Tests the project() view"""
+
+    project: Project
 
     def setUp(self):
         self.project = ActiveProjectFactory()
@@ -104,6 +114,8 @@ class ProjectViewTest(TestCase):
 
 class ProjectNewsTest(TestCase):
     """Test the ProjectNews model"""
+
+    project: Project
 
     def setUp(self):
         self.project = ProjectFactory()

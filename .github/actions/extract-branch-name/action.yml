@@ -1,0 +1,17 @@
+name: 'Extract Branch Name'
+description: 'Determines the name of the currently checked out git branch'
+outputs:
+  branch:
+    description: "The current branch"
+    value: ${{ steps.extract_branch.outputs.branch }}
+runs:
+  using: "composite"
+  steps:
+    - id: extract_branch
+      run: |
+        if [ -z ${GITHUB_HEAD_REF+x} ] || [ -z "$GITHUB_HEAD_REF" ]; then
+          echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        else
+          echo "##[set-output name=branch;]$(echo ${GITHUB_HEAD_REF#refs/heads/})"
+        fi
+      shell: bash

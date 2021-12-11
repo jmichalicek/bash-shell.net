@@ -1,12 +1,12 @@
 """
 Reusable mixins - possibly should be its own app/package, but leaving in base for now.
 """
-import inspect
-from typing import List, Type
 
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.utils.functional import cached_property
 from django.utils.module_loading import import_string
+
+from wagtail.core.models import Page
 
 
 class IdAndSlugUrlIndexMixin:
@@ -22,8 +22,8 @@ class IdAndSlugUrlIndexMixin:
     # For now, these are tested indirectly because I have written tests for the models which use these mixins.
 
     # I don't like duplicating this on IdAndSlugUrlMixin.  Maybe that can optionally take a IdAndSlugUrlIndexMixin parent class?
-    id_and_slug_url_name = ''
-    id_and_slug_url_class = None
+    id_and_slug_url_name: str = ''
+    id_and_slug_url_class: type | str
 
     def get_id_and_slug_url_name(self) -> str:
         """
@@ -39,9 +39,9 @@ class IdAndSlugUrlIndexMixin:
             id_and_slug_url_class = MyClass
             id_and_slug_url_class = 'myapp.models.MyClass'
         """
-        if inspect.isclass(self.id_and_slug_url_class):
-            return self.id_and_slug_url_class
-        return import_string(self.id_and_slug_url_class)
+        if isinstance(self.id_and_slug_url_class, str):
+            return import_string(self.id_and_slug_url_class)
+        return self.id_and_slug_url_class
 
     def page_by_id_and_slug(self, request, id, slug, *args, **kwargs) -> HttpResponse:
         """
@@ -50,6 +50,7 @@ class IdAndSlugUrlIndexMixin:
         # TODO: Is there a way to include this on IdAndSlugUrlIndexMixin with the decorator? Or maybe I duplicate
         # or call the decorator from within IdAndSlugUrlIndexMixin.__init__()
         # TODO: I am using this pattern in several places, make it more generic/reusable even if not on the mixin
+        assert isinstance(self, Page)
         page = self.get_id_and_slug_url_class().objects.filter(pk=id)
         if not getattr(request, 'is_preview', False):
             page = page.live()
@@ -90,6 +91,7 @@ class IdAndSlugUrlMixin:
         """
         Returns the name of the id_and_slug url route
         """
+        assert isinstance(self, Page)
         if not self.id_and_slug_url_name:
             # parent_page check is because maybe the parent does not use IdAndSlugUrlIndexMixin or implement that itself
             # but only if we do not have a set name on our class so that unnecessary db lookup can be avoided
@@ -104,6 +106,7 @@ class IdAndSlugUrlMixin:
         """
         Returns the url path for on_tap_recipe_by_id_and_slug route
         """
+        assert isinstance(self, Page)
         # lightly modified from https://github.com/wagtail/wagtail/blob/ba6f94def17b8bbc66002cbc7af60ed422658ff1/wagtail/contrib/routable_page/templatetags/wagtailroutablepage_tags.py#L10
         parent = self.get_parent().specific
         base_url = parent.relative_url(self.get_site())
@@ -118,11 +121,13 @@ class IdAndSlugUrlMixin:
 
         Could also override get_url_parts() to return this url instead of the default one.
         """
+        assert isinstance(self, Page)
         url_parts = self.get_url_parts(request=request)
 
         if url_parts is None or url_parts[1] is None and url_parts[2] is None:
             # page is not routable
-            return
+            # TODO: possibly should raise exception
+            return ''
 
         site_id, root_url, page_path = url_parts
 
@@ -132,6 +137,8 @@ class IdAndSlugUrlMixin:
         """
         Returns url for the sitemap using the full id_and_slug_url instead of wagtail default full_url()
         """
+
+        assert isinstance(self, Page)
         return [
             {
                 'location': self.get_full_id_and_slug_url(request=request),
