@@ -1,4 +1,4 @@
-FROM python:3.10.0-bullseye AS dev
+FROM python:3.10.1-bullseye AS dev
 LABEL maintainer="Justin Michalicek <jmichalicek@gmail.com>"
 ENV PYTHONUNBUFFERED=1 DEBIAN_FRONTEND=noninteractive PYTHONFAULTHANDLER=1
 
@@ -54,7 +54,7 @@ RUN rm -rf webpack_assets ./config/static/scss/ ./config/static/js/index.js node
 COPY --chown=django ./wait-for-it.sh /django/bash-shell.net/wait-for-it.sh
 
 # Production image
-FROM python:3.10.0-slim-bullseye AS prod
+FROM python:3.10.1-slim-bullseye AS prod
 LABEL maintainer="Justin Michalicek <jmichalicek@gmail.com>"
 RUN apt-get update && apt-get install -y --no-install-recommends make && apt-get autoremove && apt-get clean
 RUN useradd -ms /bin/bash -d /django django
