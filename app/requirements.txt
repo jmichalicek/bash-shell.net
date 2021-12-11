@@ -317,8 +317,8 @@ urllib3==1.26.7 \
     #   botocore
     #   requests
     #   sentry-sdk
-wagtail @ https://github.com/wagtail/wagtail/archive/main.zip \
-    --hash=sha256:55fa7d30a67ca8c74f15f888d68112e5332e8965a60823b790a5498ab0284167
+wagtail @ https://releases.wagtail.io/nightly/dist/wagtail-2.16.dev20211211-py3-none-any.whl \
+    --hash=sha256:5b86b6133a1e67f671e068e95361dbd760641e1bcd53f9d7e9c3de00dacc67b7
     # via
     #   -r requirements.in
     #   wagtailfontawesome

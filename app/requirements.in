@@ -9,7 +9,7 @@ gunicorn
 pillow
 psycopg2-binary
 #wagtail  # until 2.15.2 is released
-https://github.com/wagtail/wagtail/archive/main.zip
+https://releases.wagtail.io/nightly/dist/wagtail-2.16.dev20211211-py3-none-any.whl
 wagtailfontawesome
 whitenoise
 
