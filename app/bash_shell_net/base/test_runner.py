@@ -7,6 +7,7 @@ import unittest
 from unittest.runner import TextTestResult
 
 from django.test.runner import DiscoverRunner
+import logging
 
 
 class TimeLoggingTestResult(TextTestResult):
@@ -53,3 +54,31 @@ class TimeLoggingTestRunner(unittest.TextTestRunner):
 
 class TimedLoggingDiscoverRunner(DiscoverRunner):
     test_runner = TimeLoggingTestRunner
+
+    @classmethod
+    def add_arguments(self, parser):
+        super().add_arguments(parser)
+        parser.add_argument(
+            "--enable-logging",
+            action="store_true",
+            default=False,
+            help="Enables the python logger",
+        )
+
+    def __init__(self, enable_logging: bool = False, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.enable_logging = enable_logging
+
+    def setup_databases(self, **kwargs):
+        # Force to always delete the database if it exists
+        interactive = self.interactive
+        self.interactive = False
+        try:
+            return super().setup_databases(**kwargs)
+        finally:
+            self.interactive = interactive
+
+    def run_tests(self, *args, **kwargs):
+        if not self.enable_logging:
+            logging.disable(level=logging.CRITICAL)
+        return super().run_tests(*args, **kwargs)

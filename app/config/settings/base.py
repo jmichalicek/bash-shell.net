@@ -192,6 +192,7 @@ REDIS_HOST = os.environ.get('REDIS_HOST', '')
 DATABASES = {
     'default': dj_database_url.config(default='sqlite:////{}'.format(os.path.join(PROJECT_ROOT, 'bs_net.sqlite'))),
 }
+DATABASES['default'].update( {'TEST': {'SERIALIZE': False}} )
 
 CACHES = {
     # 'default': {'BACKEND': 'redis_cache.RedisCache', 'LOCATION': '%s:6379' % REDIS_HOST, 'OPTIONS': {'DB': 2,},},
