@@ -1,4 +1,4 @@
-from .local import *
+from .local import *  # noqa
 
 # faster password hashing in tests.
 PASSWORD_HASHERS = [

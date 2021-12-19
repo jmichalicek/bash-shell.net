@@ -329,3 +329,5 @@ CSP_FONT_SRC = env('CSP_FONT_SRC', list, ["'self'"])
 CSP_STYLE_SRC_ATTR = env('CSP_STYLE_SRC_ATTR', list, ["'self'"])
 CSP_FRAME_SRC = env('CSP_FRAME_SRC', list, ["'self'"])
 CSP_INCLUDE_NONCE_IN = ['script-src', 'style-src']
+
+TEST_RUNNER = 'bash_shell_net.base.test_runner.TimedLoggingDiscoverRunner'
