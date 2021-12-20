@@ -14,3 +14,4 @@ WHITENOISE_MANIFEST_STRICT = False
 # The above should have made it so that the whitenoise stuff is not used in tests and I do not need
 # to run collectstatic to run tests, but I seem to be missing something still.
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+DEFAULT_FILE_STORAGE = "inmemorystorage.InMemoryStorage"
