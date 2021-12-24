@@ -1,6 +1,7 @@
 import copy
 import unittest
 from decimal import Decimal
+from urllib.parse import urlencode
 
 from django.test import RequestFactory, TestCase
 
@@ -470,7 +471,7 @@ class BatchLogPageTest(WagtailPageTests):
         # completely random, intermittent failures due to incorrect db data
         self.recipe_page.refresh_from_db()
         self.batch_log_page.refresh_from_db()
-    
+
     def test_get_request(self):
         """
         Test a GET request to the default url and validate rendered html
@@ -510,9 +511,7 @@ class BatchLogPageTest(WagtailPageTests):
           </div>
         </div>
         '''
-        print(r.content.decode('utf-8'))
         self.assertInHTML(expected_basic_details_html, r.content.decode('utf-8'))
-
 
     def test_can_create_page(self):
         """
@@ -748,6 +747,30 @@ class BatchLogPageTest(WagtailPageTests):
                 context = self.batch_log_page.get_context(request=request)
                 self.assertEqual(self.batch_log_page.get_actual_or_expected_srm(), context['calculated_srm'])
                 self.assertEqual(self.batch_log_page.recipe_page, context['recipe_page'])
+
+    def test_recipe_url(self):
+        """
+        Test that the recipe_url property returns the url for the recipe page without scaling querystring parameters.
+        """
+        self.assertEqual(self.batch_log_page.recipe_page.id_and_slug_url, self.batch_log_page.recipe_url)
+
+    def test_recipe_url_scaled(self):
+        """
+        Test that the recipe url for a batch which has been scaled differently from the original recipe
+        contains scaling querystring parameters.
+        """
+        self.batch_log_page.target_post_boil_volume = self.batch_log_page.recipe_page.batch_size * 2
+        self.batch_log_page.save()
+
+        expected_url = self.batch_log_page.recipe_page.id_and_slug_url
+        query_params = urlencode(
+            {
+                'scale_volume': self.batch_log_page.target_post_boil_volume,
+                'scale_unit': self.batch_log_page.volume_units,
+            }
+        )
+        expected_url = f'{expected_url}?{query_params}'
+        self.assertEqual(expected_url, self.batch_log_page.recipe_url)
 
 
 class RecipeFermentableTest(TestCase):

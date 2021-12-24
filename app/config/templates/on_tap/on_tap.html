@@ -17,7 +17,7 @@
         <div class="col-md-4 col-12 mt-3 mt-md-0 pr-0">
           <div class="card currently-on-tap">
             <div class="card-header text-center">
-              <div class="w-100"><a href="{{ batch.recipe_page.id_and_slug_url }}{% if batch.uses_scaled_recipe %}?scale_volume={{ batch.target_post_boil_volume }}&amp;scale_unit={{ batch.volume_units }}{% endif %}">{{ batch.recipe_page.name }}</a></div>
+              <div class="w-100"><a href="{{ batch.recipe_url }}">{{ batch.recipe_page.name }}</a></div>
               <small>{{ batch.recipe_page.style.name }}{% if batch.recipe_page.style.bjcp_category %} ({{ batch.recipe_page.style.bjcp_category }}){% endif %}</small>
             </div>
             <div class="card-body">
@@ -56,7 +56,7 @@
           {% for batch in upcoming_batches %}
             <tr>
               <td>
-                <a href="{{ batch.recipe_page.id_and_slug_url }}{% if batch.uses_scaled_recipe %}?scale_volume={{ batch.target_post_boil_volume }}&amp;scale_unit={{ batch.volume_units }}{% endif %}">{{ batch.recipe_page.name }}</a>
+                <a href="{{ batch.recipe_url }}">{{ batch.recipe_page.name }}</a>
                 {% if batch.status != 'planned' %} (<a href="{{ batch.id_and_slug_url }}">Log</a>){% endif %}
               </td>
               <td>{{ batch.recipe_page.style }}</td>
@@ -83,7 +83,7 @@
       <tbody>
         {% for batch in past_batches %}
           <tr>
-            <td><a href="{{ batch.recipe_page.id_and_slug_url }}{% if batch.uses_scaled_recipe %}?scale_volume={{ batch.target_post_boil_volume }}&amp;scale_unit={{ batch.volume_units }}{% endif %}">{{ batch.recipe_page.name }}</a> (<a href="{{ batch.id_and_slug_url }}">Log</a>)</td><td>{{ batch.recipe_page.style }}</td><td>{{ batch.get_status_display }}</td><td>{{ batch.brewed_date }}</td><td>{{ batch.packaged_date|default:"" }}</td><td>{{ batch.on_tap_date|default:"" }}</td>
+            <td><a href="{{ batch.recipe_url }}">{{ batch.recipe_page.name }}</a> (<a href="{{ batch.id_and_slug_url }}">Log</a>)</td><td>{{ batch.recipe_page.style }}</td><td>{{ batch.get_status_display }}</td><td>{{ batch.brewed_date }}</td><td>{{ batch.packaged_date|default:"" }}</td><td>{{ batch.on_tap_date|default:"" }}</td>
           </tr>
         {% endfor %}
       </tbody>
