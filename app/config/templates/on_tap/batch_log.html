@@ -48,7 +48,7 @@
               <li>Brewed: {{ page.brewed_date|default:"N/A" }}</li>
               <li>Packaged: {{ page.packaged_date|default:"N/A" }}</li>
               <li>On Tap: {{ page.on_tap_date|default:"N/A" }}</li>
-              <li>Recipe: <a href="{{ recipe_page.id_and_slug_url }}{% if page.uses_scaled_recipe %}?scale_volume={{ page.target_post_boil_volume }}&amp;scale_units={{ page.volume_units }}{% endif %}">{{ recipe_page.name }}</a></li>
+              <li>Recipe: <a href="{{ page.recipe_url }}">{{ recipe_page.name }}</a></li>
             </ul>
           </div>
         </div>

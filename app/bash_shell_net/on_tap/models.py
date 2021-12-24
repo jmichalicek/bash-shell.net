@@ -2,6 +2,7 @@ import copy
 from decimal import Decimal
 from enum import Enum
 from typing import Any
+from urllib.parse import urlencode
 
 from django.contrib.postgres.fields import CICharField
 from django.core.paginator import EmptyPage
@@ -11,6 +12,7 @@ from django.db import models
 from django.db.models import F, QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.utils import timezone
+from django.utils.safestring import mark_safe
 
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from modelcluster.fields import ParentalKey, create_deferring_foreign_related_manager
@@ -1109,6 +1111,14 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):
                 or self.volume_units != self.recipe_page.volume_units
             )
         )
+
+    @property
+    def recipe_url(self) -> str:
+        url = self.recipe_page.id_and_slug_url
+        if self.uses_scaled_recipe:
+            query_params = urlencode({'scale_volume': self.target_post_boil_volume, 'scale_unit': self.volume_units})
+            url = f'{url}?{query_params}'
+        return mark_safe(url)
 
     def recipe_scaled_to_target_volume(self) -> RecipePage:
         """

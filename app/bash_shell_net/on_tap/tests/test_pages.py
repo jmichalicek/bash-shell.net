@@ -1,6 +1,7 @@
 import copy
 import unittest
 from decimal import Decimal
+from urllib.parse import urlencode
 
 from django.test import RequestFactory, TestCase
 
@@ -16,6 +17,8 @@ from bash_shell_net.on_tap.models import (
     RecipePage,
     VolumeUnit,
 )
+
+DATE_FORMAT = '%B %d, %Y'
 
 # TODO: These tests are a bit slow, I suspect due to creating pages and then publishing them separately
 # rather than just creating already published pages. Will sort this out when I implement factory_boy
@@ -130,6 +133,7 @@ class OnTapPageTest(WagtailPageTests):
             on_tap_date='2020-07-25',
             status='complete',
         )
+
         planned_batch = self._make_batch_log_page(slug='planned-batch', batch_index_page=batch_index, status='planned')
         fermenting_batch = self._make_batch_log_page(
             slug='fermenting-batch',
@@ -161,6 +165,88 @@ class OnTapPageTest(WagtailPageTests):
         self.assertEqual(list(r.context['past_batches']), [previous_batch])
         self.assertTrue('page_obj' in r.context)
         self.assertTrue('paginator' in r.context)
+        # TODO: Test the whole block of html for this which would allow verifying that it's in the right place?
+        expected_on_tap_batches = f'''
+            <div class="col-md-4 col-12 mt-3 mt-md-0 pr-0">
+                <div class="card currently-on-tap">
+                    <div class="card-header text-center">
+                        <div class="w-100"><a href="{on_tap_batch.recipe_page.id_and_slug_url}">{on_tap_batch.recipe_page.name}</a></div>
+                        <small>{on_tap_batch.recipe_page.style.name} ({on_tap_batch.recipe_page.style.bjcp_category()})</small>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">{on_tap_batch.recipe_page.short_description}</p>
+                        <p class="card-text">On Tap {on_tap_batch.on_tap_date.strftime('%B %d, %Y')}</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{on_tap_batch.id_and_slug_url}" class="card-link">Details</a>
+                    </div>
+                </div>
+            </div>
+        '''
+        self.assertInHTML(expected_on_tap_batches, r.content.decode('utf-8'))
+
+        # now test the html with a scaled recipe
+        for b in [on_tap_batch, fermenting_batch, planned_batch, self.batch_log_page]:
+            b.target_post_boil_volume = b.recipe_page.batch_size * 2
+            b.save_revision()
+            publish_page(b)
+            b.refresh_from_db()
+        r = self.client.get(page.url)
+        expected_on_tap_batches = f'''
+            <div class="col-md-4 col-12 mt-3 mt-md-0 pr-0">
+                <div class="card currently-on-tap">
+                    <div class="card-header text-center">
+                        <div class="w-100"><a href="{on_tap_batch.recipe_page.id_and_slug_url}?scale_volume={on_tap_batch.target_post_boil_volume}&scale_unit={on_tap_batch.volume_units}">{on_tap_batch.recipe_page.name}</a></div>
+                        <small>{on_tap_batch.recipe_page.style.name} ({on_tap_batch.recipe_page.style.bjcp_category()})</small>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">{on_tap_batch.recipe_page.short_description}</p>
+                        <p class="card-text">On Tap {on_tap_batch.on_tap_date.strftime(DATE_FORMAT)}</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{on_tap_batch.id_and_slug_url}" class="card-link">Details</a>
+                    </div>
+                </div>
+            </div>
+        '''
+
+        expected_coming_soon_batches = f'''
+        <tbody>
+            <tr>
+              <td>
+                <a href="{fermenting_batch.recipe_page.id_and_slug_url}?scale_volume={fermenting_batch.target_post_boil_volume}&amp;scale_unit={fermenting_batch.volume_units}">{fermenting_batch.recipe_page.name}</a>
+                (<a href="{fermenting_batch.id_and_slug_url}">Log</a>)
+              </td>
+              <td>{fermenting_batch.recipe_page.style}</td>
+              <td>{fermenting_batch.get_status_display()}</td>
+              <td>{fermenting_batch.brewed_date.strftime(DATE_FORMAT)}</td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>
+                <a href="{planned_batch.recipe_page.id_and_slug_url}?scale_volume={planned_batch.target_post_boil_volume}&amp;scale_unit={planned_batch.volume_units}">{planned_batch.recipe_page.name}</a>
+              </td>
+              <td>{planned_batch.recipe_page.style}</td>
+              <td>{planned_batch.get_status_display()}</td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>
+                <a href="{self.batch_log_page.recipe_page.id_and_slug_url}?scale_volume={self.batch_log_page.target_post_boil_volume}&amp;scale_unit={self.batch_log_page.volume_units}">{fermenting_batch.recipe_page.name}</a>
+              </td>
+              <td>{self.batch_log_page.recipe_page.style}</td>
+              <td>{self.batch_log_page.get_status_display()}</td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+        </tbody>
+        '''
+        self.assertInHTML(expected_coming_soon_batches, r.content.decode('utf-8'))
+        r = self.client.get(page.url)
 
 
 class RecipePageTest(WagtailPageTests):
@@ -375,6 +461,8 @@ class BatchLogPageTest(WagtailPageTests):
         cls.recipe_page = RecipePage.objects.first()
         publish_page(cls.recipe_page)
         cls.batch_log_page = BatchLogPage.objects.first()
+        cls.batch_log_page.live = True
+        cls.batch_log_page.save()
 
     def setUp(self):
         super().setUp()
@@ -383,6 +471,47 @@ class BatchLogPageTest(WagtailPageTests):
         # completely random, intermittent failures due to incorrect db data
         self.recipe_page.refresh_from_db()
         self.batch_log_page.refresh_from_db()
+
+    def test_get_request(self):
+        """
+        Test a GET request to the default url and validate rendered html
+        """
+
+        # unscaled
+        r = self.client.get(self.batch_log_page.full_url)
+        self.assertEqual(200, r.status_code)
+        # todo: tests for brewed, packaged, on tap, etc to validate those dates are in correctly
+        expected_basic_details_html = f'''
+        <div class="card row">
+          <div class="card-body">
+            <ul class="list-unstyled">
+              <li>Brewed: N/A</li>
+              <li>Packaged: N/A</li>
+              <li>On Tap: N/A</li>
+              <li>Recipe: <a href="{self.batch_log_page.recipe_page.id_and_slug_url}">{self.batch_log_page.recipe_page.name}</a></li>
+            </ul>
+          </div>
+        </div>
+        '''
+        self.assertInHTML(expected_basic_details_html, r.content.decode('utf-8'))
+
+        # test scaled
+        self.batch_log_page.target_post_boil_volume = self.batch_log_page.recipe_page.batch_size * 2
+        self.batch_log_page.save()
+        r = self.client.get(self.batch_log_page.full_url)
+        expected_basic_details_html = f'''
+        <div class="card row">
+          <div class="card-body">
+            <ul class="list-unstyled">
+              <li>Brewed: N/A</li>
+              <li>Packaged: N/A</li>
+              <li>On Tap: N/A</li>
+              <li>Recipe: <a href="{self.batch_log_page.recipe_page.id_and_slug_url}?scale_volume={self.batch_log_page.target_post_boil_volume}&scale_unit={self.batch_log_page.volume_units}">{self.batch_log_page.recipe_page.name}</a></li>
+            </ul>
+          </div>
+        </div>
+        '''
+        self.assertInHTML(expected_basic_details_html, r.content.decode('utf-8'))
 
     def test_can_create_page(self):
         """
@@ -618,6 +747,30 @@ class BatchLogPageTest(WagtailPageTests):
                 context = self.batch_log_page.get_context(request=request)
                 self.assertEqual(self.batch_log_page.get_actual_or_expected_srm(), context['calculated_srm'])
                 self.assertEqual(self.batch_log_page.recipe_page, context['recipe_page'])
+
+    def test_recipe_url(self):
+        """
+        Test that the recipe_url property returns the url for the recipe page without scaling querystring parameters.
+        """
+        self.assertEqual(self.batch_log_page.recipe_page.id_and_slug_url, self.batch_log_page.recipe_url)
+
+    def test_recipe_url_scaled(self):
+        """
+        Test that the recipe url for a batch which has been scaled differently from the original recipe
+        contains scaling querystring parameters.
+        """
+        self.batch_log_page.target_post_boil_volume = self.batch_log_page.recipe_page.batch_size * 2
+        self.batch_log_page.save()
+
+        expected_url = self.batch_log_page.recipe_page.id_and_slug_url
+        query_params = urlencode(
+            {
+                'scale_volume': self.batch_log_page.target_post_boil_volume,
+                'scale_unit': self.batch_log_page.volume_units,
+            }
+        )
+        expected_url = f'{expected_url}?{query_params}'
+        self.assertEqual(expected_url, self.batch_log_page.recipe_url)
 
 
 class RecipeFermentableTest(TestCase):
