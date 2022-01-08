@@ -26,8 +26,10 @@ if __name__ == "__main__":
 
     if running_tests:
         cov.stop()
+        cov.combine()
         cov.save()
         covered = cov.report()
+        cov.erase()
         # Keep bumping this up as I add more tests
         print('Actual coverage percent:', covered)
         if covered < 75.5:  # Keep this up to date with actual coverage as it increases
