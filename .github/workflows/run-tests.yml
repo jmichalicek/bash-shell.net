@@ -53,7 +53,7 @@ jobs:
       uses: ./.github/actions/setup-docker-image
     - name: Tests
       shell: bash
-      run: docker compose --profile=ci run --service-ports --rm django-ci python manage.py test
+      run: docker compose --profile=ci run --service-ports --rm django-ci python manage.py test --parallel
   flake8:
     name: Flake8
     needs: build_image
