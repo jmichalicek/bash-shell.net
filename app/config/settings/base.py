@@ -192,6 +192,7 @@ REDIS_HOST = os.environ.get('REDIS_HOST', '')
 DATABASES = {
     'default': dj_database_url.config(default='sqlite:////{}'.format(os.path.join(PROJECT_ROOT, 'bs_net.sqlite'))),
 }
+DATABASES['default'].update( {'TEST': {'SERIALIZE': False}} )
 
 CACHES = {
     # 'default': {'BACKEND': 'redis_cache.RedisCache', 'LOCATION': '%s:6379' % REDIS_HOST, 'OPTIONS': {'DB': 2,},},
@@ -329,3 +330,5 @@ CSP_FONT_SRC = env('CSP_FONT_SRC', list, ["'self'"])
 CSP_STYLE_SRC_ATTR = env('CSP_STYLE_SRC_ATTR', list, ["'self'"])
 CSP_FRAME_SRC = env('CSP_FRAME_SRC', list, ["'self'"])
 CSP_INCLUDE_NONCE_IN = ['script-src', 'style-src']
+
+TEST_RUNNER = 'bash_shell_net.base.test_runner.TimedLoggingDiscoverRunner'

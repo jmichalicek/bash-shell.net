@@ -372,26 +372,28 @@ class RecipePageTest(WagtailPageTests):
         """
         Test that recipe_page.scale_to_volume() scales all measurements for itself up to the specified volume
         """
-        original_recipe = copy.copy(self.recipe_page)
-        self.recipe_page.scale_to_volume(
-            target_volume=self.recipe_page.batch_size * Decimal('2.00'), unit=VolumeUnit(self.recipe_page.volume_units)
+        # need to modify the copy here. It seems the self.recipe_page.refresh_from_db() does not reset
+        # the relationships/managers for the reverse foreign keys
+        scaled_recipe = copy.copy(self.recipe_page)
+        scaled_recipe.scale_to_volume(
+            target_volume=scaled_recipe.batch_size * Decimal('2.00'), unit=VolumeUnit(scaled_recipe.volume_units)
         )
-        self.assertEqual(original_recipe.batch_size * 2, self.recipe_page.batch_size)
+        self.assertEqual(self.recipe_page.batch_size * 2, scaled_recipe.batch_size)
         self.assertEqual(
-            [{f.pk: f.amount * 2} for f in original_recipe.fermentables.all()],
-            [{f.pk: f.amount} for f in self.recipe_page.fermentables.all()],
-        )
-        self.assertEqual(
-            [{f.pk: f.amount * 2} for f in original_recipe.hops.all()],
-            [{f.pk: f.amount} for f in self.recipe_page.hops.all()],
+            [{f.pk: f.amount * 2} for f in self.recipe_page.fermentables.all()],
+            [{f.pk: f.amount} for f in scaled_recipe.fermentables.all()],
         )
         self.assertEqual(
-            [{f.pk: f.amount * 2} for f in original_recipe.miscellaneous_ingredients.all()],
-            [{f.pk: f.amount} for f in self.recipe_page.miscellaneous_ingredients.all()],
+            [{f.pk: f.amount * 2} for f in self.recipe_page.hops.all()],
+            [{f.pk: f.amount} for f in scaled_recipe.hops.all()],
         )
         self.assertEqual(
-            [{f.pk: f.amount * 2} for f in original_recipe.yeasts.all()],
-            [{f.pk: f.amount} for f in self.recipe_page.yeasts.all()],
+            [{f.pk: f.amount * 2} for f in self.recipe_page.miscellaneous_ingredients.all()],
+            [{f.pk: f.amount} for f in scaled_recipe.miscellaneous_ingredients.all()],
+        )
+        self.assertEqual(
+            [{f.pk: f.amount * 2} for f in self.recipe_page.yeasts.all()],
+            [{f.pk: f.amount} for f in scaled_recipe.yeasts.all()],
         )
 
     def test_get_scaled_recipe(self):
@@ -471,6 +473,28 @@ class BatchLogPageTest(WagtailPageTests):
         # completely random, intermittent failures due to incorrect db data
         self.recipe_page.refresh_from_db()
         self.batch_log_page.refresh_from_db()
+        # This test is very strange and randomly fails with the following exception.
+        # The actual test which fails from it is random.
+        """
+        Traceback (most recent call last):
+            File "/django/bash-shell.net/app/bash_shell_net/on_tap/tests/test_pages.py", line 475, in setUp
+                self.batch_log_page.refresh_from_db()
+            File "/django/bash-shell.net/app/.venv/lib/python3.10/site-packages/django/db/models/base.py", line 650, in refresh_from_db
+                db_instance = db_instance_qs.get()
+            File "/django/bash-shell.net/app/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 431, in get
+                num = len(clone)
+            File "/django/bash-shell.net/app/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 262, in __len__
+                self._fetch_all()
+            File "/django/bash-shell.net/app/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 1324, in _fetch_all
+                self._result_cache = list(self._iterable_class(self))
+            File "/django/bash-shell.net/app/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 47, in __iter__
+                db = queryset.db
+            File "/django/bash-shell.net/app/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 1254, in db
+                return self._db or router.db_for_read(self.model, **self._hints)
+            File "/django/bash-shell.net/app/.venv/lib/python3.10/site-packages/django/db/utils.py", line 250, in _route_db
+                if instance is not None and instance._state.db:
+            AttributeError: 'StreamValue' object has no attribute 'db'
+        """
 
     def test_get_request(self):
         """

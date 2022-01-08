@@ -4,6 +4,7 @@ coverage
 django_coverage_plugin
 factory-boy
 honcho
+dj-inmemorystorage
 
 # Linting and formatting
 flake8
