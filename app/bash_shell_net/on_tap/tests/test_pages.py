@@ -381,7 +381,7 @@ class RecipePageTest(WagtailPageTests):
         self.assertEqual(self.recipe_page.batch_size * 2, scaled_recipe.batch_size)
         self.assertEqual(
             [{f.pk: f.amount * 2} for f in self.recipe_page.fermentables.all()],
-            [{f.pk: f.amount } for f in scaled_recipe.fermentables.all()],
+            [{f.pk: f.amount} for f in scaled_recipe.fermentables.all()],
         )
         self.assertEqual(
             [{f.pk: f.amount * 2} for f in self.recipe_page.hops.all()],

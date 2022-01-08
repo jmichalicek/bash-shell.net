@@ -2,12 +2,12 @@
 A test runner with slow tests logged. Originally from https://hakibenita.com/timing-tests-in-python-for-fun-and-profit
 and updated to work with Django's DiscoverRunner
 """
+import logging
 import time
 import unittest
 from unittest.runner import TextTestResult
 
 from django.test.runner import DiscoverRunner
-import logging
 
 
 class TimeLoggingTestResult(TextTestResult):
