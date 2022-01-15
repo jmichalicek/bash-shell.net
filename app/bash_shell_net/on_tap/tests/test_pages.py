@@ -9,6 +9,14 @@ from wagtail.core.models import Page
 from wagtail.tests.utils import WagtailPageTests
 from wagtail.tests.utils.form_data import inline_formset, nested_form_data, rich_text, streamfield
 
+from bash_shell_net.base.test_utils import add_wagtail_factory_page
+from bash_shell_net.on_tap.factories import (
+    BatchLogIndexPageFactory,
+    BeverageStyleFactory,
+    OnTapPageFactory,
+    RecipeIndexPageFactory,
+    RecipePageFactory,
+)
 from bash_shell_net.on_tap.models import (
     BatchLogIndexPage,
     BatchLogPage,
@@ -47,23 +55,28 @@ class PageTreeTest(WagtailPageTests):
 
 class OnTapPageTest(WagtailPageTests):
     # TODO: factories, not fixtures
-    fixtures = ['bash_shell_net/on_tap/fixtures/test_pages']
+    # fixtures = ['bash_shell_net/on_tap/fixtures/test_pages']
 
     @classmethod
     def setUpTestData(cls):
-        cls.on_tap_page = OnTapPage.objects.first()
-        cls.batch_log_index_page = BatchLogIndexPage.objects.first()
-        cls.batch_log_page = BatchLogPage.objects.first()
-        cls.recipe_index_page = RecipeIndexPage.objects.first()
-        cls.recipe_page = RecipePage.objects.first()
+        super().setUpTestData()
+        # temporary until I work out a good way around needing to use .build() for the actual wagtail pages
+        # and the order things happen in regards to saving vs validating by wagtail
+        beverage_style = BeverageStyleFactory()
+        cls.on_tap_page: OnTapPage = add_wagtail_factory_page(OnTapPageFactory)
+        cls.recipe_index_page = add_wagtail_factory_page(RecipeIndexPageFactory, parent_page=cls.on_tap_page)
+        cls.recipe_page = add_wagtail_factory_page(
+            RecipePageFactory, parent_page=cls.recipe_index_page, style=beverage_style
+        )
+        cls.batch_log_index_page = add_wagtail_factory_page(BatchLogIndexPageFactory, parent_page=cls.on_tap_page)
 
     def test_get_request_no_batches(self):
         """
         Test an HTTP GET request to a published OnTapPage with no published batches.
         """
-        page = OnTapPage.objects.first()
-        publish_page(page)
-        page.refresh_from_db()
+        page = self.on_tap_page
+        # self.batch_log_page.live = False
+        # self.batch_log_page.save()
         r = self.client.get(page.url)
         self.assertEqual(r.status_code, 200)
         self.assertQuerysetEqual(r.context['currently_on_tap'], [])
