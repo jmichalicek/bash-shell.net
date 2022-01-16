@@ -58,6 +58,7 @@ class BatchLogIndexPageFactory(wagtail_factories.PageFactory):
 class BatchLogPageFactory(wagtail_factories.PageFactory):
 
     title = factory.Sequence(lambda n: 'Batch %n')
+    recipe_page = factory.SubFactory('bash_shell_net.on_tap.factories.RecipePageFactory')
 
     class Meta:
         model = BatchLogPage
@@ -77,7 +78,6 @@ class RecipePageFactory(wagtail_factories.PageFactory):
     # TODO: get rid of name
     name = factory.Sequence(lambda n: 'Recipe %n')
     recipe_type = "all_grain"
-    # this does not quite play correctly because of the order things are created and validated by wagtail
     style = factory.SubFactory(BeverageStyleFactory)
     brewer = "Justin Michalicek"
     assistant_brewer = ""
@@ -93,3 +93,16 @@ class RecipePageFactory(wagtail_factories.PageFactory):
 
     class Meta:
         model = RecipePage
+
+    @classmethod
+    def _build(cls, model_class, *args, **kwargs) -> RecipePage:
+        # factory.post_generation AND factory.SubFactory both seem to save the BeverageStyle after wagtail
+        # has done its model validation, resulting in exceptions being raised due to missing the style
+        if not (beverage_style := kwargs.get('style')):
+            beverage_style = BeverageStyleFactory.build()
+            kwargs.update({'style': beverage_style})
+
+        if not beverage_style.pk:
+            beverage_style.save()
+
+        return super()._build(model_class, *args, **kwargs)

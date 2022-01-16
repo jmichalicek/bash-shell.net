@@ -12,7 +12,7 @@ from wagtail.tests.utils.form_data import inline_formset, nested_form_data, rich
 from bash_shell_net.base.test_utils import add_wagtail_factory_page
 from bash_shell_net.on_tap.factories import (
     BatchLogIndexPageFactory,
-    BeverageStyleFactory,
+    BatchLogPageFactory,
     OnTapPageFactory,
     RecipeIndexPageFactory,
     RecipePageFactory,
@@ -54,30 +54,19 @@ class PageTreeTest(WagtailPageTests):
 
 
 class OnTapPageTest(WagtailPageTests):
-    # TODO: factories, not fixtures
-    # fixtures = ['bash_shell_net/on_tap/fixtures/test_pages']
-
     @classmethod
     def setUpTestData(cls):
         super().setUpTestData()
-        # temporary until I work out a good way around needing to use .build() for the actual wagtail pages
-        # and the order things happen in regards to saving vs validating by wagtail
-        beverage_style = BeverageStyleFactory()
         cls.on_tap_page: OnTapPage = add_wagtail_factory_page(OnTapPageFactory)
         cls.recipe_index_page = add_wagtail_factory_page(RecipeIndexPageFactory, parent_page=cls.on_tap_page)
-        cls.recipe_page = add_wagtail_factory_page(
-            RecipePageFactory, parent_page=cls.recipe_index_page, style=beverage_style
-        )
+        cls.recipe_page = add_wagtail_factory_page(RecipePageFactory, parent_page=cls.recipe_index_page)
         cls.batch_log_index_page = add_wagtail_factory_page(BatchLogIndexPageFactory, parent_page=cls.on_tap_page)
 
     def test_get_request_no_batches(self):
         """
         Test an HTTP GET request to a published OnTapPage with no published batches.
         """
-        page = self.on_tap_page
-        # self.batch_log_page.live = False
-        # self.batch_log_page.save()
-        r = self.client.get(page.url)
+        r = self.client.get(self.on_tap_page.url)
         self.assertEqual(r.status_code, 200)
         self.assertQuerysetEqual(r.context['currently_on_tap'], [])
         self.assertQuerysetEqual(r.context['upcoming_batches'], [])
@@ -85,181 +74,164 @@ class OnTapPageTest(WagtailPageTests):
         self.assertTrue('page_obj' in r.context)
         self.assertTrue('paginator' in r.context)
 
-    def _make_batch_log_page(self, slug: str, batch_index_page: BatchLogIndexPage = None, **kwargs) -> BatchLogPage:
-        # FACTORIES!!!!!
-        status: str = kwargs.get('status', 'planned')
-        brewed_date: str = kwargs.get('brewed_date', '')
-        packaged_date: str = kwargs.get('packaged_date', '')
-        on_tap_date: str = kwargs.get('on_tap_date', '')
-        off_tap_date: str = kwargs.get('off_tap_date', '')
-        recipe_page: RecipePage = kwargs.get('recipe_page', RecipePage.objects.live().first())
-
-        form_data = nested_form_data(
-            {
-                'title': slug,
-                'slug': slug,
-                'seo_title': '',
-                'search_description': '',
-                'go_live_at': '',
-                'expire_at': '',
-                'name': 'Brewing The Test Case Recipe',
-                'recipe_page': recipe_page.pk,
-                'brewed_date': brewed_date,
-                'packaged_date': packaged_date,
-                'on_tap_date': on_tap_date,
-                'off_tap_date': off_tap_date,
-                'original_gravity': 1.050,
-                'final_gravity': 1.016,
-                'status': status,
-                'body': streamfield(
-                    [
-                        (
-                            "paragraph",
-                            rich_text("<p>This is a test recipe.</p>"),
-                        )
-                    ]
-                ),
-                'volume_units': 'gal',
-            },
-        )
-        if not batch_index_page:
-            batch_index_page = self.batch_log_index_page
-        self.assertCanCreate(batch_index_page, BatchLogPage, form_data)
-        page = BatchLogPage.objects.get(slug=slug)
-        return page
-
     def test_get_request_with_batches(self):
         """
         Test an HTTP GET request to a published OnTapPage with no published batches.
         """
-        for p in RecipePage.objects.all():
-            publish_page(p)
 
-        batch_index = self.batch_log_index_page
-        publish_page(batch_index)
-
-        on_tap_batch = self._make_batch_log_page(
+        on_tap_batch = add_wagtail_factory_page(
+            BatchLogPageFactory,
+            parent_page=self.batch_log_index_page,
             slug='on-tap-batch',
-            batch_index_page=batch_index,
             brewed_date='2020-07-10',
             packaged_date='2020-07-25',
             on_tap_date='2020-07-25',
             status='complete',
+            recipe_page=self.recipe_page,
         )
 
-        planned_batch = self._make_batch_log_page(slug='planned-batch', batch_index_page=batch_index, status='planned')
-        fermenting_batch = self._make_batch_log_page(
+        planned_batch = add_wagtail_factory_page(
+            BatchLogPageFactory,
+            parent_page=self.batch_log_index_page,
+            slug='planned-batch',
+            status='planned',
+            recipe_page=self.recipe_page,
+        )
+
+        fermenting_batch = add_wagtail_factory_page(
+            BatchLogPageFactory,
+            parent_page=self.batch_log_index_page,
             slug='fermenting-batch',
-            batch_index_page=batch_index,
             status='fermenting',
             brewed_date='2020-06-10',
+            recipe_page=self.recipe_page,
         )
-        previous_batch = self._make_batch_log_page(
-            slug='off-tap-batch',
-            batch_index_page=batch_index,
+
+        previous_batch = add_wagtail_factory_page(
+            BatchLogPageFactory,
+            parent_page=self.batch_log_index_page,
             brewed_date='2020-06-10',
             packaged_date='2020-06-25',
             on_tap_date='2020-06-25',
             off_tap_date='2020-07-25',
             status='complete',
+            recipe_page=self.recipe_page,
         )
 
-        for p in BatchLogPage.objects.all():
-            publish_page(p)
-
         page = self.on_tap_page
-        publish_page(page)
-        page.refresh_from_db()
 
         r = self.client.get(page.url)
         self.assertEqual(r.status_code, 200)
         self.assertEqual(list(r.context['currently_on_tap']), [on_tap_batch])
-        self.assertEqual(list(r.context['upcoming_batches']), [fermenting_batch, planned_batch, self.batch_log_page])
+        self.assertEqual(list(r.context['upcoming_batches']), [fermenting_batch, planned_batch])
         self.assertEqual(list(r.context['past_batches']), [previous_batch])
         self.assertTrue('page_obj' in r.context)
         self.assertTrue('paginator' in r.context)
-        # TODO: Test the whole block of html for this which would allow verifying that it's in the right place?
-        expected_on_tap_batches = f'''
-            <div class="col-md-4 col-12 mt-3 mt-md-0 pr-0">
-                <div class="card currently-on-tap">
-                    <div class="card-header text-center">
-                        <div class="w-100"><a href="{on_tap_batch.recipe_page.id_and_slug_url}">{on_tap_batch.recipe_page.name}</a></div>
-                        <small>{on_tap_batch.recipe_page.style.name} ({on_tap_batch.recipe_page.style.bjcp_category()})</small>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text">{on_tap_batch.recipe_page.short_description}</p>
-                        <p class="card-text">On Tap {on_tap_batch.on_tap_date.strftime('%B %d, %Y')}</p>
-                    </div>
-                    <div class="card-footer">
-                        <a href="{on_tap_batch.id_and_slug_url}" class="card-link">Details</a>
+
+        with self.subTest(scaled_recipe=False):
+            # TODO: Test the whole block of html for this which would allow verifying that it's in the right place?
+            expected_on_tap_batches = f'''
+                <div class="col-md-4 col-12 mt-3 mt-md-0 pr-0">
+                    <div class="card currently-on-tap">
+                        <div class="card-header text-center">
+                            <div class="w-100"><a href="{on_tap_batch.recipe_page.id_and_slug_url}">{on_tap_batch.recipe_page.name}</a></div>
+                            <small>{on_tap_batch.recipe_page.style.name} ({on_tap_batch.recipe_page.style.bjcp_category()})</small>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">{on_tap_batch.recipe_page.short_description}</p>
+                            <p class="card-text">On Tap {on_tap_batch.on_tap_date.strftime('%B %d, %Y')}</p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="{on_tap_batch.id_and_slug_url}" class="card-link">Details</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-        '''
-        self.assertInHTML(expected_on_tap_batches, r.content.decode('utf-8'))
+            '''
+
+            expected_coming_soon_batches = f'''
+            <tbody>
+                <tr>
+                <td>
+                    <a href="{fermenting_batch.recipe_page.id_and_slug_url}">{fermenting_batch.recipe_page.name}</a>
+                    (<a href="{fermenting_batch.id_and_slug_url}">Log</a>)
+                </td>
+                <td>{fermenting_batch.recipe_page.style}</td>
+                <td>{fermenting_batch.get_status_display()}</td>
+                <td>{fermenting_batch.brewed_date.strftime(DATE_FORMAT)}</td>
+                <td></td>
+                <td></td>
+                </tr>
+                <tr>
+                <td>
+                    <a href="{planned_batch.recipe_page.id_and_slug_url}">{planned_batch.recipe_page.name}</a>
+                </td>
+                <td>{planned_batch.recipe_page.style}</td>
+                <td>{planned_batch.get_status_display()}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                </tr>
+            </tbody>
+            '''
+            self.assertInHTML(expected_on_tap_batches, r.content.decode('utf-8'))
+            self.assertInHTML(expected_coming_soon_batches, r.content.decode('utf-8'))
 
         # now test the html with a scaled recipe
-        for b in [on_tap_batch, fermenting_batch, planned_batch, self.batch_log_page]:
+        for b in [on_tap_batch, fermenting_batch, planned_batch]:
             b.target_post_boil_volume = b.recipe_page.batch_size * 2
             b.save_revision()
             publish_page(b)
             b.refresh_from_db()
+
         r = self.client.get(page.url)
-        expected_on_tap_batches = f'''
-            <div class="col-md-4 col-12 mt-3 mt-md-0 pr-0">
-                <div class="card currently-on-tap">
-                    <div class="card-header text-center">
-                        <div class="w-100"><a href="{on_tap_batch.recipe_page.id_and_slug_url}?scale_volume={on_tap_batch.target_post_boil_volume}&scale_unit={on_tap_batch.volume_units}">{on_tap_batch.recipe_page.name}</a></div>
-                        <small>{on_tap_batch.recipe_page.style.name} ({on_tap_batch.recipe_page.style.bjcp_category()})</small>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text">{on_tap_batch.recipe_page.short_description}</p>
-                        <p class="card-text">On Tap {on_tap_batch.on_tap_date.strftime(DATE_FORMAT)}</p>
-                    </div>
-                    <div class="card-footer">
-                        <a href="{on_tap_batch.id_and_slug_url}" class="card-link">Details</a>
+
+        with self.subTest(scaled_recipe=True):
+            expected_on_tap_batches = f'''
+                <div class="col-md-4 col-12 mt-3 mt-md-0 pr-0">
+                    <div class="card currently-on-tap">
+                        <div class="card-header text-center">
+                            <div class="w-100"><a href="{on_tap_batch.recipe_page.id_and_slug_url}?scale_volume={on_tap_batch.target_post_boil_volume}&scale_unit={on_tap_batch.volume_units}">{on_tap_batch.recipe_page.name}</a></div>
+                            <small>{on_tap_batch.recipe_page.style.name} ({on_tap_batch.recipe_page.style.bjcp_category()})</small>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">{on_tap_batch.recipe_page.short_description}</p>
+                            <p class="card-text">On Tap {on_tap_batch.on_tap_date.strftime(DATE_FORMAT)}</p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="{on_tap_batch.id_and_slug_url}" class="card-link">Details</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-        '''
+            '''
 
-        expected_coming_soon_batches = f'''
-        <tbody>
-            <tr>
-              <td>
-                <a href="{fermenting_batch.recipe_page.id_and_slug_url}?scale_volume={fermenting_batch.target_post_boil_volume}&amp;scale_unit={fermenting_batch.volume_units}">{fermenting_batch.recipe_page.name}</a>
-                (<a href="{fermenting_batch.id_and_slug_url}">Log</a>)
-              </td>
-              <td>{fermenting_batch.recipe_page.style}</td>
-              <td>{fermenting_batch.get_status_display()}</td>
-              <td>{fermenting_batch.brewed_date.strftime(DATE_FORMAT)}</td>
-              <td></td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>
-                <a href="{planned_batch.recipe_page.id_and_slug_url}?scale_volume={planned_batch.target_post_boil_volume}&amp;scale_unit={planned_batch.volume_units}">{planned_batch.recipe_page.name}</a>
-              </td>
-              <td>{planned_batch.recipe_page.style}</td>
-              <td>{planned_batch.get_status_display()}</td>
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>
-                <a href="{self.batch_log_page.recipe_page.id_and_slug_url}?scale_volume={self.batch_log_page.target_post_boil_volume}&amp;scale_unit={self.batch_log_page.volume_units}">{fermenting_batch.recipe_page.name}</a>
-              </td>
-              <td>{self.batch_log_page.recipe_page.style}</td>
-              <td>{self.batch_log_page.get_status_display()}</td>
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
-        </tbody>
-        '''
-        self.assertInHTML(expected_coming_soon_batches, r.content.decode('utf-8'))
-        r = self.client.get(page.url)
+            expected_coming_soon_batches = f'''
+            <tbody>
+                <tr>
+                <td>
+                    <a href="{fermenting_batch.recipe_page.id_and_slug_url}?scale_volume={fermenting_batch.target_post_boil_volume}&amp;scale_unit={fermenting_batch.volume_units}">{fermenting_batch.recipe_page.name}</a>
+                    (<a href="{fermenting_batch.id_and_slug_url}">Log</a>)
+                </td>
+                <td>{fermenting_batch.recipe_page.style}</td>
+                <td>{fermenting_batch.get_status_display()}</td>
+                <td>{fermenting_batch.brewed_date.strftime(DATE_FORMAT)}</td>
+                <td></td>
+                <td></td>
+                </tr>
+                <tr>
+                <td>
+                    <a href="{planned_batch.recipe_page.id_and_slug_url}?scale_volume={planned_batch.target_post_boil_volume}&amp;scale_unit={planned_batch.volume_units}">{planned_batch.recipe_page.name}</a>
+                </td>
+                <td>{planned_batch.recipe_page.style}</td>
+                <td>{planned_batch.get_status_display()}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                </tr>
+            </tbody>
+            '''
+
+            self.assertInHTML(expected_on_tap_batches, r.content.decode('utf-8'))
+            self.assertInHTML(expected_coming_soon_batches, r.content.decode('utf-8'))
 
 
 class RecipePageTest(WagtailPageTests):
