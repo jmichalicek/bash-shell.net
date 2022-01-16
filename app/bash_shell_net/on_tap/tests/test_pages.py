@@ -16,10 +16,12 @@ from bash_shell_net.on_tap.factories import (
     OnTapPageFactory,
     RecipeIndexPageFactory,
     RecipePageFactory,
+    create_default_recipe_page,
 )
 from bash_shell_net.on_tap.models import (
     BatchLogIndexPage,
     BatchLogPage,
+    BeverageStyle,
     OnTapPage,
     RecipeIndexPage,
     RecipePage,
@@ -239,21 +241,21 @@ class RecipePageTest(WagtailPageTests):
     Test the RecipePage
     """
 
-    fixtures = ['bash_shell_net/on_tap/fixtures/test_pages']
-
     @classmethod
     def setUpTestData(cls):
-        cls.index_page = RecipeIndexPage.objects.first()
-        # TODO: Confirm that RoutablePageMixin routes only work when the RoutablePage is published.
-        # Not certain yet, but that seems to be behavior I have seen.
-        publish_page(cls.index_page)
-        cls.recipe_page = RecipePage.objects.first()
+        super().setUpTestData()
+        on_tap_page: OnTapPage = add_wagtail_factory_page(OnTapPageFactory)
+        cls.recipe_index_page: RecipeIndexPage = add_wagtail_factory_page(
+            RecipeIndexPageFactory, parent_page=on_tap_page
+        )
+        cls.recipe_page: RecipePage = add_wagtail_factory_page(RecipePageFactory, parent_page=cls.recipe_index_page)
+        cls.beverage_style: BeverageStyle = cls.recipe_page.style
 
     def setUp(self, *args, **kwargs):
         super().setUp(*args, **kwargs)
         # Otherwise I get weird errors
         # see https://github.com/jmichalicek/bash-shell.net/commit/928bbd2d35e92aaca293ab0873dd5001c79c80e1#diff-ca9c96ccc066402806c6ad539615860324119d2bb9550592df76f0e803e8ee59R233
-        self.index_page.refresh_from_db()
+        self.recipe_index_page.refresh_from_db()
         self.recipe_page.refresh_from_db()
 
     @unittest.skip('Skipped because I have not written this but at least I will see skipped tests now.')
@@ -277,7 +279,7 @@ class RecipePageTest(WagtailPageTests):
                 'name': 'Test Case Recipe',
                 "short_description": "Test Recipe",
                 "recipe_type": "all_grain",
-                "style": 1,
+                "style": self.beverage_style.pk,
                 "brewer": "Justin Michalicek",
                 "assistant_brewer": "",
                 "volume_units": "gal",
@@ -311,7 +313,7 @@ class RecipePageTest(WagtailPageTests):
                 "miscellaneous_ingredients": inline_formset([]),
             },
         )
-        self.assertCanCreate(self.index_page, RecipePage, form_data)
+        self.assertCanCreate(self.recipe_index_page, RecipePage, form_data)
         page = RecipePage.objects.filter(slug='test-case-recipe').first()
         publish_page(page)
         page.refresh_from_db()
@@ -326,12 +328,11 @@ class RecipePageTest(WagtailPageTests):
         """
         page = self.recipe_page
         # /on-tap/recipes/<pk>/<slug>/
-        self.assertEqual(f'{self.index_page.get_url()}{page.pk}/{page.slug}/', page.get_id_and_slug_url())
+        self.assertEqual(f'{self.recipe_index_page.get_url()}{page.pk}/{page.slug}/', page.get_id_and_slug_url())
 
     def test_request_by_id_and_slug_route(self):
         # Technically a method/route on RecipePageIndex but it is to route to this model... :shrug:
         page = self.recipe_page
-        publish_page(page)
         r = self.client.get(page.get_id_and_slug_url())
         self.assertEqual(200, r.status_code)
         # TODO: test that we got the expected page - maybe add in a 2nd published page to be 100% certain
@@ -343,7 +344,6 @@ class RecipePageTest(WagtailPageTests):
         """
         # Technically a method/route on BatchLogPageIndex but it is to route to this model... :shrug:
         page = self.recipe_page
-        publish_page(page)
 
         url = page.get_id_and_slug_url()
         url = f'{url[:-1]}1/'
@@ -410,46 +410,51 @@ class RecipePageTest(WagtailPageTests):
 
 
 class RecipeIndexPageTest(WagtailPageTests):
-    fixtures = ['bash_shell_net/on_tap/fixtures/test_pages']
-
     def test_get_request(self):
         """
         Test a GET request to the RecipeIndexPage
         """
-        page = RecipeIndexPage.objects.first()
-        publish_page(page)
-        page.refresh_from_db()
-        r = self.client.get(page.url)
+        on_tap_page: OnTapPage = add_wagtail_factory_page(OnTapPageFactory)
+        recipe_index_page: RecipeIndexPage = add_wagtail_factory_page(RecipeIndexPageFactory, parent_page=on_tap_page)
+
+        r = self.client.get(recipe_index_page.url)
         self.assertEqual(r.status_code, 200)
 
 
 class BatchLogIndexPageTest(WagtailPageTests):
-    fixtures = ['bash_shell_net/on_tap/fixtures/test_pages']
-
     def test_get_request(self):
         """
         Test a GET request to the BatchLogIndexPage
         """
-        page = BatchLogIndexPage.objects.first()
-        publish_page(page)
-        page.refresh_from_db()
-        r = self.client.get(page.url)
+        on_tap_page: OnTapPage = add_wagtail_factory_page(OnTapPageFactory)
+        batch_log_index_page: BatchLogIndexPage = add_wagtail_factory_page(
+            BatchLogIndexPageFactory, parent_page=on_tap_page
+        )
+        r = self.client.get(batch_log_index_page.url)
         self.assertEqual(r.status_code, 200)
 
 
 class BatchLogPageTest(WagtailPageTests):
-    fixtures = ['bash_shell_net/on_tap/fixtures/test_pages']
-
     @classmethod
     def setUpTestData(cls):
         super().setUpTestData()
-        cls.index_page = BatchLogIndexPage.objects.first()
-        publish_page(cls.index_page)
-        cls.recipe_page = RecipePage.objects.first()
-        publish_page(cls.recipe_page)
-        cls.batch_log_page = BatchLogPage.objects.first()
-        cls.batch_log_page.live = True
-        cls.batch_log_page.save()
+        on_tap_page: OnTapPage = add_wagtail_factory_page(OnTapPageFactory)
+        cls.recipe_index_page: RecipeIndexPage = add_wagtail_factory_page(
+            RecipeIndexPageFactory, parent_page=on_tap_page
+        )
+        # cls.recipe_page: RecipePage = add_wagtail_factory_page(RecipePageFactory, parent_page=cls.recipe_index_page)
+        cls.recipe_page = cls.recipe_index_page.add_child(instance=create_default_recipe_page())
+        cls.batch_log_index_page: BatchLogIndexPage = add_wagtail_factory_page(
+            BatchLogIndexPageFactory, parent_page=on_tap_page
+        )
+        cls.batch_log_page = add_wagtail_factory_page(
+            BatchLogPageFactory,
+            parent_page=cls.batch_log_index_page,
+            slug='on-tap-batch',
+            status='planned',
+            recipe_page=cls.recipe_page,
+            final_gravity=Decimal("0"),
+        )
 
     def setUp(self):
         super().setUp()
@@ -459,7 +464,8 @@ class BatchLogPageTest(WagtailPageTests):
         self.recipe_page.refresh_from_db()
         self.batch_log_page.refresh_from_db()
         # This test is very strange and randomly fails with the following exception.
-        # The actual test which fails from it is random.
+        # The actual test which fails from it is random. I now believe that it may be if there was a
+        # test failure in the previous run, both using --keepdb, then something is not rolled back properly.
         """
         Traceback (most recent call last):
             File "/django/bash-shell.net/app/bash_shell_net/on_tap/tests/test_pages.py", line 475, in setUp
@@ -557,7 +563,7 @@ class BatchLogPageTest(WagtailPageTests):
                 'target_post_boil_volume': '',
             },
         )
-        self.assertCanCreate(self.index_page, BatchLogPage, form_data)
+        self.assertCanCreate(self.batch_log_index_page, BatchLogPage, form_data)
         page = BatchLogPage.objects.filter(slug='test-case-batch').first()
         publish_page(page)
         page.refresh_from_db()
@@ -567,8 +573,6 @@ class BatchLogPageTest(WagtailPageTests):
     def test_request_by_id_and_slug_route(self):
         # Technically a method/route on BatchLogPageIndex but it is to route to this model... :shrug:
         page = self.batch_log_page
-        # just make it published? Or have two pages for testing both published and unpublished page stuff?
-        publish_page(page)
         r = self.client.get(page.get_id_and_slug_url())
         self.assertEqual(200, r.status_code)
         # TODO: test that we got the expected page - maybe add in a 2nd published page to be 100% certain
@@ -580,7 +584,6 @@ class BatchLogPageTest(WagtailPageTests):
         """
         # Technically a method/route on BatchLogPageIndex but it is to route to this model... :shrug:
         page = self.batch_log_page
-        publish_page(page)
 
         url = page.get_id_and_slug_url()
         url = f'{url[:-1]}1/'
@@ -596,7 +599,7 @@ class BatchLogPageTest(WagtailPageTests):
         """
         # page = BatchLogPage.objects.first()
         page = self.batch_log_page
-        self.assertEqual(f'{self.index_page.get_url()}{page.pk}/{page.slug}/', page.get_id_and_slug_url())
+        self.assertEqual(f'{self.batch_log_index_page.get_url()}{page.pk}/{page.slug}/', page.get_id_and_slug_url())
 
     def test_fermenter_volume_as_gallons(self):
         expected_conversion = {
@@ -631,7 +634,6 @@ class BatchLogPageTest(WagtailPageTests):
                 self.assertEqual(base_volume, page.post_boil_volume_as_gallons().quantize(base_volume))
 
     def test_calculate_color_srm(self):
-        # page = BatchLogPage.objects.first()
         page = self.batch_log_page
         test_matrix = [
             {'volume': Decimal('2.75'), 'expected_srm': 24},

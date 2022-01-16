@@ -8,8 +8,11 @@ from bash_shell_net.on_tap.models import (
     BatchLogPage,
     BeverageStyle,
     OnTapPage,
+    RecipeFermentable,
+    RecipeHop,
     RecipeIndexPage,
     RecipePage,
+    RecipeYeast,
 )
 
 
@@ -57,7 +60,7 @@ class BatchLogIndexPageFactory(wagtail_factories.PageFactory):
 
 class BatchLogPageFactory(wagtail_factories.PageFactory):
 
-    title = factory.Sequence(lambda n: 'Batch %n')
+    title = factory.Sequence(lambda n: f'Batch {n}')
     recipe_page = factory.SubFactory('bash_shell_net.on_tap.factories.RecipePageFactory')
 
     class Meta:
@@ -72,11 +75,37 @@ class RecipeIndexPageFactory(wagtail_factories.PageFactory):
         model = RecipeIndexPage
 
 
+class RecipeFermentableFactory(factory.django.DjangoModelFactory):
+    recipe_page = factory.SubFactory('bash_shell_net.on_tap.factories.RecipePageFactory')
+    amount = Decimal("3.600")
+    amount_units = "lb"
+    name = "Maris Otter"
+    type = "grain"
+    color = Decimal("3.000")
+
+    class Meta:
+        model = RecipeFermentable
+
+
+class RecipeHopFactory(factory.django.DjangoModelFactory):
+    recipe_page = factory.SubFactory('bash_shell_net.on_tap.factories.RecipePageFactory')
+    name = "Fuggles"
+    alpha_acid_percent = Decimal("5.000")
+    amount = Decimal("0.70")
+    amount_units = "oz"
+    use_step = "boil"
+    use_time = 60
+    form = "pellet"
+
+    class Meta:
+        model = RecipeHop
+
+
 class RecipePageFactory(wagtail_factories.PageFactory):
 
-    title = factory.Sequence(lambda n: 'Recipe %n')
+    title = factory.Sequence(lambda n: f'Recipe {n}')
     # TODO: get rid of name
-    name = factory.Sequence(lambda n: 'Recipe %n')
+    name = factory.Sequence(lambda n: f'Recipe {n}')
     recipe_type = "all_grain"
     style = factory.SubFactory(BeverageStyleFactory)
     brewer = "Justin Michalicek"
@@ -106,3 +135,68 @@ class RecipePageFactory(wagtail_factories.PageFactory):
             beverage_style.save()
 
         return super()._build(model_class, *args, **kwargs)
+
+
+class RecipeYeastFactory(factory.django.DjangoModelFactory):
+    recipe_page = factory.SubFactory('bash_shell_net.on_tap.factories.RecipePageFactory')
+    name = "SafAle S-04"
+    amount = Decimal("0.388")
+    amount_units = "oz"
+    add_to_secondary = False
+    yeast_type = "dry"
+
+    class Meta:
+        model = RecipeYeast
+
+
+def create_default_recipe_page() -> RecipePage:
+    recipe = RecipePageFactory.build()
+    recipe.hops = [RecipeHopFactory.build(recipe_page=recipe)]
+
+    recipe.fermentables = [
+        # default is maris otter. May turn these all into traits
+        RecipeFermentableFactory.build(maltster='William Crisp',),
+        RecipeFermentableFactory.build(
+            amount=Decimal("8.00"),
+            amount_units="oz",
+            name="Crisp Brown Malt",
+            type="grain",
+            color=Decimal("85.000"),
+            maltster='William Crisp',
+        ),
+        RecipeFermentableFactory.build(
+            amount=Decimal("5.00"),
+            amount_units="oz",
+            name="Caramel 40",
+            type="grain",
+            color=Decimal("40.000"),
+            maltster='Briess',
+        ),
+        RecipeFermentableFactory.build(
+            amount=Decimal("3.00"),
+            amount_units="oz",
+            name="Caramel 80",
+            type="grain",
+            color=Decimal("80.000"),
+            maltster='Briess',
+        ),
+        RecipeFermentableFactory.build(
+            amount=Decimal("2.00"),
+            amount_units="oz",
+            name="Chocolate Malt",
+            type="grain",
+            color=Decimal("450.000"),
+            maltster='William Crisp',
+        ),
+        RecipeFermentableFactory.build(
+            amount=Decimal("1.500"),
+            amount_units="oz",
+            name="Pale Chocolate Malt",
+            type="grain",
+            color=Decimal("225.000"),
+            maltster='William Crisp',
+        ),
+    ]
+
+    recipe.yeasts = [RecipeYeastFactory.build()]
+    return recipe
