@@ -6,6 +6,7 @@ factory-boy
 honcho
 dj-inmemorystorage
 wagtail-factories
+tblib
 
 # Linting and formatting
 flake8
