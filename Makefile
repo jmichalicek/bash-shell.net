@@ -6,7 +6,7 @@ venv:
 	 pip install pip-tools
 
 dev:
-	docker compose --profile dev run --service-ports django /bin/bash
+	docker compose run --service-ports django /bin/bash
 
 shell:
-	docker compose --profile dev exec django /bin/bash
+	docker compose exec django /bin/bash

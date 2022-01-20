@@ -16,8 +16,8 @@ services:
     volumes:
       - redis:/data
   django:
-    profiles:
-    - dev
+          #profiles:
+            #- dev
     image: bash-shell-net:dev
     command: /bin/bash -ic 'make setup-and-run'
     # command: ["gunicorn", "--workers", "2", "--bind", "0.0.0.0:8000", "--name", "django", "--max-requests=1000", "config.wsgi:application"]
@@ -59,7 +59,7 @@ services:
     profiles:
     - ci
     image: bash-shell-net:dev
-    command: /bin/bash -ic 'make setup-and-run'
+    command: /bin/bash
     stdin_open: true
     tty: true
     depends_on:
@@ -80,8 +80,6 @@ services:
       - CSP_IMG_SRC='self',http://www.gravatar.com
       - CSP_SCRIPT_SRC='self',https://cdnjs.cloudflare.com,https://static.getclicky.com,'unsafe-inline'
       - CSP_STYLE_SRC='self','unsafe-inline',https://cdnjs.cloudflare.com,https://fonts.googleapis.com,https://fonts.gstatic.com
-    ports:
-      - "8000:8000"
     restart: on-failure
 
 volumes:
