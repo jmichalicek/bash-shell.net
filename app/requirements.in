@@ -1,5 +1,5 @@
 # Base system
-django<4.0
+django
 django-add-default-value
 django-csp
 django-deprecate-fields
