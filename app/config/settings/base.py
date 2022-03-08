@@ -173,7 +173,7 @@ INSTALLED_APPS = (
     'taggit',
     'wagtailfontawesome',
     # Health/monitoring
-    'watchman',
+    # 'watchman',
     # My stuff
     'internetdefenseleague',
     'bash_shell_net.accounts.apps.AccountsConfig',

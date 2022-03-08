@@ -1,4 +1,4 @@
-ARG PYTHON_VERSION=3.10.1
+ARG PYTHON_VERSION=3.10.2
 ARG DISTRO=bullseye
 FROM python:$PYTHON_VERSION-$DISTRO AS dev
 LABEL maintainer="Justin Michalicek <jmichalicek@gmail.com>"
@@ -54,7 +54,8 @@ COPY --chown=django ./app/webpack.config.js ./.stylelintrc.json /django/bash-she
 RUN webpack build --mode=production --stats-children
 
 COPY --chown=django ./app /django/bash-shell.net/
-RUN DJANGO_SETTINGS_MODULE=config.settings.production python manage.py collectstatic -l --noinput -i *.scss -i *.map -i index.js
+# Cannot ignore *.map anymore, wagtail has changed things so their *.map files get referenced and so need to exist
+RUN DJANGO_SETTINGS_MODULE=config.settings.production python manage.py collectstatic -l --noinput -i *.scss -i index.js
 RUN rm -rf webpack_assets ./config/static/scss/ ./config/static/js/index.js node_modules
 COPY --chown=django ./wait-for-it.sh /django/bash-shell.net/wait-for-it.sh
 

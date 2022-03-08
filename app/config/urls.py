@@ -27,7 +27,7 @@ sitemaps = {
 }
 
 urlpatterns = [
-    path('watchman/', include('watchman.urls')),
+    # path('watchman/', include('watchman.urls')),
     path('cms/', include(wagtailadmin_urls)),
     path('documents/', include(wagtaildocs_urls)),
     path('admin/doc/', include('django.contrib.admindocs.urls')),
