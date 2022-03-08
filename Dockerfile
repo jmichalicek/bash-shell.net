@@ -21,7 +21,7 @@ RUN apt-get update && apt-get install -y --allow-unauthenticated \
   nodejs \
   bash-completion \
   && apt-get autoremove && apt-get clean
-
+RUN npm install -g npm
 RUN pip install -U pip
 RUN useradd -ms /bin/bash -d /django django && echo "django ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 USER django
