@@ -13,3 +13,7 @@ media
 *.sql
 src/
 .coverage
+
+main.css
+main.css.map
+**/static/js/bundled/*
