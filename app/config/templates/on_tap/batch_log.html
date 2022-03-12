@@ -22,7 +22,7 @@
 {% endblock page_stylesheets %}
 {% block title %}{{ page.title }}{% endblock title %}
 {% block og_title %}{{ page.title }}{% endblock og_title %}
-{% block og_description %}Brew day log and notes for {{ recipe_page.name }}{% if page.brewed_date %} brewed on {{ page.brewed_date }}{% endif %}{% endblock og_description %}
+{% block og_description %}Brew day log and notes for {{ recipe_page.title }}{% if page.brewed_date %} brewed on {{ page.brewed_date }}{% endif %}{% endblock og_description %}
 {% block primary %}
   {% with page_title=page.title %}
     {{ block.super }}
@@ -48,7 +48,7 @@
               <li>Brewed: {{ page.brewed_date|default:"N/A" }}</li>
               <li>Packaged: {{ page.packaged_date|default:"N/A" }}</li>
               <li>On Tap: {{ page.on_tap_date|default:"N/A" }}</li>
-              <li>Recipe: <a href="{{ page.recipe_url }}">{{ recipe_page.name }}</a></li>
+              <li>Recipe: <a href="{{ page.recipe_url }}">{{ recipe_page.title }}</a></li>
             </ul>
           </div>
         </div>

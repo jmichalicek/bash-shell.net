@@ -136,7 +136,7 @@ class OnTapPageTest(WagtailPageTests):
                 <div class="col-md-4 col-12 mt-3 mt-md-0 pr-0">
                     <div class="card currently-on-tap">
                         <div class="card-header text-center">
-                            <div class="w-100"><a href="{on_tap_batch.recipe_page.id_and_slug_url}">{on_tap_batch.recipe_page.name}</a></div>
+                            <div class="w-100"><a href="{on_tap_batch.recipe_page.id_and_slug_url}">{on_tap_batch.recipe_page.title}</a></div>
                             <small>{on_tap_batch.recipe_page.style.name} ({on_tap_batch.recipe_page.style.bjcp_category()})</small>
                         </div>
                         <div class="card-body">
@@ -154,7 +154,7 @@ class OnTapPageTest(WagtailPageTests):
             <tbody>
                 <tr>
                 <td>
-                    <a href="{fermenting_batch.recipe_page.id_and_slug_url}">{fermenting_batch.recipe_page.name}</a>
+                    <a href="{fermenting_batch.recipe_page.id_and_slug_url}">{fermenting_batch.recipe_page.title}</a>
                     (<a href="{fermenting_batch.id_and_slug_url}">Log</a>)
                 </td>
                 <td>{fermenting_batch.recipe_page.style}</td>
@@ -165,7 +165,7 @@ class OnTapPageTest(WagtailPageTests):
                 </tr>
                 <tr>
                 <td>
-                    <a href="{planned_batch.recipe_page.id_and_slug_url}">{planned_batch.recipe_page.name}</a>
+                    <a href="{planned_batch.recipe_page.id_and_slug_url}">{planned_batch.recipe_page.title}</a>
                 </td>
                 <td>{planned_batch.recipe_page.style}</td>
                 <td>{planned_batch.get_status_display()}</td>
@@ -192,7 +192,7 @@ class OnTapPageTest(WagtailPageTests):
                 <div class="col-md-4 col-12 mt-3 mt-md-0 pr-0">
                     <div class="card currently-on-tap">
                         <div class="card-header text-center">
-                            <div class="w-100"><a href="{on_tap_batch.recipe_page.id_and_slug_url}?scale_volume={on_tap_batch.target_post_boil_volume}&scale_unit={on_tap_batch.volume_units}">{on_tap_batch.recipe_page.name}</a></div>
+                            <div class="w-100"><a href="{on_tap_batch.recipe_page.id_and_slug_url}?scale_volume={on_tap_batch.target_post_boil_volume}&scale_unit={on_tap_batch.volume_units}">{on_tap_batch.recipe_page.title}</a></div>
                             <small>{on_tap_batch.recipe_page.style.name} ({on_tap_batch.recipe_page.style.bjcp_category()})</small>
                         </div>
                         <div class="card-body">
@@ -210,7 +210,7 @@ class OnTapPageTest(WagtailPageTests):
             <tbody>
                 <tr>
                 <td>
-                    <a href="{fermenting_batch.recipe_page.id_and_slug_url}?scale_volume={fermenting_batch.target_post_boil_volume}&amp;scale_unit={fermenting_batch.volume_units}">{fermenting_batch.recipe_page.name}</a>
+                    <a href="{fermenting_batch.recipe_page.id_and_slug_url}?scale_volume={fermenting_batch.target_post_boil_volume}&amp;scale_unit={fermenting_batch.volume_units}">{fermenting_batch.recipe_page.title}</a>
                     (<a href="{fermenting_batch.id_and_slug_url}">Log</a>)
                 </td>
                 <td>{fermenting_batch.recipe_page.style}</td>
@@ -221,7 +221,7 @@ class OnTapPageTest(WagtailPageTests):
                 </tr>
                 <tr>
                 <td>
-                    <a href="{planned_batch.recipe_page.id_and_slug_url}?scale_volume={planned_batch.target_post_boil_volume}&amp;scale_unit={planned_batch.volume_units}">{planned_batch.recipe_page.name}</a>
+                    <a href="{planned_batch.recipe_page.id_and_slug_url}?scale_volume={planned_batch.target_post_boil_volume}&amp;scale_unit={planned_batch.volume_units}">{planned_batch.recipe_page.title}</a>
                 </td>
                 <td>{planned_batch.recipe_page.style}</td>
                 <td>{planned_batch.get_status_display()}</td>
@@ -503,7 +503,7 @@ class BatchLogPageTest(WagtailPageTests):
               <li>Brewed: N/A</li>
               <li>Packaged: N/A</li>
               <li>On Tap: N/A</li>
-              <li>Recipe: <a href="{self.batch_log_page.recipe_page.id_and_slug_url}">{self.batch_log_page.recipe_page.name}</a></li>
+              <li>Recipe: <a href="{self.batch_log_page.recipe_page.id_and_slug_url}">{self.batch_log_page.recipe_page.title}</a></li>
             </ul>
           </div>
         </div>
@@ -521,7 +521,7 @@ class BatchLogPageTest(WagtailPageTests):
               <li>Brewed: N/A</li>
               <li>Packaged: N/A</li>
               <li>On Tap: N/A</li>
-              <li>Recipe: <a href="{self.batch_log_page.recipe_page.id_and_slug_url}?scale_volume={self.batch_log_page.target_post_boil_volume}&scale_unit={self.batch_log_page.volume_units}">{self.batch_log_page.recipe_page.name}</a></li>
+              <li>Recipe: <a href="{self.batch_log_page.recipe_page.id_and_slug_url}?scale_volume={self.batch_log_page.target_post_boil_volume}&scale_unit={self.batch_log_page.volume_units}">{self.batch_log_page.recipe_page.title}</a></li>
             </ul>
           </div>
         </div>
