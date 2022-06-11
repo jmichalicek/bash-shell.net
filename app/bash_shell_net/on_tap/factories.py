@@ -104,8 +104,6 @@ class RecipeHopFactory(factory.django.DjangoModelFactory):
 class RecipePageFactory(wagtail_factories.PageFactory):
 
     title = factory.Sequence(lambda n: f'Recipe {n}')
-    # TODO: get rid of name
-    name = factory.Sequence(lambda n: f'Recipe {n}')
     recipe_type = "all_grain"
     style = factory.SubFactory(BeverageStyleFactory)
     brewer = "Justin Michalicek"
@@ -155,7 +153,9 @@ def create_default_recipe_page() -> RecipePage:
 
     recipe.fermentables = [
         # default is maris otter. May turn these all into traits
-        RecipeFermentableFactory.build(maltster='William Crisp',),
+        RecipeFermentableFactory.build(
+            maltster='William Crisp',
+        ),
         RecipeFermentableFactory.build(
             amount=Decimal("8.00"),
             amount_units="oz",

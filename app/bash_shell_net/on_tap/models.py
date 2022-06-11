@@ -665,9 +665,6 @@ class RecipePage(IdAndSlugUrlMixin, Page):
 
     tags = ClusterTaggableManager(through=RecipePageTag, blank=True)
 
-    # Do I need a separate recipe name and page title?
-    # I do not believe I do now, but here it is for now. I should remove it.
-    name = CICharField(max_length=100, blank=False)
     short_description = models.TextField(
         blank=True,
         default='',
@@ -760,7 +757,6 @@ class RecipePage(IdAndSlugUrlMixin, Page):
     updated_at = models.DateTimeField(auto_now=True)
 
     content_panels = Page.content_panels + [
-        FieldPanel('name'),
         FieldPanel('short_description'),
         SnippetChooserPanel('style', 'on_tap.BeverageStyle'),
         FieldPanel('recipe_type'),
@@ -827,7 +823,6 @@ class RecipePage(IdAndSlugUrlMixin, Page):
     ]
 
     search_fields = Page.search_fields + [
-        index.SearchField('name', partial=True, boost=2),  # should this just be Page.title?
         index.SearchField('notes', partial=True),
         index.SearchField('introduction', partial=True),
         index.SearchField('conclusion', partial=True),
@@ -851,12 +846,11 @@ class RecipePage(IdAndSlugUrlMixin, Page):
 
     class Meta:
         indexes = [
-            models.Index(fields=['name']),
             models.Index(fields=['recipe_type']),
         ]
 
     def __str__(self) -> str:
-        return self.name
+        return self.title
 
     def get_context(self, request):
         context = super().get_context(request)
