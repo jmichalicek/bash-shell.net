@@ -1,9 +1,9 @@
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db import models
 
-from wagtail.admin.edit_handlers import StreamFieldPanel
-from wagtail.core.fields import StreamField
-from wagtail.core.models import Page
+from wagtail.admin.panels import FieldPanel
+from wagtail.fields import StreamField
+from wagtail.models import Page
 from wagtail.search import index
 
 from bash_shell_net.blog.models import BlogPage
@@ -72,10 +72,10 @@ class StandardPage(Page):
         related_name='+',
         help_text='Landscape mode only; horizontal width between 1000px and 3000px.',
     )
-    body = StreamField(STANDARD_STREAMFIELD_FIELDS, blank=True, null=True, default=None)
+    body = StreamField(STANDARD_STREAMFIELD_FIELDS, blank=True, null=True, default=None, use_json_field=True)
 
     content_panels = Page.content_panels + [
-        StreamFieldPanel('body'),
+        FieldPanel('body'),
     ]
 
     search_fields = Page.search_fields + [

@@ -2,7 +2,7 @@
 
 venv:
 	 python -m venv app/.venv
-	 pip install pip==21.2.4
+	 pip install -U pip
 	 pip install pip-tools
 
 dev:

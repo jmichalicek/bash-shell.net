@@ -6,7 +6,7 @@ from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.utils.functional import cached_property
 from django.utils.module_loading import import_string
 
-from wagtail.core.models import Page
+from wagtail.models import Page
 
 
 class IdAndSlugUrlIndexMixin:
