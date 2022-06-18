@@ -17,19 +17,11 @@ from django.utils.safestring import mark_safe
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from modelcluster.fields import ParentalKey, create_deferring_foreign_related_manager
 from taggit.models import TaggedItemBase
-from wagtail.admin.edit_handlers import (
-    FieldPanel,
-    FieldRowPanel,
-    InlinePanel,
-    MultiFieldPanel,
-    PageChooserPanel,
-    StreamFieldPanel,
-)
+from wagtail.admin.panels import FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
-from wagtail.core.fields import RichTextField, StreamField
-from wagtail.core.models import Orderable, Page
+from wagtail.fields import RichTextField, StreamField
+from wagtail.models import Orderable, Page
 from wagtail.search import index
-from wagtail.snippets.edit_handlers import SnippetChooserPanel
 from wagtail.snippets.models import register_snippet
 
 from bash_shell_net.base.mixins import IdAndSlugUrlIndexMixin, IdAndSlugUrlMixin
@@ -477,8 +469,10 @@ class RecipeMiscIngredient(ScalableAmountMixin, Orderable, models.Model):
         return self.name
 
 
+# Ignore type checking due to weird error with django 4.0.5, wagtail 3.0.1, mypy 0.961, django-stubs 1.12.0
+# error: Couldn't resolve related manager for relation 'recipe_pages' (from bash_shell_net.on_tap.models.RecipePage.on_tap.RecipePage.style).
 @register_snippet
-class BeverageStyle(models.Model):
+class BeverageStyle(models.Model):  # type: ignore
     """
     http://www.beerxml.com/beerxml.htm
 
@@ -758,7 +752,7 @@ class RecipePage(IdAndSlugUrlMixin, Page):
 
     content_panels = Page.content_panels + [
         FieldPanel('short_description'),
-        SnippetChooserPanel('style', 'on_tap.BeverageStyle'),
+        FieldPanel('style'),
         FieldPanel('recipe_type'),
         FieldPanel('brewer'),
         FieldPanel('assistant_brewer'),
@@ -814,8 +808,8 @@ class RecipePage(IdAndSlugUrlMixin, Page):
             heading='Miscellaneous Ingredients',
         ),
         FieldPanel('notes'),
-        StreamFieldPanel('introduction'),
-        StreamFieldPanel('conclusion'),
+        FieldPanel('introduction'),
+        FieldPanel('conclusion'),
     ]
 
     promote_panels = Page.promote_panels + [
@@ -1020,13 +1014,13 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):
         help_text='Expected volume of finished batch prior to transfer to fermenter. Defaults to the target volume of the selected recipe if not specified.',
     )
 
-    body = StreamField(STANDARD_STREAMFIELD_FIELDS, blank=True, null=True, default=None)
+    body = StreamField(STANDARD_STREAMFIELD_FIELDS, blank=True, null=True, default=None, use_json_field=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     base_form_class = BatchLogPageForm
     content_panels = Page.content_panels + [
-        PageChooserPanel('recipe_page'),
+        FieldPanel('recipe_page'),
         FieldPanel('status'),
         FieldPanel('brewed_date'),
         FieldPanel('packaged_date'),
@@ -1051,7 +1045,7 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):
                 FieldPanel('volume_in_fermenter'),
             ]
         ),
-        StreamFieldPanel('body'),
+        FieldPanel('body'),
     ]
 
     promote_panels = Page.promote_panels + [

@@ -1,4 +1,4 @@
-from wagtail.core.models import Page, Site
+from wagtail.models import Page, Site
 
 import wagtail_factories
 

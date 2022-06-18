@@ -5,9 +5,9 @@ from urllib.parse import urlencode
 
 from django.test import RequestFactory, TestCase
 
-from wagtail.core.models import Page
-from wagtail.tests.utils import WagtailPageTests
-from wagtail.tests.utils.form_data import inline_formset, nested_form_data, rich_text, streamfield
+from wagtail.models import Page
+from wagtail.test.utils import WagtailPageTests
+from wagtail.test.utils.form_data import inline_formset, nested_form_data, rich_text, streamfield
 
 from bash_shell_net.base.test_utils import add_wagtail_factory_page
 from bash_shell_net.on_tap.factories import (

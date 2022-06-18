@@ -6,10 +6,10 @@ from django.http import HttpResponse
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from modelcluster.fields import ParentalKey
 from taggit.models import TaggedItemBase
-from wagtail.admin.edit_handlers import FieldPanel, StreamFieldPanel
+from wagtail.admin.panels import FieldPanel
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
-from wagtail.core.fields import StreamField
-from wagtail.core.models import Page
+from wagtail.fields import StreamField
+from wagtail.models import Page
 from wagtail.search import index
 
 from bash_shell_net.base.mixins import IdAndSlugUrlIndexMixin, IdAndSlugUrlMixin
@@ -94,39 +94,9 @@ class BlogPage(IdAndSlugUrlMixin, Page):
     # )
 
     tags = ClusterTaggableManager(through=BlogPageTag, blank=True)
-    body = StreamField(STANDARD_STREAMFIELD_FIELDS, blank=True, null=True, default=None)
-    # body = StreamField(
-    #     [
-    #         ('heading', blocks.CharBlock(classname="full title")),
-    #         ('paragraph', blocks.RichTextBlock()),
-    #         ('code', CodeBlock()),
-    #         ('quote', blocks.BlockQuoteBlock()),
-    #         ('other_page', blocks.PageChooserBlock()),
-    #         ('document', DocumentChooserBlock()),
-    #         ('image', ImageChooserBlock()),
-    #         # ('snippet', SnippetChooserBlock()),
-    #         ('embed', EmbedBlock()),
-    #         ('text', blocks.TextBlock()),
-    #         ('raw_html', blocks.RawHTMLBlock()),
-    #
-    #         # just testing these... no idea how useful
-    #         # ('single_line', blocks.CharBlock()),
-    #         # ('email', blocks.EmailBlock()),
-    #         # ('integer', blocks.IntegerBlock()),
-    #         # ('float', blocks.FloatBlock()),
-    #         # ('decimal', blocks.DecimalBlock()),
-    #         # ('url', blocks.URLBlock()),
-    #         # ('boolean', blocks.BooleanBlock()),
-    #         # ('date', blocks.DateBlock()),
-    #         # ('time', blocks.TimeBlock()),
-    #         # ('datetime', blocks.DateTimeBlock()),
-    #     ],
-    #     null=True,
-    #     blank=True,
-    #     default=None,
-    # )
+    body = StreamField(STANDARD_STREAMFIELD_FIELDS, blank=True, null=True, default=None, use_json_field=True)
 
-    content_panels = Page.content_panels + [StreamFieldPanel("body")]
+    content_panels = Page.content_panels + [FieldPanel("body")]
     promote_panels = Page.promote_panels + [
         FieldPanel("tags"),
     ]

@@ -2,7 +2,6 @@ from django.contrib.sitemaps import Sitemap
 from django.urls import reverse
 
 from wagtail.contrib.sitemaps import Sitemap as WagtailSitemap
-from wagtail.core.models import Orderable, Page
 
 from bash_shell_net.blog.models import BlogPage
 from bash_shell_net.on_tap.models import BatchLogPage, OnTapPage, RecipePage

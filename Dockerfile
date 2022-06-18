@@ -1,4 +1,4 @@
-ARG PYTHON_VERSION=3.10.2
+ARG PYTHON_VERSION=3.10.4
 ARG DISTRO=bullseye
 FROM python:$PYTHON_VERSION-$DISTRO AS dev
 LABEL maintainer="Justin Michalicek <jmichalicek@gmail.com>"

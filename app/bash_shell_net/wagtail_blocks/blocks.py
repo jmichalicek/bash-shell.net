@@ -3,7 +3,7 @@ Extra wagtail blocks for the site.
 """
 from django.utils.safestring import mark_safe
 
-from wagtail.core import blocks
+from wagtail import blocks
 from wagtail.images.blocks import ImageChooserBlock
 
 from pygments import highlight

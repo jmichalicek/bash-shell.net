@@ -1,6 +1,6 @@
 import unittest
 
-from wagtail.tests.utils import WagtailPageTests
+from wagtail.test.utils import WagtailPageTests
 
 from bash_shell_net.base.test_utils import add_wagtail_factory_page
 from bash_shell_net.blog.factories import BlogPageFactory, BlogPageIndexFactory
