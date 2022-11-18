@@ -37,7 +37,7 @@ djhtml-check:
 	find . -path ./.venv -prune -path ./node_modules -prune -o -wholename '*/templates*.html' -exec djhtml -t2 -c '{}' +
 
 mypy:
-	mypy .
+	mypy --check-untyped-defs .
 
 flake8:
 	flake8 . --select=E9,F63,F7,F82 --show-source --exclude="documentation, .venv, node_modules, media, .parcel-cache, .git, __pycache__, webpack_assets"
@@ -53,3 +53,6 @@ pyupgrade:
 
 django-upgrade:
 	find . -path '**/.venv' -prune -o -path node_modules -prune -o -path '**/migrations' -prune -o -wholename '*/*.py' -exec django-upgrade --target-version=3.2 '{}' +
+
+test:
+	python manage.py test --parallel --failfast

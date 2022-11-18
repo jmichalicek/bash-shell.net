@@ -7,6 +7,7 @@ honcho
 dj-inmemorystorage
 wagtail-factories
 tblib
+freezegun
 
 # Linting and formatting
 flake8

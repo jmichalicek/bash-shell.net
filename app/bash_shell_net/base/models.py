@@ -72,7 +72,13 @@ class StandardPage(Page):
         related_name='+',
         help_text='Landscape mode only; horizontal width between 1000px and 3000px.',
     )
-    body = StreamField(STANDARD_STREAMFIELD_FIELDS, blank=True, null=True, default=None, use_json_field=True)
+    body = StreamField(
+        STANDARD_STREAMFIELD_FIELDS,
+        blank=True,
+        null=True,
+        default=None,
+        use_json_field=True,
+    )
 
     content_panels = Page.content_panels + [
         FieldPanel('body'),

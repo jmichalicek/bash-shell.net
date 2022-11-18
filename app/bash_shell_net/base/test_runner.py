@@ -5,6 +5,7 @@ and updated to work with Django's DiscoverRunner
 import logging
 import time
 import unittest
+from typing import Any, cast
 from unittest.runner import TextTestResult
 
 from django.test.runner import DiscoverRunner
@@ -12,7 +13,7 @@ from django.test.runner import DiscoverRunner
 
 class TimeLoggingTestResult(TextTestResult):
 
-    test_timings: list[float]
+    test_timings: list[tuple[str, float]]
     _test_started_at: float
 
     def __init__(self, *args, **kwargs):
@@ -29,20 +30,23 @@ class TimeLoggingTestResult(TextTestResult):
         self.test_timings.append((name, elapsed))
         super().addSuccess(test)
 
-    def getTestTimings(self) -> list[float]:
+    def getTestTimings(self) -> list[tuple[str, float]]:
         return self.test_timings
 
 
 class TimeLoggingTestRunner(unittest.TextTestRunner):
+    stream: Any  # ugh. what is it really?
+    resultclass = TimeLoggingTestResult
+
     def __init__(self, slow_test_threshold=0.3, *args, **kwargs):
         self.slow_test_threshold = slow_test_threshold
-        # Could also override get_resultclass() in TimedLoggingDiscoverRunner to return
-        # TimeLoggingTestResult
-        kwargs.update({'resultclass': TimeLoggingTestResult})
         return super().__init__(*args, **kwargs)
 
-    def run(self, test):
-        result = super().run(test)
+    def run(self, test) -> TimeLoggingTestResult:
+        # something is weird here. super().run() returns TestResult
+        # TimeLoggingTestResult is a subclass of TextTestResult which
+        # is a subclass of TestResult yet mypy complains
+        result: TimeLoggingTestResult = cast(TimeLoggingTestResult, super().run(test))
 
         self.stream.writeln(f"\nSlow Tests (>{self.slow_test_threshold:.03}s):")
         for name, elapsed in result.getTestTimings():

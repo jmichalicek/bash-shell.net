@@ -14,6 +14,5 @@ def add_wagtail_factory_page(
         if not (site := Site.objects.filter(is_default_site=True).first()):
             site = wagtail_factories.SiteFactory(is_default_site=True)
         parent_page = site.root_page
-
     page: Page = parent_page.add_child(instance=page_factory.build(**kwargs))
     return page
