@@ -20,13 +20,13 @@ beautifulsoup4==4.11.1 \
     --hash=sha256:58d5c3d29f5a36ffeb94f02f0d786cd53014cf9b3b3951d42e0080d8a9498d30 \
     --hash=sha256:ad9aa55b65ef2808eb405f46cf74df7fcb7044d5cbc26487f96eb2ef2e436693
     # via wagtail
-boto3==1.26.3 \
-    --hash=sha256:7e871c481f88e5b2fc6ac16eb190c95de21efb43ab2d959beacf8b7b096b11d2 \
-    --hash=sha256:b81e4aa16891eac7532ce6cc9eb690a8d2e0ceea3bcf44b5c5a1309c2500d35f
+boto3==1.26.12 \
+    --hash=sha256:180b4413db1211836c622adfc16dd40a7b99b86cac894bc6e17ddea9d282ab14 \
+    --hash=sha256:73da24667fe1351cef0f402ee9cd4589a0a9d97b617caca3c25b5cdc38f9d62c
     # via -r requirements.in
-botocore==1.29.3 \
-    --hash=sha256:100534532b2745f6fa019b79199a8941f04b8168f9d557d0847191455f1f1eed \
-    --hash=sha256:ac7986fefe1b9c6323d381c4fdee3845c67fa53eb6c9cf586a8e8a07270dbcfe
+botocore==1.29.12 \
+    --hash=sha256:3149b102e3c26c935acef6c330d0f46c717820d118886e983b6e81c306f31405 \
+    --hash=sha256:fdae73306a41a30697be300bdecb1e0d560d453c6d748891856beb87e9f6573f
     # via
     #   boto3
     #   s3transfer
@@ -188,6 +188,7 @@ pillow==9.3.0 \
     --hash=sha256:2e0918e03aa0c72ea56edbb00d4d664294815aa11291a11504a377ea018330d3 \
     --hash=sha256:3033fbe1feb1b59394615a1cafaee85e49d01b51d54de0cbf6aa8e64182518a1 \
     --hash=sha256:3168434d303babf495d4ba58fc22d6604f6e2afb97adc6a423e917dab828939c \
+    --hash=sha256:32a44128c4bdca7f31de5be641187367fe2a450ad83b833ef78910397db491aa \
     --hash=sha256:3dd6caf940756101205dffc5367babf288a30043d35f80936f9bfb37f8355b32 \
     --hash=sha256:40e1ce476a7804b0fb74bcfa80b0a2206ea6a882938eaba917f7a0f004b42502 \
     --hash=sha256:41e0051336807468be450d52b8edd12ac60bebaa97fe10c8b660f116e50b30e4 \
@@ -232,6 +233,7 @@ pillow==9.3.0 \
     --hash=sha256:c7025dce65566eb6e89f56c9509d4f628fddcedb131d9465cacd3d8bac337e7e \
     --hash=sha256:c935a22a557a560108d780f9a0fc426dd7459940dc54faa49d83249c8d3e760f \
     --hash=sha256:dbb8e7f2abee51cef77673be97760abff1674ed32847ce04b4af90f610144c7b \
+    --hash=sha256:e6ea6b856a74d560d9326c0f5895ef8050126acfdc7ca08ad703eb0081e82b74 \
     --hash=sha256:ebf2029c1f464c59b8bdbe5143c79fa2045a581ac53679733d3a91d400ff9efb \
     --hash=sha256:f1ff2ee69f10f13a9596480335f406dd1f70c3650349e2be67ca3139280cade0
     # via
@@ -250,6 +252,7 @@ psycopg2-binary==2.9.5 \
     --hash=sha256:212757ffcecb3e1a5338d4e6761bf9c04f750e7d027117e74aa3cd8a75bb6fbd \
     --hash=sha256:215d6bf7e66732a514f47614f828d8c0aaac9a648c46a831955cb103473c7147 \
     --hash=sha256:25382c7d174c679ce6927c16b6fbb68b10e56ee44b1acb40671e02d29f2fce7c \
+    --hash=sha256:2abccab84d057723d2ca8f99ff7b619285d40da6814d50366f61f0fc385c3903 \
     --hash=sha256:2d964eb24c8b021623df1c93c626671420c6efadbdb8655cb2bd5e0c6fa422ba \
     --hash=sha256:2ec46ed947801652c9643e0b1dc334cfb2781232e375ba97312c2fc256597632 \
     --hash=sha256:2ef892cabdccefe577088a79580301f09f2a713eb239f4f9f62b2b29cafb0577 \
@@ -295,6 +298,7 @@ psycopg2-binary==2.9.5 \
     --hash=sha256:b9c33d4aef08dfecbd1736ceab8b7b3c4358bf10a0121483e5cd60d3d308cc64 \
     --hash=sha256:b9d38a4656e4e715d637abdf7296e98d6267df0cc0a8e9a016f8ba07e4aa3eeb \
     --hash=sha256:bcda1c84a1c533c528356da5490d464a139b6e84eb77cc0b432e38c5c6dd7882 \
+    --hash=sha256:bef7e3f9dc6f0c13afdd671008534be5744e0e682fb851584c8c3a025ec09720 \
     --hash=sha256:c15ba5982c177bc4b23a7940c7e4394197e2d6a424a2d282e7c236b66da6d896 \
     --hash=sha256:c5254cbd4f4855e11cebf678c1a848a3042d455a22a4ce61349c36aafd4c2267 \
     --hash=sha256:c5682a45df7d9642eff590abc73157c887a68f016df0a8ad722dcc0f888f56d7 \
@@ -342,9 +346,9 @@ s3transfer==0.6.0 \
     --hash=sha256:06176b74f3a15f61f1b4f25a1fc29a4429040b7647133a463da8fa5bd28d5ecd \
     --hash=sha256:2ed07d3866f523cc561bf4a00fc5535827981b117dd7876f036b0c1aca42c947
     # via boto3
-sentry-sdk==1.10.1 \
-    --hash=sha256:06c0fa9ccfdc80d7e3b5d2021978d6eb9351fa49db9b5847cf4d1f2a473414ad \
-    --hash=sha256:105faf7bd7b7fa25653404619ee261527266b14103fe1389e0ce077bd23a9691
+sentry-sdk==1.11.0 \
+    --hash=sha256:e7b78a1ddf97a5f715a50ab8c3f7a93f78b114c67307785ee828ef67a5d6f117 \
+    --hash=sha256:f467e6c7fac23d4d42bc83eb049c400f756cd2d65ab44f0cc1165d0c7c3d40bc
     # via
     #   -r requirements.in
     #   structlog-sentry
@@ -387,9 +391,9 @@ urllib3==1.26.12 \
     #   botocore
     #   requests
     #   sentry-sdk
-wagtail==4.1 \
-    --hash=sha256:19b5bce9757c4e19322a345b9c314fc588c05fb5af930bcd048e0a6cd9f531eb \
-    --hash=sha256:d2f31f2bc6018cc5b152659c2490f7fe9d075c067bacca8a1fcbb244f817b0b1
+wagtail==4.1.1 \
+    --hash=sha256:9df6bfe5637ebe5b9e96cd0174cb812d3bb9200913100b6f8007ef31bdc02f70 \
+    --hash=sha256:fe164fa5bb5f62fa8fa35cb456d523b3f263b6bcc0a5e0b688e2c6c1760bc095
     # via
     #   -r requirements.in
     #   wagtailfontawesome
