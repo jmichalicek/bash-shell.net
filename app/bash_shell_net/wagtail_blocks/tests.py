@@ -72,7 +72,9 @@ class CodeBlockTest(WagtailTestUtils, SimpleTestCase):
                         'filename': t['filename'],
                     }
                 )
-                self.assertEqual(t['expected'].strip(), block.render(render_values).strip())
+                rendered: str = block.render(render_values)
+                assert isinstance(t['expected'], str)
+                self.assertEqual(t['expected'].strip(), rendered.strip())
 
     def test_child_blocks(self):
         """

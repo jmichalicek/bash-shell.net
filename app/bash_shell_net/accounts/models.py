@@ -1,9 +1,38 @@
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from .managers import UserManager
+
+class UserManager(BaseUserManager):
+    def create_user(self, email, password=None, **extra_fields) -> 'User':
+        """
+        Creates and saves a User with the given username, email, and password.
+        """
+
+        if not email:
+            raise ValueError('The given email must be set')
+
+        email = UserManager.normalize_email(email)
+        user: User = User(email=email, is_active=True, is_staff=False, is_superuser=False, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, password, **extra_fields) -> 'User':
+        """
+        Creates and saves a staff superuser
+        """
+
+        u = self.create_user(email, password, **extra_fields)
+        # Could just pass these as extra_fields to create_user()
+        # but this is more explicit and allows create_user to ensure
+        # that the correct settings are enforced for a normal user.
+        u.is_staff = True
+        u.is_active = True
+        u.is_superuser = True
+        u.save(using=self._db)
+        return u
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -33,16 +62,16 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.email
 
-    def get_short_name(self):
+    def get_short_name(self) -> str:
         return self.first_name
 
-    def get_full_name(self):
+    def get_full_name(self) -> str:
         return f'{self.first_name} {self.last_name}'
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         if not self.username:
             self.username = self.email
 

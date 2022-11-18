@@ -27,7 +27,7 @@ STANDARD_STREAMFIELD_FIELDS = [
                 'strikethrough',
                 'blockquote',
                 'link',
-                'documentlink',
+                'document-link',
                 'image',
                 'embed',
             ]

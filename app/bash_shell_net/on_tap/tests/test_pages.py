@@ -1,6 +1,7 @@
 import copy
 import unittest
 from decimal import Decimal
+from typing import TypedDict
 from urllib.parse import urlencode
 
 from django.test import RequestFactory, TestCase
@@ -48,6 +49,8 @@ class PageTreeTest(WagtailPageTestCase):
     Test things like where pages can be created
     """
 
+    on_tap_page: OnTapPage
+
     def setUp(self):
         super().setUp()
         self.login()
@@ -63,7 +66,7 @@ class OnTapPageTest(WagtailPageTestCase):
     @classmethod
     def setUpTestData(cls):
         super().setUpTestData()
-        cls.on_tap_page: OnTapPage = add_wagtail_factory_page(OnTapPageFactory)
+        cls.on_tap_page = add_wagtail_factory_page(OnTapPageFactory)
         cls.recipe_index_page = add_wagtail_factory_page(RecipeIndexPageFactory, parent_page=cls.on_tap_page)
 
     def setUp(self):
@@ -252,13 +255,13 @@ class RecipePageTest(WagtailPageTestCase):
     Test the RecipePage
     """
 
+    recipe_index_page: RecipeIndexPage
+
     @classmethod
     def setUpTestData(cls):
         super().setUpTestData()
         on_tap_page: OnTapPage = add_wagtail_factory_page(OnTapPageFactory)
-        cls.recipe_index_page: RecipeIndexPage = add_wagtail_factory_page(
-            RecipeIndexPageFactory, parent_page=on_tap_page
-        )
+        cls.recipe_index_page = add_wagtail_factory_page(RecipeIndexPageFactory, parent_page=on_tap_page)
         # cls.recipe_page: RecipePage = add_wagtail_factory_page(RecipePageFactory, parent_page=cls.recipe_index_page)
         # cls.beverage_style: BeverageStyle = cls.recipe_page.style
 
@@ -460,14 +463,17 @@ class BatchLogIndexPageTest(WagtailPageTestCase):
 
 
 class BatchLogPageTest(WagtailPageTestCase):
+    recipe_index_page: RecipeIndexPage
+    batch_log_index_page: BatchLogIndexPage
+
     @classmethod
     def setUpTestData(cls):
         super().setUpTestData()
         on_tap_page: OnTapPage = add_wagtail_factory_page(OnTapPageFactory)
-        cls.recipe_index_page: RecipeIndexPage = add_wagtail_factory_page(
+        cls.recipe_index_page = add_wagtail_factory_page(
             RecipeIndexPageFactory, parent_page=on_tap_page
         )
-        cls.batch_log_index_page: BatchLogIndexPage = add_wagtail_factory_page(
+        cls.batch_log_index_page = add_wagtail_factory_page(
             BatchLogIndexPageFactory, parent_page=on_tap_page
         )
 
@@ -661,7 +667,7 @@ class BatchLogPageTest(WagtailPageTestCase):
 
     def test_calculate_color_srm(self):
         page = self.batch_log_page
-        test_matrix = [
+        test_matrix: list[dict[str, Decimal | int]] = [
             {'volume': Decimal('2.75'), 'expected_srm': 24},
             {'volume': Decimal('3.00'), 'expected_srm': 23},
             {'volume': Decimal('5.00'), 'expected_srm': 16},
@@ -673,7 +679,13 @@ class BatchLogPageTest(WagtailPageTestCase):
 
     def test_get_actual_or_expected_srm(self):
         page = self.batch_log_page
-        test_matrix = [
+
+        class TestParams(TypedDict):
+            volume: None | Decimal
+            expected_srm: int
+            target_post_boil_volume: None | Decimal
+
+        test_matrix: list[TestParams] = [
             {'volume': None, 'expected_srm': 26, 'target_post_boil_volume': None},  # the recipe srm
             {'volume': Decimal('2.75'), 'expected_srm': 24, 'target_post_boil_volume': None},
             # Everything scaled evenly, so srm should match the recipe expected srm
@@ -693,7 +705,15 @@ class BatchLogPageTest(WagtailPageTestCase):
 
     def test_uses_scaled_recipe(self):
         page = self.batch_log_page
-        test_matrix = [
+
+        class TestParams(TypedDict):
+            target_post_boil_volume: None | Decimal
+            batch_size: Decimal
+            batch_volume_units: VolumeUnit
+            recipe_volume_units: VolumeUnit
+            expected: bool
+
+        test_matrix: list[TestParams] = [
             {
                 'target_post_boil_volume': None,
                 'batch_size': Decimal(2.5),
@@ -755,7 +775,15 @@ class BatchLogPageTest(WagtailPageTestCase):
 
     def test_get_context(self):
         request = self.request_factory.get(self.batch_log_page.url)
-        test_matrix = [
+
+        class TestParams(TypedDict):
+            target_post_boil_volume: None | Decimal
+            batch_size: Decimal
+            batch_volume_units: VolumeUnit
+            recipe_volume_units: VolumeUnit
+            expected: bool
+
+        test_matrix: list[TestParams] = [
             # scaled recipe
             {
                 'target_post_boil_volume': Decimal(2.6),

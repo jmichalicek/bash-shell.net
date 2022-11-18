@@ -11,7 +11,7 @@ register = template.Library()
 @register.filter
 @stringfilter
 def render_markdown(value):
-    return markdown.markdown(value, output_format='html5', extensions=settings.MARKDOWN_EXTENSIONS)
+    return markdown.markdown(value, output_format='html', extensions=settings.MARKDOWN_EXTENSIONS)
 
 
 @register.tag(name="markdown")
