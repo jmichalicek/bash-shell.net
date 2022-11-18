@@ -62,6 +62,7 @@ class BatchLogPageFactory(wagtail_factories.PageFactory):
 
     title = factory.Sequence(lambda n: f'Batch {n}')
     recipe_page = factory.SubFactory('bash_shell_net.on_tap.factories.RecipePageFactory')
+    body = wagtail_factories.StreamFieldFactory({'0': wagtail_factories.CharBlockFactory})
 
     class Meta:
         model = BatchLogPage
@@ -117,6 +118,8 @@ class RecipePageFactory(wagtail_factories.PageFactory):
     original_gravity = Decimal("1.050")
     final_gravity = Decimal("1.013")
     ibus_tinseth = Decimal("25.00")
+    introduction = wagtail_factories.StreamFieldFactory({'0': wagtail_factories.CharBlockFactory()})
+    conclusion = wagtail_factories.StreamFieldFactory({'0': wagtail_factories.CharBlockFactory()})
 
     class Meta:
         model = RecipePage

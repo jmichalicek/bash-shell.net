@@ -736,6 +736,7 @@ class RecipePage(IdAndSlugUrlMixin, Page):
         null=True,
         default=None,
         help_text='This will be displayed before the recipe information.',
+        use_json_field=True,
     )
 
     # This will come after the recipe
@@ -745,6 +746,7 @@ class RecipePage(IdAndSlugUrlMixin, Page):
         null=True,
         default=None,
         help_text='This will be displayed after the recipe information.',
+        use_json_field=True,
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -1014,7 +1016,13 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):
         help_text='Expected volume of finished batch prior to transfer to fermenter. Defaults to the target volume of the selected recipe if not specified.',
     )
 
-    body = StreamField(STANDARD_STREAMFIELD_FIELDS, blank=True, null=True, default=None, use_json_field=True)
+    body = StreamField(
+        STANDARD_STREAMFIELD_FIELDS,
+        blank=True,
+        null=True,
+        default=None,
+        use_json_field=True,
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

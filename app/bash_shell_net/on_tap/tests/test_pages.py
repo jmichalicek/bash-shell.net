@@ -6,7 +6,7 @@ from urllib.parse import urlencode
 from django.test import RequestFactory, TestCase
 
 from wagtail.models import Page
-from wagtail.test.utils import WagtailPageTests
+from wagtail.test.utils import WagtailPageTestCase
 from wagtail.test.utils.form_data import inline_formset, nested_form_data, rich_text, streamfield
 
 from bash_shell_net.base.test_utils import add_wagtail_factory_page
@@ -43,10 +43,14 @@ def publish_page(page: Page) -> None:
     revision.publish()
 
 
-class PageTreeTest(WagtailPageTests):
+class PageTreeTest(WagtailPageTestCase):
     """
     Test things like where pages can be created
     """
+
+    def setUp(self):
+        super().setUp()
+        self.login()
 
     def test_page_tree(self):
         self.assertCanCreateAt(RecipeIndexPage, RecipePage)
@@ -55,14 +59,22 @@ class PageTreeTest(WagtailPageTests):
         self.assertAllowedSubpageTypes(BatchLogIndexPage, [BatchLogPage])
 
 
-class OnTapPageTest(WagtailPageTests):
+class OnTapPageTest(WagtailPageTestCase):
     @classmethod
     def setUpTestData(cls):
         super().setUpTestData()
         cls.on_tap_page: OnTapPage = add_wagtail_factory_page(OnTapPageFactory)
         cls.recipe_index_page = add_wagtail_factory_page(RecipeIndexPageFactory, parent_page=cls.on_tap_page)
-        cls.recipe_page = add_wagtail_factory_page(RecipePageFactory, parent_page=cls.recipe_index_page)
-        cls.batch_log_index_page = add_wagtail_factory_page(BatchLogIndexPageFactory, parent_page=cls.on_tap_page)
+
+    def setUp(self):
+        super().setUp()
+        self.login()
+        # Creating these in setUpTestData() blows tests up. Django tests attempt to copy objects created there
+        # and restore them, but that is going very wrong with these nested pages when they
+        # then get used as the parent of yet another page in a test. It works fine when created for each
+        # test here, though.
+        self.recipe_page = add_wagtail_factory_page(RecipePageFactory, parent_page=self.recipe_index_page)
+        self.batch_log_index_page = add_wagtail_factory_page(BatchLogIndexPageFactory, parent_page=self.on_tap_page)
 
     def test_get_request_no_batches(self):
         """
@@ -80,7 +92,6 @@ class OnTapPageTest(WagtailPageTests):
         """
         Test an HTTP GET request to a published OnTapPage with no published batches.
         """
-
         on_tap_batch = add_wagtail_factory_page(
             BatchLogPageFactory,
             parent_page=self.batch_log_index_page,
@@ -236,7 +247,7 @@ class OnTapPageTest(WagtailPageTests):
             self.assertInHTML(expected_coming_soon_batches, r.content.decode('utf-8'))
 
 
-class RecipePageTest(WagtailPageTests):
+class RecipePageTest(WagtailPageTestCase):
     """
     Test the RecipePage
     """
@@ -248,15 +259,21 @@ class RecipePageTest(WagtailPageTests):
         cls.recipe_index_page: RecipeIndexPage = add_wagtail_factory_page(
             RecipeIndexPageFactory, parent_page=on_tap_page
         )
-        cls.recipe_page: RecipePage = add_wagtail_factory_page(RecipePageFactory, parent_page=cls.recipe_index_page)
-        cls.beverage_style: BeverageStyle = cls.recipe_page.style
+        # cls.recipe_page: RecipePage = add_wagtail_factory_page(RecipePageFactory, parent_page=cls.recipe_index_page)
+        # cls.beverage_style: BeverageStyle = cls.recipe_page.style
 
     def setUp(self, *args, **kwargs):
         super().setUp(*args, **kwargs)
+        self.login()
         # Otherwise I get weird errors
         # see https://github.com/jmichalicek/bash-shell.net/commit/928bbd2d35e92aaca293ab0873dd5001c79c80e1#diff-ca9c96ccc066402806c6ad539615860324119d2bb9550592df76f0e803e8ee59R233
         self.recipe_index_page.refresh_from_db()
-        self.recipe_page.refresh_from_db()
+        # Creating these in setUpTestData() blows tests up. Django tests attempt to copy objects created there
+        # and restore them, but that is going very wrong with these nested pages when they
+        # then get used as the parent of yet another page in a test. It works fine when created for each
+        # test here, though.
+        self.recipe_page = add_wagtail_factory_page(RecipePageFactory, parent_page=self.recipe_index_page)
+        self.beverage_style: BeverageStyle = self.recipe_page.style
 
     @unittest.skip('Skipped because I have not written this but at least I will see skipped tests now.')
     def test_calculate_color_srm(self):
@@ -409,7 +426,11 @@ class RecipePageTest(WagtailPageTests):
         )
 
 
-class RecipeIndexPageTest(WagtailPageTests):
+class RecipeIndexPageTest(WagtailPageTestCase):
+    def setUp(self):
+        super().setUp()
+        self.login()
+
     def test_get_request(self):
         """
         Test a GET request to the RecipeIndexPage
@@ -421,7 +442,11 @@ class RecipeIndexPageTest(WagtailPageTests):
         self.assertEqual(r.status_code, 200)
 
 
-class BatchLogIndexPageTest(WagtailPageTests):
+class BatchLogIndexPageTest(WagtailPageTestCase):
+    def setUp(self):
+        super().setUp()
+        self.login()
+
     def test_get_request(self):
         """
         Test a GET request to the BatchLogIndexPage
@@ -434,7 +459,7 @@ class BatchLogIndexPageTest(WagtailPageTests):
         self.assertEqual(r.status_code, 200)
 
 
-class BatchLogPageTest(WagtailPageTests):
+class BatchLogPageTest(WagtailPageTestCase):
     @classmethod
     def setUpTestData(cls):
         super().setUpTestData()
@@ -442,27 +467,28 @@ class BatchLogPageTest(WagtailPageTests):
         cls.recipe_index_page: RecipeIndexPage = add_wagtail_factory_page(
             RecipeIndexPageFactory, parent_page=on_tap_page
         )
-        # cls.recipe_page: RecipePage = add_wagtail_factory_page(RecipePageFactory, parent_page=cls.recipe_index_page)
-        cls.recipe_page = cls.recipe_index_page.add_child(instance=create_default_recipe_page())
         cls.batch_log_index_page: BatchLogIndexPage = add_wagtail_factory_page(
             BatchLogIndexPageFactory, parent_page=on_tap_page
-        )
-        cls.batch_log_page = add_wagtail_factory_page(
-            BatchLogPageFactory,
-            parent_page=cls.batch_log_index_page,
-            slug='on-tap-batch',
-            status='planned',
-            recipe_page=cls.recipe_page,
-            final_gravity=Decimal("0"),
         )
 
     def setUp(self):
         super().setUp()
+        self.login()
         self.request_factory = RequestFactory()
-        # MUST refresh recipe_page before batch_log_page or things go weird and there are
-        # completely random, intermittent failures due to incorrect db data
-        self.recipe_page.refresh_from_db()
-        self.batch_log_page.refresh_from_db()
+        # Due to how django copies objects created in setUpTestData() and restores them
+        # something in changes to that in django 4.1 or wagtail 4.1 broke creating
+        # many page types there when they reference other pages, so now make them here.
+        # This will probably also resolve the old weird errors still documented below.
+        self.recipe_page = self.recipe_index_page.add_child(instance=create_default_recipe_page())
+        self.batch_log_page = add_wagtail_factory_page(
+            BatchLogPageFactory,
+            parent_page=self.batch_log_index_page,
+            slug='on-tap-batch',
+            status='planned',
+            recipe_page=self.recipe_page,
+            final_gravity=Decimal("0"),
+        )
+
         # This test is very strange and randomly fails with the following exception.
         # The actual test which fails from it is random. I now believe that it may be if there was a
         # test failure in the previous run, both using --keepdb, then something is not rolled back properly.
@@ -646,19 +672,18 @@ class BatchLogPageTest(WagtailPageTests):
                 self.assertEqual(Decimal(t['expected_srm']), page.calculate_color_srm())
 
     def test_get_actual_or_expected_srm(self):
-        # page = BatchLogPage.objects.first()
         page = self.batch_log_page
-        # page.post_boil_volume = None  # do I care?
-        # page.save()
         test_matrix = [
             {'volume': None, 'expected_srm': 26, 'target_post_boil_volume': None},  # the recipe srm
             {'volume': Decimal('2.75'), 'expected_srm': 24, 'target_post_boil_volume': None},
             # Everything scaled evenly, so srm should match the recipe expected srm
             {'volume': Decimal('5.00'), 'expected_srm': 26, 'target_post_boil_volume': Decimal('5.00')},
+            # # these are scaling weird after fixes applied to setUp() vs setUpTestData() for django 4.1/wagtail 4.1
             {'volume': Decimal('3.00'), 'expected_srm': 23, 'target_post_boil_volume': None},
             {'volume': Decimal('5.00'), 'expected_srm': 16, 'target_post_boil_volume': None},
         ]
         for t in test_matrix:
+            page.refresh_from_db()
             page.post_boil_volume = t['volume']
             page.target_post_boil_volume = t['target_post_boil_volume']
             with self.subTest(**t):

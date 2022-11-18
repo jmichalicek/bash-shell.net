@@ -94,7 +94,13 @@ class BlogPage(IdAndSlugUrlMixin, Page):
     # )
 
     tags = ClusterTaggableManager(through=BlogPageTag, blank=True)
-    body = StreamField(STANDARD_STREAMFIELD_FIELDS, blank=True, null=True, default=None, use_json_field=True)
+    body = StreamField(
+        STANDARD_STREAMFIELD_FIELDS,
+        blank=True,
+        null=True,
+        default=None,
+        use_json_field=True,
+    )
 
     content_panels = Page.content_panels + [FieldPanel("body")]
     promote_panels = Page.promote_panels + [
