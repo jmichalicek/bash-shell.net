@@ -4,7 +4,6 @@ from enum import Enum
 from typing import Any
 from urllib.parse import urlencode
 
-from django.contrib.postgres.fields import CICharField
 from django.core.paginator import EmptyPage
 from django.core.paginator import Page as PaginatorPage
 from django.core.paginator import PageNotAnInteger, Paginator
@@ -145,7 +144,8 @@ class RecipeHop(ScalableAmountMixin, Orderable, models.Model):
         blank=False,
         null=False,
     )
-    name = CICharField(max_length=100, blank=False)
+    #name = models.CharField(max_length=100, blank=False, db_collation="case_insensitive")
+    name = models.CharField(max_length=100, blank=False)
     # A couple extra digits and decimal places to play it safe
     # Could also go FloatField and just be sure to round consistently
     alpha_acid_percent = models.DecimalField(max_digits=6, decimal_places=3, blank=False, null=False)
@@ -204,6 +204,7 @@ class RecipeFermentable(ScalableAmountMixin, Orderable, models.Model):
 
     # TODO: usage? such as mash, vorlauf, or steep?
 
+    # TODO: Convert to TextChoices
     UNIT_CHOICES = (
         ('g', 'Grams'),
         ('oz', 'Ounces'),
@@ -241,8 +242,10 @@ class RecipeFermentable(ScalableAmountMixin, Orderable, models.Model):
     # like hops, may be good FKd to a separate Fermentable with stats which don't change.
     # Name, Type, and Color belong on a separate Fermentable model, really.
     # there are many other stats which would be handy to keep on a separate model as well but are overkill here
-    name = CICharField(max_length=100, blank=False)
-    maltster = CICharField(max_length=100, blank=True, default='')
+    # name = models.CharField(max_length=100, blank=False,db_collation="case_insensitive")
+    name = models.CharField(max_length=100, blank=False)
+    #maltster = models.CharField(max_length=100, blank=True, default='', db_collation="case_insensitive")
+    maltster = models.CharField(max_length=100, blank=True, default='')
     type = models.CharField(max_length=25, choices=TYPE_CHOICES, blank=False)
     # TODO: Default these to 0 then can clean up null checking and rigging in self.calculate_mcu()
     color = models.DecimalField(
@@ -344,7 +347,8 @@ class RecipeYeast(ScalableAmountMixin, Orderable, models.Model):
     # like hops, may be good FKd to a separate Fermentable with stats which don't change.
     # name and many other details which I am not storing now
     # would be handy to keep on a separate model as well but are overkill here
-    name = CICharField(max_length=100, blank=False)
+    # name = models.CharField(max_length=100, blank=False, db_collation="case_insensitive")
+    name = models.CharField(max_length=100, blank=False)
     amount = models.DecimalField(max_digits=6, decimal_places=3, blank=True, null=True, default=None)
     amount_units = models.CharField(max_length=5, choices=UNIT_CHOICES, blank=True, default='')
     notes = RichTextField(
@@ -444,7 +448,8 @@ class RecipeMiscIngredient(ScalableAmountMixin, Orderable, models.Model):
 
     # Everything below here would likely be good on an FK'd MiscIngredient model
     # maybe use_step belongs per recipe?
-    name = CICharField(max_length=100, blank=False)
+    # name = models.CharField(max_length=100, blank=False, db_collation="case_insensitive")
+    name = models.CharField(max_length=100, blank=False)
     type = models.CharField(max_length=20, choices=TYPE_CHOICES, blank=False)
     use_step = models.CharField(max_length=20, choices=USE_STEP_CHOICES, blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -507,7 +512,8 @@ class BeverageStyle(models.Model):  # type: ignore
         ('mixed', 'Mixed'),
     )
 
-    name = CICharField(max_length=50, blank=False)
+    # name = models.CharField(max_length=50, blank=False, db_collation="case_insensitive")
+    name = models.CharField(max_length=50, blank=False)
     # Several of these are required by BeerXML but appear to be specific to BJCP and may not be part of
     # other style guides, such as AHA
     style_guide = models.CharField(max_length=50, blank=True, default='')
@@ -599,10 +605,10 @@ class BeverageStyle(models.Model):  # type: ignore
     ]
 
     search_fields = Page.search_fields + [
-        index.SearchField('name', partial_match=True),
-        index.SearchField('style_guide', partial_match=True),
-        index.SearchField('notes', partial_match=True),
-        index.SearchField('category', partial_match=True),
+        index.AutocompleteField('name'),
+        index.AutocompleteField('style_guide'),
+        index.AutocompleteField('notes'),
+        index.AutocompleteField('category'),
         index.FilterField('style_guide'),
         index.FilterField('color_min'),
         index.FilterField('color_max'),
@@ -819,17 +825,17 @@ class RecipePage(IdAndSlugUrlMixin, Page):
     ]
 
     search_fields = Page.search_fields + [
-        index.SearchField('notes', partial=True),
-        index.SearchField('introduction', partial=True),
-        index.SearchField('conclusion', partial=True),
-        index.SearchField('brewer', partial=True),
+        index.AutocompleteField('notes'),
+        index.AutocompleteField('introduction'),
+        index.AutocompleteField('conclusion'),
+        index.AutocompleteField('brewer'),
         index.SearchField('style'),
-        index.RelatedFields('hops', [index.SearchField('name', partial_match=True)]),
-        index.RelatedFields('yeasts', [index.SearchField('name', partial_match=True)]),
-        index.RelatedFields('fermentables', [index.SearchField('name', partial_match=True)]),
+        index.RelatedFields('hops', [index.AutocompleteField('name')]),
+        index.RelatedFields('yeasts', [index.AutocompleteField('name')]),
+        index.RelatedFields('fermentables', [index.AutocompleteField('name')]),
         index.RelatedFields(
             'style',
-            (index.SearchField('name', partial_match=True), index.FilterField('name')),
+            (index.AutocompleteField('name'), index.FilterField('name')),
         ),
         index.FilterField('recipe_type'),
         index.FilterField("tags"),
@@ -1062,7 +1068,7 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):
 
     search_fields = Page.search_fields + [
         index.SearchField('recipe_page'),
-        index.SearchField('body', partial_match=True),
+        index.AutocompleteField('body'),
         index.RelatedFields(
             'recipe_page',
             RecipePage.search_fields,

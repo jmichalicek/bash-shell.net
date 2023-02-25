@@ -5,9 +5,6 @@ from sentry_sdk.integrations.django import DjangoIntegration
 
 from .base import *
 
-DEFAULT_FILE_STORAGE = 'config.storages.MediaStorage'
-
-
 sentry_sdk.init(
     dsn=os.environ.get('SENTRY_DSN', ''),
     integrations=[DjangoIntegration()],

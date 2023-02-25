@@ -17,7 +17,6 @@ TESTING = sys.argv[1:2] == ['test']
 # the dir with manage.py
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 CONFIG_DIR = os.path.dirname(os.path.dirname(__file__))
-DEFENSE_LEAGUE = True
 AUTH_USER_MODEL = 'accounts.User'
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 DEBUG = env('DEBUG', bool, False)
@@ -87,8 +86,10 @@ STATICFILES_FINDERS = (
     # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
-# May drop the Compressed part of this to reduce image size since nginz gzips them on the way out
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STORAGES = {
+    "default": {"BACKEND": "config.storages.MediaStorage"},
+    "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
+}
 
 # Make this unique, and don't share it with anybody.
 # it's probably a good idea to override this with the env variable
@@ -171,16 +172,14 @@ INSTALLED_APPS = (
     # Wagtail extra deps
     'modelcluster',
     'taggit',
-    'wagtailfontawesome',
     # Health/monitoring
     # 'watchman',
     # My stuff
-    'internetdefenseleague',
-    'bash_shell_net.accounts.apps.AccountsConfig',
-    'bash_shell_net.blog.apps.BlogConfig',
-    'bash_shell_net.projects.apps.ProjectsConfig',
-    'bash_shell_net.base.apps.BaseConfig',
-    'bash_shell_net.on_tap.apps.OnTapConfig',
+    'bash_shell_net.accounts',
+    'bash_shell_net.blog',
+    'bash_shell_net.projects',
+    'bash_shell_net.base',
+    'bash_shell_net.on_tap',
 )
 
 COVERAGE_PATH_EXCLUDES = [r'.svn', r'.git', r'templates', r'static']
@@ -224,6 +223,7 @@ MARKDOWN_EXTENSIONS = ['markdown.extensions.extra', 'markdown.extensions.toc', '
 
 # wagtail settings
 WAGTAIL_SITE_NAME = 'bash-shell.net'
+WAGTAILADMIN_BASE_URL = env("WAGTAILADMIN_BASE_URL", default="/")
 TAGGIT_CASE_INSENSITIVE = True
 
 structlog.configure(

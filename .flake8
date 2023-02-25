@@ -1,3 +1,4 @@
 [flake8]
+xtend-exclude = docs, documentation, .venv, node_modules, media, .parcel-cache, staticfiles, migrations, app/config/wsgi.py
 max-line-length = 120
-ignore = E121, E123, E501
+extend-ignore = E501
