@@ -177,3 +177,4 @@ class ImageGalleryBlock(blocks.StructBlock):
 
     class Meta:
         template = 'wagtail_blocks/image_gallery.html'
+        icon = 'image'
