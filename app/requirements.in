@@ -7,7 +7,7 @@ django-redis
 django-storages
 gunicorn
 pillow
-psycopg2-binary
+psycopg[c]
 wagtail
 wagtailfontawesome
 whitenoise
@@ -18,7 +18,6 @@ boto3  # for django-storages
 markdown  # markdown in templates - a few things using this still
 pytz  # I'm sure this is pulled in without me specifying it...
 requests # I'm sure this is pulled in without me specifying it...
-https://github.com/jmichalicek/django-internetdefenseleague/archive/master.zip
 
 # Configuration tools
 django-environ
@@ -33,3 +32,4 @@ sentry_sdk
 structlog-sentry
 django-debug-toolbar
 # django-watchman
+ 

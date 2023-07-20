@@ -41,11 +41,11 @@ ENV PATH=/django/bash-shell.net/.venv/bin:$PATH
 # a newer version installed, so update it in the virtualenv
 RUN pip install pip -U
 RUN pip install pip-tools
-COPY --chown=django ./app/requirements.txt ./app/requirements.dev.txt /django/bash-shell.net/
+COPY --chown=django ./app/requirements.txt /django/bash-shell.net/
 WORKDIR /django/bash-shell.net/
 # I am being lazy and installing dev requirements here to make it easy to run my tests on the prod image
 # since they don't add much size
-RUN pip-sync requirements.txt requirements.dev.txt --pip-args '--no-cache-dir --no-deps'
+RUN pip-sync requirements.txt --pip-args '--no-cache-dir --no-deps'
 COPY --chown=django ./app/package.json ./app/package-lock.json /django/bash-shell.net/
 RUN npm ci
 RUN mkdir -p /django/bash-shell.net/config/static
@@ -57,12 +57,16 @@ COPY --chown=django ./app /django/bash-shell.net/
 # Cannot ignore *.map anymore, wagtail has changed things so their *.map files get referenced and so need to exist
 RUN DJANGO_SETTINGS_MODULE=config.settings.production python manage.py collectstatic -l --noinput -i *.scss -i index.js
 RUN rm -rf webpack_assets ./config/static/scss/ ./config/static/js/index.js node_modules
-COPY --chown=django ./wait-for-it.sh /django/bash-shell.net/wait-for-it.sh
+COPY --chown=django ./.flake8 /django/bash-shell.net/.flake8
+RUN ls -a
 
 # Production image
 FROM python:$PYTHON_VERSION-slim-$DISTRO AS prod
 LABEL maintainer="Justin Michalicek <jmichalicek@gmail.com>"
-RUN apt-get update && apt-get install -y --no-install-recommends make && apt-get autoremove && apt-get clean
+RUN apt-get update && apt-get install -y --no-install-recommends \
+  make \
+  libpq5 \
+  && apt-get autoremove && apt-get clean
 RUN useradd -ms /bin/bash -d /django django
 # Instead of copying the whole dir, just copy the known needed bits
 COPY --chown=django --from=build /django/bash-shell.net /django/bash-shell.net/

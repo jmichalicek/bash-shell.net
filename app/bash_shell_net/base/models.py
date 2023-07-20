@@ -19,6 +19,9 @@ class Homepage(Page):
 
     # subpage_types = ['BlogPost']
 
+    def __str__(self) -> str:
+        return self.title
+
     # Defines a method to access the children of the page (e.g. BlogPage
     # objects). On the demo site we use this on the HomePage
     def children(self):
@@ -87,3 +90,6 @@ class StandardPage(Page):
     search_fields = Page.search_fields + [
         index.SearchField('body'),
     ]
+
+    def __str__(self) -> str:
+        return self.title
