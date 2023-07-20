@@ -19,6 +19,10 @@ from bash_shell_net.wagtail_blocks.fields import STANDARD_STREAMFIELD_FIELDS
 class BlogPageTag(TaggedItemBase):
     content_object = ParentalKey("blog.BlogPage", on_delete=models.CASCADE, related_name="tagged_items")
 
+    def __str__(self) -> str:
+        # really should have something with more info here, like what the tag is.
+        return f"{self.content_object} tagged {self.tag}"
+
 
 class BlogPageIndex(RoutablePageMixin, IdAndSlugUrlIndexMixin, Page):
     """
@@ -32,6 +36,9 @@ class BlogPageIndex(RoutablePageMixin, IdAndSlugUrlIndexMixin, Page):
     id_and_slug_url_class = "bash_shell_net.blog.models.BlogPage"
 
     subpage_types = ['blog.BlogPage']
+
+    def __str__(self) -> str:
+        return self.title
 
     # Defines a method to access the children of the page (e.g. BlogPage
     # objects). On the demo site we use this on the HomePage
