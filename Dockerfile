@@ -41,11 +41,11 @@ ENV PATH=/django/bash-shell.net/.venv/bin:$PATH
 # a newer version installed, so update it in the virtualenv
 RUN pip install pip -U
 RUN pip install pip-tools
-COPY --chown=django ./app/requirements.txt ./app/requirements.dev.txt /django/bash-shell.net/
+COPY --chown=django ./app/requirements.txt /django/bash-shell.net/
 WORKDIR /django/bash-shell.net/
 # I am being lazy and installing dev requirements here to make it easy to run my tests on the prod image
 # since they don't add much size
-RUN pip-sync requirements.txt requirements.dev.txt --pip-args '--no-cache-dir --no-deps'
+RUN pip-sync requirements.txt --pip-args '--no-cache-dir --no-deps'
 COPY --chown=django ./app/package.json ./app/package-lock.json /django/bash-shell.net/
 RUN npm ci
 RUN mkdir -p /django/bash-shell.net/config/static
