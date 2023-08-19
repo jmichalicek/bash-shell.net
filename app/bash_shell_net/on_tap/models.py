@@ -197,6 +197,14 @@ class RecipeHop(ScalableAmountMixin, Orderable, models.Model):
         return self.amount
 
 
+class FermentableType(models.TextChoices):
+    GRAIN = "grain", "Grain"
+    DRY_EXTRACT = "dry_extract", "Dry Extract"
+    LIQUID_EXTRACT = "liquid_extract", "Liquid Extract"
+    SUGAR = "sugar", "Sugar"
+    ADJUNCT = "adjunct", "Adjunct"
+
+
 class RecipeFermentable(ScalableAmountMixin, Orderable, models.Model):
     """
     A fermentable such as a grain or malt extract used in a recipe
@@ -215,13 +223,6 @@ class RecipeFermentable(ScalableAmountMixin, Orderable, models.Model):
         ("lb", "Pounds"),
     )
 
-    TYPE_CHOICES = (
-        ("grain", "Grain"),
-        ("dry_extract", "Dry Extract"),
-        ("liquid_extract", "Liquid Extract"),
-        ("sugar", "Sugar"),
-        ("adjunct", "Adjunct"),
-    )
     recipe_page = ParentalKey(
         "on_tap.RecipePage",
         on_delete=models.CASCADE,
@@ -249,7 +250,7 @@ class RecipeFermentable(ScalableAmountMixin, Orderable, models.Model):
     name = models.CharField(max_length=100, blank=False)
     # maltster = models.CharField(max_length=100, blank=True, default='', db_collation="case_insensitive")
     maltster = models.CharField(max_length=100, blank=True, default="")
-    type = models.CharField(max_length=25, choices=TYPE_CHOICES, blank=False)
+    type = models.CharField(max_length=25, choices=FermentableType.choices, blank=False)
     # TODO: Default these to 0 then can clean up null checking and rigging in self.calculate_mcu()
     color = models.DecimalField(
         max_digits=6,
@@ -891,7 +892,7 @@ class RecipePage(IdAndSlugUrlMixin, Page):
         """
         # TODO: not sure where to put this on UI yet.
         weight = Decimal("0")
-        for fermentable in self.fermentables.all():
+        for fermentable in self.fermentables.filter(type=FermentableType.GRAIN):
             weight += fermentable.weight_in_pounds()
         return weight
 
