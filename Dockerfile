@@ -1,5 +1,5 @@
-ARG PYTHON_VERSION=3.11.0
-ARG DISTRO=bullseye
+ARG PYTHON_VERSION=3.11.4
+ARG DISTRO=bookworm
 FROM python:$PYTHON_VERSION-$DISTRO AS dev
 LABEL maintainer="Justin Michalicek <jmichalicek@gmail.com>"
 ENV PYTHONUNBUFFERED=1 DEBIAN_FRONTEND=noninteractive PYTHONFAULTHANDLER=1
@@ -19,9 +19,9 @@ RUN apt-get update && apt-get install -y --allow-unauthenticated \
   telnet \
   postgresql-client \
   nodejs \
+  npm \
   bash-completion \
   && apt-get autoremove && apt-get clean
-RUN npm install -g npm
 RUN pip install -U pip
 RUN useradd -ms /bin/bash -d /django django && echo "django ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 USER django
