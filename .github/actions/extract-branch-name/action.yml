@@ -10,8 +10,9 @@ runs:
     - id: extract_branch
       run: |
         if [ -z ${GITHUB_HEAD_REF+x} ] || [ -z "$GITHUB_HEAD_REF" ]; then
-          echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+          BRANCH=$(echo ${GITHUB_REF#refs/heads/})
         else
-          echo "##[set-output name=branch;]$(echo ${GITHUB_HEAD_REF#refs/heads/})"
+          BRANCH=$(echo ${GITHUB_HEAD_REF#refs/heads/})
         fi
+        echo "branch=$BRANCH" >> $GITHUB_OUTPUT
       shell: bash
