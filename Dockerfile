@@ -1,4 +1,4 @@
-ARG PYTHON_VERSION=3.11.4
+ARG PYTHON_VERSION=3.12.2
 ARG DISTRO=bookworm
 FROM python:$PYTHON_VERSION-$DISTRO AS dev
 LABEL maintainer="Justin Michalicek <jmichalicek@gmail.com>"
@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y --allow-unauthenticated \
   lsb-release \
   && apt-get autoremove && apt-get clean
 
-RUN curl -sL https://deb.nodesource.com/setup_16.x | bash
+RUN curl -sL https://deb.nodesource.com/setup_20.x | bash
 RUN wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O - | apt-key add - \
     && echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" >> /etc/apt/sources.list.d/pgdg.list
 
@@ -19,7 +19,6 @@ RUN apt-get update && apt-get install -y --allow-unauthenticated \
   telnet \
   postgresql-client \
   nodejs \
-  npm \
   bash-completion \
   && apt-get autoremove && apt-get clean
 RUN pip install -U pip
@@ -30,7 +29,6 @@ ENV HOME=/django/ \
     LC_ALL=C.UTF-8 \
     LANG=C.UTF-8 \
     PYTHONIOENCODING=utf-8
-EXPOSE 8000
 
 FROM dev AS build
 # need the venv not in /app/ so that we can relocate it

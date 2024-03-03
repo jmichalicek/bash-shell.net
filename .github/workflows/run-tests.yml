@@ -54,8 +54,8 @@ jobs:
     - name: Tests
       shell: bash
       run: docker compose --profile=ci run --service-ports --rm django-ci python manage.py test --parallel
-  flake8:
-    name: Flake8
+  ruff:
+    name: Ruff
     needs: build_image
     runs-on: ubuntu-latest
     permissions:
@@ -71,8 +71,8 @@ jobs:
     - uses: actions/checkout@v2
     - name: Setup Image
       uses: ./.github/actions/setup-docker-image
-    - name: Flake8
-      run: docker compose --profile=ci run --service-ports --rm django-ci make flake8
+    - name: Ruff
+      run: docker compose --profile=ci run --service-ports --rm django-ci make ruff
   isort:
     name: isort
     needs: build_image

@@ -39,14 +39,13 @@ djhtml-check:
 mypy:
 	mypy --check-untyped-defs .
 
-flake8:
-	flake8 . --select=E9,F63,F7,F82 --show-source --exclude="documentation, .venv, node_modules, media, .parcel-cache, .git, __pycache__, webpack_assets"
-	flake8 --exclude="documentation, .venv, node_modules, media, .parcel-cache, .git, __pycache__, webpack_assets, migrations" bash_shell_net/
+ruff:
+	ruff check .
 
 isort-check:
 	isort --check -q --sg **/migrations/* bash_shell_net/
 
-lint: flake8 isort-check djhtml-check mypy
+lint: ruff isort-check djhtml-check mypy
 
 pyupgrade:
 	find ./ -path '**/.venv' -prune -o -path node_modules -prune -o -path '**/migrations' -prune -o -wholename '*/*.py' -exec pyupgrade --py39-plus '{}' +
