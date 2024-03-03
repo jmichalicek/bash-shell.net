@@ -7,9 +7,10 @@ tblib
 freezegun
 
 # Linting and formatting
-flake8
-flake8-django
-pylint
+# flake8
+# flake8-django
+# pylint
+ruff
 black
 isort
 djhtml
@@ -21,5 +22,6 @@ django-upgrade
 # Static analysis
 mypy
 django-stubs
+django-stubs-ext
 types-Markdown
 types-certifi
