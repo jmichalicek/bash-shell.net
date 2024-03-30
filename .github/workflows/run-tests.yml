@@ -20,12 +20,12 @@ jobs:
       contents: read
       packages: write
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Extract Branch Name
         uses: ./.github/actions/extract-branch-name
         id: extract_branch
       - name: Log in to the Container registry
-        uses: docker/login-action@v1
+        uses: docker/login-action@v3
         with:
           registry: ${{ env.DOCKER_IMAGE_REGISTRY }}
           username: ${{ env.DOCKER_IMAGE_REGISTRY_USER }}
@@ -43,12 +43,12 @@ jobs:
       packages: read
     steps:
     - name: Log in to the Container registry
-      uses: docker/login-action@v1
+      uses: docker/login-action@v3
       with:
         registry: ${{ env.DOCKER_IMAGE_REGISTRY }}
         username: ${{ env.DOCKER_IMAGE_REGISTRY_USER }}
         password: ${{ env.DOCKER_IMAGE_REGISTRY_PASSWORD }}
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Setup Image
       uses: ./.github/actions/setup-docker-image
     - name: Tests
@@ -63,12 +63,12 @@ jobs:
       packages: read
     steps:
     - name: Log in to the Container registry
-      uses: docker/login-action@v1
+      uses: docker/login-action@v3
       with:
         registry: ${{ env.DOCKER_IMAGE_REGISTRY }}
         username: ${{ env.DOCKER_IMAGE_REGISTRY_USER }}
         password: ${{ env.DOCKER_IMAGE_REGISTRY_PASSWORD }}
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Setup Image
       uses: ./.github/actions/setup-docker-image
     - name: Ruff
@@ -82,12 +82,12 @@ jobs:
       packages: read
     steps:
     - name: Log in to the Container registry
-      uses: docker/login-action@v1
+      uses: docker/login-action@v3
       with:
         registry: ${{ env.DOCKER_IMAGE_REGISTRY }}
         username: ${{ env.DOCKER_IMAGE_REGISTRY_USER }}
         password: ${{ env.DOCKER_IMAGE_REGISTRY_PASSWORD }}
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Setup Image
       uses: ./.github/actions/setup-docker-image
     - name: isort
@@ -101,12 +101,12 @@ jobs:
       packages: read
     steps:
     - name: Log in to the Container registry
-      uses: docker/login-action@v1
+      uses: docker/login-action@v3
       with:
         registry: ${{ env.DOCKER_IMAGE_REGISTRY }}
         username: ${{ env.DOCKER_IMAGE_REGISTRY_USER }}
         password: ${{ env.DOCKER_IMAGE_REGISTRY_PASSWORD }}
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Setup Image
       uses: ./.github/actions/setup-docker-image
     - name: djhtml
@@ -120,12 +120,12 @@ jobs:
       packages: read
     steps:
     - name: Log in to the Container registry
-      uses: docker/login-action@v1
+      uses: docker/login-action@v3
       with:
         registry: ${{ env.DOCKER_IMAGE_REGISTRY }}
         username: ${{ env.DOCKER_IMAGE_REGISTRY_USER }}
         password: ${{ env.DOCKER_IMAGE_REGISTRY_PASSWORD }}
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Setup Image
       uses: ./.github/actions/setup-docker-image
     - name: mypy
