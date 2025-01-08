@@ -49,20 +49,16 @@ class BlogPageIndex(RoutablePageMixin, IdAndSlugUrlIndexMixin, Page):
     # date that they were published
     # http://docs.wagtail.io/en/latest/getting_started/tutorial.html#overriding-context
     def get_context(self, request):
-        # not paginated
-        # context = super().get_context(request)
-        # context['posts'] = BlogPost.objects.descendant_of(self).live().order_by('-last_published_at')
-
         # TODO: move this to a mixin similar to django's ListView.  WagtailListView or something.
         # try with pagination
         context = super().get_context(request)
-        posts = BlogPage.objects.descendant_of(self).live().order_by("-last_published_at")
-        paginator = Paginator(posts, 15)  # Show 5 resources per page
+        # Why am I not using self.children()?
+        posts = BlogPage.objects.descendant_of(self).live().order_by("-first_published_at", "-last_published_at")
+        paginator = Paginator(posts, 15)
         page_number = request.GET.get("page")
         try:
             page = paginator.page(page_number)
         except PageNotAnInteger:
-            # If page is not an integer, deliver first page.
             page = paginator.page(1)
         except EmptyPage:
             # If page is out of range (e.g. 9999), deliver last page of results.
