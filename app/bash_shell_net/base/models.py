@@ -1,4 +1,3 @@
-from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db import models
 
 from wagtail.admin.panels import FieldPanel
@@ -6,55 +5,18 @@ from wagtail.fields import StreamField
 from wagtail.models import Page
 from wagtail.search import index
 
-from bash_shell_net.blog.models import BlogPage
+from bash_shell_net.blog.models import BlogPageIndex
 from bash_shell_net.wagtail_blocks.fields import STANDARD_STREAMFIELD_FIELDS
 
 
-class Homepage(Page):
+class Homepage(BlogPageIndex):
     """
     Base homepage for the root of the site
     """
 
-    template = 'base/homepage.html'
-
-    # subpage_types = ['BlogPost']
-
-    def __str__(self) -> str:
-        return self.title
-
-    # Defines a method to access the children of the page (e.g. BlogPage
-    # objects). On the demo site we use this on the HomePage
-    def children(self):
-        return self.get_children().specific().live()
-
-    # Overrides the context to list all child items, that are live, by the
-    # date that they were published
-    # http://docs.wagtail.io/en/latest/getting_started/tutorial.html#overriding-context
-    def get_context(self, request):
-        # not paginated
-        # context = super().get_context(request)
-        # context['posts'] = BlogPost.objects.descendant_of(self).live().order_by('-last_published_at')
-
-        # TODO: move this to a mixin similar to django's ListView.  WagtailListView or something.
-        # try with pagination
-        context = super().get_context(request)
-        posts = BlogPage.objects.live().order_by('-last_published_at')
-        paginator = Paginator(posts, 15)  # Show 5 resources per page
-        page_number = request.GET.get('page')
-        try:
-            page = paginator.page(page_number)
-        except PageNotAnInteger:
-            # If page is not an integer, deliver first page.
-            page = paginator.page(1)
-        except EmptyPage:
-            # If page is out of range (e.g. 9999), deliver last page of results.
-            page = paginator.page(paginator.num_pages)
-
-        # make the variable 'resources' available on the template
-        context['paginator'] = paginator
-        context['posts'] = page.object_list
-        context['page_obj'] = page
-        return context
+    # Just a dummy page because if I set BlogIndexPage to the site root
+    # then it basically breaks everything, because everything needs to be a child
+    # of that.
 
 
 class StandardPage(Page):
@@ -63,17 +25,17 @@ class StandardPage(Page):
     app or browsing tree.
     """
 
-    template = 'base/standard_page.html'
+    template = "base/standard_page.html"
 
-    introduction = models.TextField(help_text='Text to describe the page', blank=True)
+    introduction = models.TextField(help_text="Text to describe the page", blank=True)
 
     image = models.ForeignKey(
-        'wagtailimages.Image',
+        "wagtailimages.Image",
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
-        related_name='+',
-        help_text='Landscape mode only; horizontal width between 1000px and 3000px.',
+        related_name="+",
+        help_text="Landscape mode only; horizontal width between 1000px and 3000px.",
     )
     body = StreamField(
         STANDARD_STREAMFIELD_FIELDS,
@@ -84,11 +46,11 @@ class StandardPage(Page):
     )
 
     content_panels = Page.content_panels + [
-        FieldPanel('body'),
+        FieldPanel("body"),
     ]
 
     search_fields = Page.search_fields + [
-        index.SearchField('body'),
+        index.SearchField("body"),
     ]
 
     def __str__(self) -> str:
