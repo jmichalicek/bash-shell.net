@@ -5,11 +5,11 @@ from wagtail.fields import StreamField
 from wagtail.models import Page
 from wagtail.search import index
 
-from bash_shell_net.blog.models import BlogPageIndex
+from bash_shell_net.blog.models import BlogPageIndexMixin
 from bash_shell_net.wagtail_blocks.fields import STANDARD_STREAMFIELD_FIELDS
 
 
-class Homepage(BlogPageIndex):
+class Homepage(BlogPageIndexMixin, Page):
     """
     Base homepage for the root of the site
     """
@@ -17,6 +17,27 @@ class Homepage(BlogPageIndex):
     # Just a dummy page because if I set BlogIndexPage to the site root
     # then it basically breaks everything, because everything needs to be a child
     # of that.
+    template = 'base/homepage.html'
+
+    # subpage_types = ['BlogPost']
+
+    def __str__(self) -> str:
+        return self.title
+
+    # Defines a method to access the children of the page (e.g. BlogPage
+    # objects). On the demo site we use this on the HomePage
+    def children(self):
+        return self.get_children().specific().live()
+
+    # Overrides the context to list all child items, that are live, by the
+    # date that they were published
+    # http://docs.wagtail.io/en/latest/getting_started/tutorial.html#overriding-context
+    def get_context(self, request):
+        # TODO: move this to a mixin similar to django's ListView.  WagtailListView or something.
+        # try with pagination
+        context = super().get_context(request)
+        # Why am I not using self.children()?
+        return self._get_context(request, context)
 
 
 class StandardPage(Page):

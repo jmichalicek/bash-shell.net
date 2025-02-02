@@ -23,8 +23,27 @@ class BlogPageTag(TaggedItemBase):
         # really should have something with more info here, like what the tag is.
         return f"{self.content_object} tagged {self.tag}"
 
+class BlogPageIndexMixin:
+    def _get_context(self, request, context):
+        posts = BlogPage.objects.descendant_of(self).live().order_by("-first_published_at", "-last_published_at")
+        paginator = Paginator(posts, 15)
+        page_number = request.GET.get("page")
+        try:
+            page = paginator.page(page_number)
+        except PageNotAnInteger:
+            page = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            page = paginator.page(paginator.num_pages)
 
-class BlogPageIndex(RoutablePageMixin, IdAndSlugUrlIndexMixin, Page):
+        # make the variable 'resources' available on the template
+        context["paginator"] = paginator
+        context["posts"] = page.object_list
+        context["page_obj"] = page
+        return context
+
+
+class BlogPageIndex(RoutablePageMixin, IdAndSlugUrlIndexMixin, BlogPageIndexMixin, Page):
     """
     Index page to list blog posts
     """
@@ -53,22 +72,8 @@ class BlogPageIndex(RoutablePageMixin, IdAndSlugUrlIndexMixin, Page):
         # try with pagination
         context = super().get_context(request)
         # Why am I not using self.children()?
-        posts = BlogPage.objects.descendant_of(self).live().order_by("-first_published_at", "-last_published_at")
-        paginator = Paginator(posts, 15)
-        page_number = request.GET.get("page")
-        try:
-            page = paginator.page(page_number)
-        except PageNotAnInteger:
-            page = paginator.page(1)
-        except EmptyPage:
-            # If page is out of range (e.g. 9999), deliver last page of results.
-            page = paginator.page(paginator.num_pages)
+        return self._get_context(request, context)
 
-        # make the variable 'resources' available on the template
-        context["paginator"] = paginator
-        context["posts"] = page.object_list
-        context["page_obj"] = page
-        return context
 
     @route(r"^(?P<id>\d+)/(?P<slug>[-_\w]+)/$", name="blog_post_by_id_and_slug")
     def blog_post_by_id_and_slug(self, request, id, slug, *args, **kwargs) -> HttpResponse:
