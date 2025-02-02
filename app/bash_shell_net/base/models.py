@@ -1,4 +1,3 @@
-from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db import models
 
 from wagtail.admin.panels import FieldPanel
@@ -6,11 +5,11 @@ from wagtail.fields import StreamField
 from wagtail.models import Page
 from wagtail.search import index
 
-from bash_shell_net.blog.models import BlogPage
+from bash_shell_net.blog.models import BlogPageIndexMixin
 from bash_shell_net.wagtail_blocks.fields import STANDARD_STREAMFIELD_FIELDS
 
 
-class Homepage(Page):
+class Homepage(BlogPageIndexMixin, Page):
     """
     Base homepage for the root of the site
     """
@@ -31,30 +30,11 @@ class Homepage(Page):
     # date that they were published
     # http://docs.wagtail.io/en/latest/getting_started/tutorial.html#overriding-context
     def get_context(self, request):
-        # not paginated
-        # context = super().get_context(request)
-        # context['posts'] = BlogPost.objects.descendant_of(self).live().order_by('-last_published_at')
-
         # TODO: move this to a mixin similar to django's ListView.  WagtailListView or something.
         # try with pagination
         context = super().get_context(request)
-        posts = BlogPage.objects.live().order_by('-last_published_at')
-        paginator = Paginator(posts, 15)  # Show 5 resources per page
-        page_number = request.GET.get('page')
-        try:
-            page = paginator.page(page_number)
-        except PageNotAnInteger:
-            # If page is not an integer, deliver first page.
-            page = paginator.page(1)
-        except EmptyPage:
-            # If page is out of range (e.g. 9999), deliver last page of results.
-            page = paginator.page(paginator.num_pages)
-
-        # make the variable 'resources' available on the template
-        context['paginator'] = paginator
-        context['posts'] = page.object_list
-        context['page_obj'] = page
-        return context
+        # Why am I not using self.children()?
+        return self._get_context(request, context)
 
 
 class StandardPage(Page):

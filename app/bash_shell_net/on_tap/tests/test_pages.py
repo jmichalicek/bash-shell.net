@@ -85,9 +85,9 @@ class OnTapPageTest(WagtailPageTestCase):
         """
         r = self.client.get(self.on_tap_page.url)
         self.assertEqual(r.status_code, 200)
-        self.assertQuerysetEqual(r.context['currently_on_tap'], [])
-        self.assertQuerysetEqual(r.context['upcoming_batches'], [])
-        self.assertQuerysetEqual(r.context['past_batches'], [])
+        self.assertQuerySetEqual(r.context['currently_on_tap'], [])
+        self.assertQuerySetEqual(r.context['upcoming_batches'], [])
+        self.assertQuerySetEqual(r.context['past_batches'], [])
         self.assertTrue('page_obj' in r.context)
         self.assertTrue('paginator' in r.context)
 
