@@ -4,6 +4,7 @@ from django.contrib.auth.admin import UserAdmin
 from bash_shell_net.accounts.models import User
 
 
+@admin.register(User)
 class CustomUserAdmin(UserAdmin):
     # The forms to add and change user instances
 
@@ -24,4 +25,3 @@ class CustomUserAdmin(UserAdmin):
     ordering = ('email',)
 
 
-admin.site.register(User, CustomUserAdmin)

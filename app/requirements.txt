@@ -218,9 +218,9 @@ dj-database-url==2.1.0 \
     --hash=sha256:04bc34b248d4c21aaa13e4ab419ae6575ef5f10f3df735ce7da97722caa356e0 \
     --hash=sha256:f2042cefe1086e539c9da39fad5ad7f61173bf79665e69bf7e4de55fa88b135f
     # via -r requirements.in
-django==5.0.3 \
-    --hash=sha256:5c7d748ad113a81b2d44750ccc41edc14e933f56581683db548c9257e078cc83 \
-    --hash=sha256:5fb37580dcf4a262f9258c1f4373819aacca906431f505e4688e37f3a99195df
+django==5.1.5 \
+    --hash=sha256:19bbca786df50b9eca23cee79d495facf55c8f5c54c529d9bf1fe7b5ea086af3 \
+    --hash=sha256:c46eb936111fffe6ec4bc9930035524a8be98ec2f74d8a0ff351226a3e52f459
     # via
     #   -r requirements.in
     #   dj-database-url
@@ -311,9 +311,9 @@ django-treebeard==4.7.1 \
     --hash=sha256:846e462904b437155f76e04907ba4e48480716855f88b898df4122bdcfbd6e98 \
     --hash=sha256:995c7120153ab999898fe3043bbdcd8a0fc77cc106eb94de7350e9d02c885135
     # via wagtail
-django-upgrade==1.16.0 \
-    --hash=sha256:605708b130368ee6dd304df00253f184a7c2f00d1c2dd5d4dac41a31307a2a14 \
-    --hash=sha256:7e473e8ecf234a531448d4a0c1c772746fa831fc762eae3d7578f13f6d847370
+django-upgrade==1.22.2 \
+    --hash=sha256:8643abdde2961e3c60173ebee84f48371ffbec5181095a38cac080947af0d2ae \
+    --hash=sha256:fb76b183b2e8186bb1157734083569a4b754dce2e812c2a723454bd248fb1373
     # via -r requirements.dev.in
 djangorestframework==3.15.1 \
     --hash=sha256:3ccc0475bce968608cf30d07fb17d8e52d1d7fc8bfe779c905463200750cbca6 \

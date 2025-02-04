@@ -10,11 +10,13 @@ class ProjectHostingServiceInline(admin.StackedInline):
 
 
 # admins
+@admin.register(HostingService)
 class HostingServiceAdmin(admin.ModelAdmin):
     list_display = ('name',)
     search_fields = ['name']
 
 
+@admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
     list_display = ('name', 'primary_language', 'created_date', 'modified_date')
     search_fields = ['name', 'description']
@@ -42,12 +44,14 @@ class ProjectAdmin(admin.ModelAdmin):
     inlines = [ProjectHostingServiceInline]
 
 
+@admin.register(ProjectHostingService)
 class ProjectHostingServiceAdmin(admin.ModelAdmin):
     list_display = ('project', 'hosting_service', 'vcs')
     list_filter = ['hosting_service', 'vcs']
     search_fields = ['project__name']
 
 
+@admin.register(ProjectNews)
 class ProjectNewsAdmin(admin.ModelAdmin):
     list_display = ('project', 'title', 'created_date', 'modified_date', 'is_published')
     list_filter = ('project',)
@@ -56,9 +60,5 @@ class ProjectNewsAdmin(admin.ModelAdmin):
     fieldsets = ((None, {'fields': ['title', 'project', 'content', 'is_published']}),)
 
 
-admin.site.register(HostingService, HostingServiceAdmin)
 admin.site.register(Language)
-admin.site.register(Project, ProjectAdmin)
-admin.site.register(ProjectHostingService, ProjectHostingServiceAdmin)
-admin.site.register(ProjectNews, ProjectNewsAdmin)
 admin.site.register(VersionControlSystem)
