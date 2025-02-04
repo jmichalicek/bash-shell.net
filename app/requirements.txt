@@ -237,6 +237,7 @@ django==5.1.5 \
     #   django-stubs
     #   django-stubs-ext
     #   django-taggit
+    #   django-tasks
     #   django-treebeard
     #   djangorestframework
     #   laces
@@ -303,9 +304,14 @@ django-stubs-ext==4.2.7 \
     # via
     #   -r requirements.dev.in
     #   django-stubs
+    #   django-tasks
 django-taggit==5.0.1 \
     --hash=sha256:a0ca8a28b03c4b26c2630fd762cb76ec39b5e41abf727a7b66f897a625c5e647 \
     --hash=sha256:edcd7db1e0f35c304e082a2f631ddac2e16ef5296029524eb792af7430cab4cc
+    # via wagtail
+django-tasks==0.6.1 \
+    --hash=sha256:4086e7eb9e965f79c4ac76f5c3690ec3bf41c461585237b71b4bde729ced9826 \
+    --hash=sha256:b3648e28bdcda809cb7831f3aff98aa46c327025447c462b8943cce9dfbb0281
     # via wagtail
 django-treebeard==4.7.1 \
     --hash=sha256:846e462904b437155f76e04907ba4e48480716855f88b898df4122bdcfbd6e98 \
@@ -356,10 +362,6 @@ honcho==1.1.0 \
     --hash=sha256:a4d6e3a88a7b51b66351ecfc6e9d79d8f4b87351db9ad7e923f5632cc498122f \
     --hash=sha256:c5eca0bded4bef6697a23aec0422fd4f6508ea3581979a3485fc4b89357eb2a9
     # via -r requirements.dev.in
-html5lib==1.1 \
-    --hash=sha256:0d78f8fde1c230e99fe37986a60526d7049ed4bf8a9fadbad5f00e22e58e041d \
-    --hash=sha256:b2e5b40261e20f354d198eae92afc10d750afb487ed5e50f9c4eaf07c184146f
-    # via wagtail
 idna==3.6 \
     --hash=sha256:9ecdbbd083b06798ae1e86adcbfe8ab1479cf864e4ee30fe4e46a003d12491ca \
     --hash=sha256:c05567e9c24a6b9faaa835c4821bad0590fbb9d5779e7caa6e1cc4978e7eb24f
@@ -374,10 +376,6 @@ jmespath==1.0.1 \
     # via
     #   boto3
     #   botocore
-l18n==2021.3 \
-    --hash=sha256:1956e890d673d17135cc20913253c154f6bc1c00266c22b7d503cc1a5a42d848 \
-    --hash=sha256:78495d1df95b6f7dcc694d1ba8994df709c463a1cbac1bf016e1b9a5ce7280b9
-    # via wagtail
 laces==0.1.1 \
     --hash=sha256:ae2c575b9aaa46154e5518c61c9f86f5a9478f753a51e9c5547c7d275d361242 \
     --hash=sha256:e45159c46f6adca33010d34e9af869e57201b70675c6dc088e919b16c89456a4
@@ -593,7 +591,6 @@ pytz==2024.1 \
     # via
     #   -r requirements.in
     #   django-modelcluster
-    #   l18n
 pyupgrade==3.15.2 \
     --hash=sha256:c488d6896c546d25845712ef6402657123008d56c1063174e27aabe15bd6b4e5 \
     --hash=sha256:ce309e0ff8ecb73f56a45f12570be84bbbde9540d13697cacb261a7f595fb1f5
@@ -640,10 +637,7 @@ sentry-sdk==1.44.0 \
 six==1.16.0 \
     --hash=sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926 \
     --hash=sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254
-    # via
-    #   html5lib
-    #   l18n
-    #   python-dateutil
+    # via python-dateutil
 soupsieve==2.5 \
     --hash=sha256:5663d5a7b3bfaeee0bc4372e7fc48f9cff4940b3eec54a6451cc5299f1097690 \
     --hash=sha256:eaa337ff55a1579b6549dc679565eac1e3d000563bcb1c8ab0d0fefbc0c2cdc7
@@ -702,6 +696,7 @@ typing-extensions==4.10.0 \
     #   dj-database-url
     #   django-stubs
     #   django-stubs-ext
+    #   django-tasks
     #   mypy
     #   psycopg
 urllib3==2.2.1 \
@@ -711,25 +706,21 @@ urllib3==2.2.1 \
     #   botocore
     #   requests
     #   sentry-sdk
-wagtail==6.0.1 \
-    --hash=sha256:035475e7e2c752b971336bfea8cfe8ff2c582b1e65abf2a3efb164db2f26004e \
-    --hash=sha256:43cf65ba8430b41e533167ee75b27660a7a86eb06dd8bd79e8d64fb4af057a8b
+wagtail==6.4 \
+    --hash=sha256:3d89b93079711fd1703be057a06cf5d34303a20ee31b2f51384954e21fff38ce \
+    --hash=sha256:3e311f367867741a2a025ae1c6d498c177ae1936a4b92444177804fa713edff0
     # via
     #   -r requirements.in
     #   wagtail-factories
     #   wagtailfontawesome
-wagtail-factories==4.1.0 \
-    --hash=sha256:067e3e1a30721a90eaa1514c8214aae7a171490bbedf026eeaa904a2ed9abcd0 \
-    --hash=sha256:6abd435518fdf0cdd3d9920acb2abbd9005936d6fecfdf6fdde3e404834d4b0c
+wagtail-factories==4.2.1 \
+    --hash=sha256:7a180fc1b074af7a78648c634740ee89d4dbb45899917744b66431d38155b6ae \
+    --hash=sha256:bfe158092982a2b30a3e603c482242905df0b163fc69573fa6f159df482175c5
     # via -r requirements.dev.in
 wagtailfontawesome==1.2.1 \
     --hash=sha256:6c1bd2d6061880848de6374ceb75d38a8c9b0debb1d4aef8a2fdc9d565a8f417 \
     --hash=sha256:76b1c64c4f1042d468a83e4352f74b57bda4a4aa09cdfeeb8663dead5ed632be
     # via -r requirements.in
-webencodings==0.5.1 \
-    --hash=sha256:a0af1213f3c2226497a97e2b3aa01a7e4bee4f403f95be16fc9acd2947514a78 \
-    --hash=sha256:b36a1c245f2d304965eb4e0a82848379241dc04b865afcc4aab16748587e1923
-    # via html5lib
 whitenoise==6.6.0 \
     --hash=sha256:8998f7370973447fac1e8ef6e8ded2c5209a7b1f67c1012866dbcd09681c3251 \
     --hash=sha256:b1f9db9bf67dc183484d760b99f4080185633136a273a03f6436034a41064146
