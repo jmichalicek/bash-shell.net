@@ -95,9 +95,10 @@ class ProjectViewTest(TestCase):
 
     project: Project
 
-    def setUp(self):
-        self.project = ActiveProjectFactory()
-        pnews = ProjectNews(is_published=True, project=self.project, content='fake news!', title='whee')
+    @classmethod
+    def setUpTestData(cls):
+        cls.project = ActiveProjectFactory()
+        pnews = ProjectNews(is_published=True, project=cls.project, content='fake news!', title='whee')
         pnews.full_clean()
         pnews.save()
 
@@ -117,15 +118,16 @@ class ProjectNewsTest(TestCase):
 
     project: Project
 
-    def setUp(self):
-        self.project = ProjectFactory()
+    @classmethod
+    def setUpTestData(cls) -> None:
+        cls.project = ProjectFactory()
 
-    def test_str_method(self):
+    def test_str_method(self) -> None:
         news = ProjectNews(project=self.project)
         news.title = 'News Title'
         self.assertEqual(news.__str__(), 'News Title')
 
-    def test_published_default(self):
+    def test_published_default(self) -> None:
         """Default value of published should be False"""
         news = ProjectNews(project=self.project, content='test')
         news.save()
