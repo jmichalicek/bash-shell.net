@@ -1,7 +1,7 @@
 import copy
 from decimal import Decimal
 from enum import Enum
-from typing import Any
+from typing import Any, TYPE_CHECKING
 from urllib.parse import urlencode
 
 from django.core.paginator import EmptyPage
@@ -19,13 +19,22 @@ from taggit.models import TaggedItemBase
 from wagtail.admin.panels import FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 from wagtail.fields import RichTextField, StreamField
-from wagtail.models import Orderable, Page
+from wagtail.models import Orderable
 from wagtail.search import index
 from wagtail.snippets.models import register_snippet
 
 from bash_shell_net.base.mixins import IdAndSlugUrlIndexMixin, IdAndSlugUrlMixin
 from bash_shell_net.on_tap.forms import BatchLogPageForm
 from bash_shell_net.wagtail_blocks.fields import STANDARD_STREAMFIELD_FIELDS
+
+if TYPE_CHECKING:
+    from wagtail.models import Page as _Page
+
+    class Page(_Page, models.Model):
+        pass
+
+else:
+    from wagtail.models import Page
 
 
 class VolumeToGallonsConverter(Enum):
@@ -643,7 +652,7 @@ class BeverageStyle(models.Model):  # type: ignore
         return ""
 
 
-class RecipePage(IdAndSlugUrlMixin, Page):
+class RecipePage(IdAndSlugUrlMixin, Page): # type: ignore
     """
     Page for a beer recipe
 
@@ -913,18 +922,18 @@ class RecipePage(IdAndSlugUrlMixin, Page):
         # I'm sure I'm doing something unspeakable with that mixin + this here and it's a lot of magic, but it serves my current purpose nicely
         # model_cluster.FakeQuerySet mucks with this stuff, so need to call `get_live_queryset()` first, otherwise this method works once
         # but not on any further calls
-        self.fermentables: create_deferring_foreign_related_manager.DeferringRelatedManager = (
-            self.fermentables.get_live_queryset().annotate(scaled_amount=F("amount") * scale_factor).all()
+        self.fermentables: create_deferring_foreign_related_manager.DeferringRelatedManager = (  # type: ignore
+            self.fermentables.get_live_queryset().annotate(scaled_amount=F("amount") * scale_factor).all() # type: ignore
         )
-        self.hops: create_deferring_foreign_related_manager.DeferringRelatedManager = (
-            self.hops.get_live_queryset().all().annotate(scaled_amount=F("amount") * scale_factor)
+        self.hops: create_deferring_foreign_related_manager.DeferringRelatedManager = (  # type: ignore
+            self.hops.get_live_queryset().all().annotate(scaled_amount=F("amount") * scale_factor)  # type: ignore
         )
 
-        self.miscellaneous_ingredients: create_deferring_foreign_related_manager.DeferringRelatedManager = (
-            self.miscellaneous_ingredients.get_live_queryset().all().annotate(scaled_amount=F("amount") * scale_factor)
+        self.miscellaneous_ingredients: create_deferring_foreign_related_manager.DeferringRelatedManager = (  # type: ignore
+            self.miscellaneous_ingredients.get_live_queryset().all().annotate(scaled_amount=F("amount") * scale_factor)  # type: ignore
         )
-        self.yeasts: create_deferring_foreign_related_manager.DeferringRelatedManager = (
-            self.yeasts.get_live_queryset().all().annotate(scaled_amount=F("amount") * scale_factor)
+        self.yeasts: create_deferring_foreign_related_manager.DeferringRelatedManager = (  # type: ignore
+            self.yeasts.get_live_queryset().all().annotate(scaled_amount=F("amount") * scale_factor)  # type: ignore
         )
 
     def get_scaled_recipe(self, target_volume: Decimal, unit: VolumeUnit) -> "RecipePage":
@@ -957,7 +966,7 @@ class BatchLogPageTag(TaggedItemBase):
         return f"{self.content_object} tagged {self.tag}"
 
 
-class BatchLogPage(IdAndSlugUrlMixin, Page):
+class BatchLogPage(IdAndSlugUrlMixin, Page):  # type: ignore
     """
     A homebrew batch intended for use within Wagtail
 
@@ -1225,7 +1234,7 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):
         return context
 
 
-class OnTapPage(Page):
+class OnTapPage(Page):  # type: ignore
     """
     The main On Tap index
     """
@@ -1343,7 +1352,7 @@ class OnTapPage(Page):
         return context
 
 
-class RecipeIndexPage(RoutablePageMixin, IdAndSlugUrlIndexMixin, Page):
+class RecipeIndexPage(RoutablePageMixin, IdAndSlugUrlIndexMixin, Page):  # type: ignore
     """
     Root index for recipes
     """
@@ -1373,7 +1382,7 @@ class RecipeIndexPage(RoutablePageMixin, IdAndSlugUrlIndexMixin, Page):
         return self.page_by_id_and_slug(request, id, slug, *args, **kwargs)
 
 
-class BatchLogIndexPage(RoutablePageMixin, IdAndSlugUrlIndexMixin, Page):
+class BatchLogIndexPage(RoutablePageMixin, IdAndSlugUrlIndexMixin, Page):  # type: ignore
     """
     Root index for batches.
 

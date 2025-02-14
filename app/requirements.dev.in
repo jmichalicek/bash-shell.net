@@ -25,3 +25,4 @@ django-stubs
 django-stubs-ext
 types-Markdown
 types-certifi
+types-factory-boy

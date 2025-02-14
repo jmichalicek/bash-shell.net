@@ -49,7 +49,7 @@ class CodeBlockTest(WagtailTestUtils, SimpleTestCase):
                 'expected': textwrap.dedent(
                     """
                     <p><code>foo.py:</code></p>
-                    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                    <div class="codehilite"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">foo</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
                         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;foobar&#39;</span><span class="p">)</span>
                     </pre></div>
                     """
