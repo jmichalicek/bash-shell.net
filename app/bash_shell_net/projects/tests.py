@@ -48,16 +48,17 @@ class ProjectTests(TestCase):
 
     project: Project
 
-    def setUp(self):
-        self.project = ProjectFactory()
+    @classmethod
+    def setUpTestData(cls) -> None:
+        cls.project = ProjectFactory()
 
-    def test_str(self):
+    def test_str(self) -> None:
         self.assertEqual(self.project.name, self.project.__str__())
 
-    def test_get_absolute_url(self):
+    def test_get_absolute_url(self) -> None:
         self.assertEqual(self.project.get_absolute_url(), reverse('projects_project_detail', args=[self.project.slug]))
 
-    def test_save(self):
+    def test_save(self) -> None:
         """
         Test that save sets slug if it is not set
         """
@@ -76,10 +77,10 @@ class ProjectListViewTests(TestCase):
 
     project: Project
 
-    def setUp(self):
-        self.project = ActiveProjectFactory()
+    def setUpTestData(cls) -> None:
+        cls.project = ActiveProjectFactory()
 
-    def test_view_not_logged_in(self):
+    def test_view_not_logged_in(self) -> None:
         self.client.logout()
         response = self.client.get(reverse('projects_project_list'))
 

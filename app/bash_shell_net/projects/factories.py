@@ -1,5 +1,6 @@
 import factory
 from factory.django import DjangoModelFactory
+from projects.models import Project
 
 
 class ProjectFactory(DjangoModelFactory):
@@ -8,11 +9,11 @@ class ProjectFactory(DjangoModelFactory):
     description = factory.Sequence(lambda n: 'Description of unpublished post {n:03}')
 
     class Meta:
-        model = 'projects.Project'
+        model = Project
 
 
 class ActiveProjectFactory(ProjectFactory):
     is_active = True
 
     class Meta:
-        model = 'projects.Project'
+        model = Project
