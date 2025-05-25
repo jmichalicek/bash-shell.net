@@ -1,7 +1,7 @@
 import copy
 from decimal import Decimal
 from enum import Enum
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 from urllib.parse import urlencode
 
 from django.core.paginator import EmptyPage
@@ -31,10 +31,12 @@ if TYPE_CHECKING:
     from wagtail.models import Page as _Page
 
     class Page(_Page, models.Model):
-        pass
+        def __str__(self) -> str: ...
 
 else:
     from wagtail.models import Page
+
+# from wagtail.models import Page
 
 
 class VolumeToGallonsConverter(Enum):
@@ -652,7 +654,7 @@ class BeverageStyle(models.Model):  # type: ignore
         return ""
 
 
-class RecipePage(IdAndSlugUrlMixin, Page): # type: ignore
+class RecipePage(IdAndSlugUrlMixin, Page):
     """
     Page for a beer recipe
 
@@ -923,7 +925,7 @@ class RecipePage(IdAndSlugUrlMixin, Page): # type: ignore
         # model_cluster.FakeQuerySet mucks with this stuff, so need to call `get_live_queryset()` first, otherwise this method works once
         # but not on any further calls
         self.fermentables: create_deferring_foreign_related_manager.DeferringRelatedManager = (  # type: ignore
-            self.fermentables.get_live_queryset().annotate(scaled_amount=F("amount") * scale_factor).all() # type: ignore
+            self.fermentables.get_live_queryset().annotate(scaled_amount=F("amount") * scale_factor).all()  # type: ignore
         )
         self.hops: create_deferring_foreign_related_manager.DeferringRelatedManager = (  # type: ignore
             self.hops.get_live_queryset().all().annotate(scaled_amount=F("amount") * scale_factor)  # type: ignore
@@ -1382,7 +1384,7 @@ class RecipeIndexPage(RoutablePageMixin, IdAndSlugUrlIndexMixin, Page):  # type:
         return self.page_by_id_and_slug(request, id, slug, *args, **kwargs)
 
 
-class BatchLogIndexPage(RoutablePageMixin, IdAndSlugUrlIndexMixin, Page):  # type: ignore
+class BatchLogIndexPage(RoutablePageMixin, IdAndSlugUrlIndexMixin, Page):
     """
     Root index for batches.
 

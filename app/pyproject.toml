@@ -1,3 +1,32 @@
+[project]
+name = "bash-shell.net"
+version = "1.0"
+requires-python = ">=3.13"
+dependencies = [
+    "boto3>=1.38.23",
+    "dj-database-url>=2.3.0",
+    "django<=5.1.9", # SubQueryConstraints disappears here and wagtail uses it.
+    "django-csp>=4.0",
+    "django-debug-toolbar>=5.2.0",
+    "django-deprecate-fields>=0.2.1",
+    "django-environ>=0.12.0",
+    "django-redis>=5.4.0",
+    "django-storages>=1.14.6",
+    "django-structlog>=9.1.1",
+    "gunicorn>=23.0.0",
+    "markdown>=3.8",
+    "pillow>=11.2.1",
+    "psycopg[c]>=3.2.9",
+    "pygments>=2.19.1",
+    "requests>=2.32.3",
+    "sentry-sdk>=2.29.1",
+    "structlog>=25.3.0",
+    "structlog-sentry>=2.2.1",
+    "wagtail==6.4",
+    "wagtailfontawesome>=1.2.1",
+    "whitenoise>=6.9.0",
+]
+
 [tool.black]
 line-length = 120
 
@@ -27,5 +56,27 @@ select = ["E4", "E7", "E9", "F", "DJ"]
 #ignore = ["DJ02"]
 
 [tool.ruff.lint.extend-per-file-ignores]
-"config/settings/*.py" = ["F403", "F405"] 
+"config/settings/*.py" = ["F403", "F405"]
 "wsgi.py" = ["E402"]
+
+[dependency-groups]
+dev = [
+    "black>=25.1.0",
+    "coverage>=7.8.2",
+    "django-coverage-plugin>=3.1.0",
+    "django-stubs>=5.2.0",
+    "django-stubs-ext>=5.2.0",
+    "django-upgrade>=1.25.0",
+    "djhtml>=3.0.8",
+    "factory-boy>=3.3.3",
+    "freezegun>=1.5.2",
+    "isort>=6.0.1",
+    "mypy>=1.15.0",
+    "pyupgrade>=3.20.0",
+    "ruff>=0.11.11",
+    "tblib>=3.1.0",
+    "types-certifi>=2021.10.8.3",
+    "types-factory-boy>=0.4.1",
+    "types-markdown>=3.8.0.20250415",
+    "wagtail-factories>=4.2.1",
+]

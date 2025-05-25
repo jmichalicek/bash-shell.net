@@ -8,100 +8,143 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='HostingService',
+            name="HostingService",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50)),
-                ('url', models.URLField(blank=True, max_length=100)),
-                ('icon', models.ImageField(blank=True, upload_to='projects/hostimages/')),
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("name", models.CharField(max_length=50)),
+                ("url", models.URLField(blank=True, max_length=100)),
+                ("icon", models.ImageField(blank=True, upload_to="projects/hostimages/")),
             ],
             options={
-                'ordering': ('name',),
+                "ordering": ("name",),
             },
         ),
         migrations.CreateModel(
-            name='Language',
+            name="Language",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50, unique=True)),
-                ('description', models.TextField()),
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("name", models.CharField(max_length=50, unique=True)),
+                ("description", models.TextField()),
             ],
             options={
-                'ordering': ('name',),
+                "ordering": ("name",),
             },
         ),
         migrations.CreateModel(
-            name='Project',
+            name="Project",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50)),
-                ('description', models.TextField(blank=True, help_text='A description of the project, history, reason for existence, etc.')),
-                ('created_date', models.DateTimeField(auto_now_add=True)),
-                ('modified_date', models.DateTimeField(auto_now=True)),
-                ('is_active', models.BooleanField(default=False, blank=True)),
-                ('slug', models.SlugField(blank=True, default='')),
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("name", models.CharField(max_length=50)),
+                (
+                    "description",
+                    models.TextField(
+                        blank=True, help_text="A description of the project, history, reason for existence, etc."
+                    ),
+                ),
+                ("created_date", models.DateTimeField(auto_now_add=True)),
+                ("modified_date", models.DateTimeField(auto_now=True)),
+                ("is_active", models.BooleanField(default=False, blank=True)),
+                ("slug", models.SlugField(blank=True, default="")),
             ],
             options={
-                'ordering': ('name',),
+                "ordering": ("name",),
             },
         ),
         migrations.CreateModel(
-            name='ProjectHostingService',
+            name="ProjectHostingService",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('project_url', models.URLField(blank=True, help_text='The website URL for the project')),
-                ('public_vcs_uri', models.URLField(blank=True, help_text='The URI that can be used to clone, checkout, etc. the project')),
-                ('vcs', models.IntegerField(choices=[(1, 'git'), (2, 'Mercurial'), (3, 'SVN'), (4, 'CVS')])),
-                ('hosting_service', models.ForeignKey(default=None, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='project_hosting_services', to='projects.HostingService')),
-                ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='project_hosting_services', to='projects.Project')),
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("project_url", models.URLField(blank=True, help_text="The website URL for the project")),
+                (
+                    "public_vcs_uri",
+                    models.URLField(
+                        blank=True, help_text="The URI that can be used to clone, checkout, etc. the project"
+                    ),
+                ),
+                ("vcs", models.IntegerField(choices=[(1, "git"), (2, "Mercurial"), (3, "SVN"), (4, "CVS")])),
+                (
+                    "hosting_service",
+                    models.ForeignKey(
+                        default=None,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="project_hosting_services",
+                        to="projects.HostingService",
+                    ),
+                ),
+                (
+                    "project",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="project_hosting_services",
+                        to="projects.Project",
+                    ),
+                ),
             ],
             options={
-                'ordering': ('project', 'hosting_service'),
+                "ordering": ("project", "hosting_service"),
             },
         ),
         migrations.CreateModel(
-            name='ProjectNews',
+            name="ProjectNews",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_date', models.DateTimeField(auto_now_add=True)),
-                ('modified_date', models.DateTimeField(auto_now=True)),
-                ('title', models.CharField(max_length=100)),
-                ('content', models.TextField(blank=True)),
-                ('is_published', models.BooleanField(db_index=True, default=False, blank=True)),
-                ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='project_news', to='projects.Project')),
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("created_date", models.DateTimeField(auto_now_add=True)),
+                ("modified_date", models.DateTimeField(auto_now=True)),
+                ("title", models.CharField(max_length=100)),
+                ("content", models.TextField(blank=True)),
+                ("is_published", models.BooleanField(db_index=True, default=False, blank=True)),
+                (
+                    "project",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, related_name="project_news", to="projects.Project"
+                    ),
+                ),
             ],
             options={
-                'ordering': ('-created_date',),
+                "ordering": ("-created_date",),
             },
         ),
         migrations.CreateModel(
-            name='VersionControlSystem',
+            name="VersionControlSystem",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=25)),
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("name", models.CharField(max_length=25)),
             ],
             options={
-                'ordering': ('name',),
+                "ordering": ("name",),
             },
         ),
         migrations.AddField(
-            model_name='project',
-            name='hosting_services',
-            field=models.ManyToManyField(blank=True, help_text='Place the code or project may be hosted', related_name='projects', through='projects.ProjectHostingService', to='projects.HostingService'),
+            model_name="project",
+            name="hosting_services",
+            field=models.ManyToManyField(
+                blank=True,
+                help_text="Place the code or project may be hosted",
+                related_name="projects",
+                through="projects.ProjectHostingService",
+                to="projects.HostingService",
+            ),
         ),
         migrations.AddField(
-            model_name='project',
-            name='other_languages',
-            field=models.ManyToManyField(blank=True, related_name='other_language_projects', to='projects.Language'),
+            model_name="project",
+            name="other_languages",
+            field=models.ManyToManyField(blank=True, related_name="other_language_projects", to="projects.Language"),
         ),
         migrations.AddField(
-            model_name='project',
-            name='primary_language',
-            field=models.ForeignKey(blank=True, default=None, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='projects', to='projects.Language'),
+            model_name="project",
+            name="primary_language",
+            field=models.ForeignKey(
+                blank=True,
+                default=None,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="projects",
+                to="projects.Language",
+            ),
         ),
     ]

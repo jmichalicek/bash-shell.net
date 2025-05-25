@@ -8,8 +8,8 @@ class Migration(migrations.Migration):
 
     dependencies = [
         (
-            'base',
-            '0004_auto_20200510_1459',
+            "base",
+            "0004_auto_20200510_1459",
         ),  # not really but django is being dumb about this. It really should be the first one.
     ]
 

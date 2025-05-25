@@ -6,23 +6,41 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('on_tap', '0003_auto_20200809_1819'),
+        ("on_tap", "0003_auto_20200809_1819"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='batchlogpage',
-            name='post_boil_volume',
-            field=models.DecimalField(blank=True, decimal_places=2, default=None, help_text='Volume of finished batch prior to transfer to fermenter.', max_digits=5, null=True),
+            model_name="batchlogpage",
+            name="post_boil_volume",
+            field=models.DecimalField(
+                blank=True,
+                decimal_places=2,
+                default=None,
+                help_text="Volume of finished batch prior to transfer to fermenter.",
+                max_digits=5,
+                null=True,
+            ),
         ),
         migrations.AddField(
-            model_name='batchlogpage',
-            name='volume_in_fermenter',
-            field=models.DecimalField(blank=True, decimal_places=2, default=None, help_text='Volume of finished batch in the fermenter.', max_digits=5, null=True),
+            model_name="batchlogpage",
+            name="volume_in_fermenter",
+            field=models.DecimalField(
+                blank=True,
+                decimal_places=2,
+                default=None,
+                help_text="Volume of finished batch in the fermenter.",
+                max_digits=5,
+                null=True,
+            ),
         ),
         migrations.AddField(
-            model_name='batchlogpage',
-            name='volume_units',
-            field=models.CharField(choices=[('fl_oz', 'Fluid Oz.'), ('l', 'Liters'), ('gal', 'Gallons'), ('quart', 'Quarts')], default='gal', max_length=10),
+            model_name="batchlogpage",
+            name="volume_units",
+            field=models.CharField(
+                choices=[("fl_oz", "Fluid Oz."), ("l", "Liters"), ("gal", "Gallons"), ("quart", "Quarts")],
+                default="gal",
+                max_length=10,
+            ),
         ),
     ]

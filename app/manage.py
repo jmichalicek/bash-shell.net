@@ -8,7 +8,7 @@ if __name__ == "__main__":
         command = sys.argv[1]
     except IndexError:
         command = "help"
-    running_tests = command == 'test'
+    running_tests = command == "test"
 
     if running_tests:
         os.environ["DJANGO_SETTINGS_MODULE"] = "config.settings.test"
@@ -31,7 +31,7 @@ if __name__ == "__main__":
         covered = cov.report()
         cov.erase()
         # Keep bumping this up as I add more tests
-        print('Actual coverage percent:', covered)
+        print("Actual coverage percent:", covered)
         if covered < 75.5:  # Keep this up to date with actual coverage as it increases
-            print('Test coverage below minimum. Failure.')
+            print("Test coverage below minimum. Failure.")
             sys.exit(1)

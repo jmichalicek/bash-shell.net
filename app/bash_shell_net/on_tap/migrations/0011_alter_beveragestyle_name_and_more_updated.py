@@ -5,69 +5,69 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('on_tap', '0010_alter_batchlogpage_body_alter_recipepage_conclusion_and_more'),
-        ('base', '0008_case_insensitive_collation'),
+        ("on_tap", "0010_alter_batchlogpage_body_alter_recipepage_conclusion_and_more"),
+        ("base", "0008_case_insensitive_collation"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='beveragestyle',
-            name='name',
-            field=models.CharField(db_collation='case_insensitive', max_length=50),
+            model_name="beveragestyle",
+            name="name",
+            field=models.CharField(db_collation="case_insensitive", max_length=50),
         ),
         migrations.AlterField(
-            model_name='recipefermentable',
-            name='maltster',
-            field=models.CharField(blank=True, db_collation='case_insensitive', default='', max_length=100),
+            model_name="recipefermentable",
+            name="maltster",
+            field=models.CharField(blank=True, db_collation="case_insensitive", default="", max_length=100),
         ),
         migrations.AlterField(
-            model_name='recipefermentable',
-            name='name',
-            field=models.CharField(db_collation='case_insensitive', max_length=100),
+            model_name="recipefermentable",
+            name="name",
+            field=models.CharField(db_collation="case_insensitive", max_length=100),
         ),
         migrations.AlterField(
-            model_name='recipehop',
-            name='name',
-            field=models.CharField(db_collation='case_insensitive', max_length=100),
+            model_name="recipehop",
+            name="name",
+            field=models.CharField(db_collation="case_insensitive", max_length=100),
         ),
         migrations.AlterField(
-            model_name='recipemiscingredient',
-            name='name',
-            field=models.CharField(db_collation='case_insensitive', max_length=100),
+            model_name="recipemiscingredient",
+            name="name",
+            field=models.CharField(db_collation="case_insensitive", max_length=100),
         ),
         migrations.AlterField(
-            model_name='recipeyeast',
-            name='name',
-            field=models.CharField(db_collation='case_insensitive', max_length=100),
+            model_name="recipeyeast",
+            name="name",
+            field=models.CharField(db_collation="case_insensitive", max_length=100),
         ),
         migrations.AlterField(
-            model_name='recipehop',
-            name='name',
+            model_name="recipehop",
+            name="name",
             field=models.CharField(max_length=100),
         ),
         migrations.AlterField(
-            model_name='recipefermentable',
-            name='maltster',
-            field=models.CharField(blank=True, default='', max_length=100),
+            model_name="recipefermentable",
+            name="maltster",
+            field=models.CharField(blank=True, default="", max_length=100),
         ),
         migrations.AlterField(
-            model_name='recipefermentable',
-            name='name',
+            model_name="recipefermentable",
+            name="name",
             field=models.CharField(max_length=100),
         ),
         migrations.AlterField(
-            model_name='beveragestyle',
-            name='name',
+            model_name="beveragestyle",
+            name="name",
             field=models.CharField(max_length=50),
         ),
         migrations.AlterField(
-            model_name='recipemiscingredient',
-            name='name',
+            model_name="recipemiscingredient",
+            name="name",
             field=models.CharField(max_length=100),
         ),
         migrations.AlterField(
-            model_name='recipeyeast',
-            name='name',
+            model_name="recipeyeast",
+            name="name",
             field=models.CharField(max_length=100),
         ),
     ]

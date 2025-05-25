@@ -2,11 +2,11 @@ from .local import *  # noqa
 
 # faster password hashing in tests.
 PASSWORD_HASHERS = [
-    'django.contrib.auth.hashers.MD5PasswordHasher',
+    "django.contrib.auth.hashers.MD5PasswordHasher",
 ]
 
 # For django_coverage_plugin
-TEMPLATES[0]['OPTIONS']['debug'] = True  # type: ignore
+TEMPLATES[0]["OPTIONS"]["debug"] = True  # type: ignore
 
 WHITENOISE_AUTOREFRESH = True
 WHITENOISE_USE_FINDERS = True

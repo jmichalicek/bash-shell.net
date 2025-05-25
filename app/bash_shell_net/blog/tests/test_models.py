@@ -38,7 +38,7 @@ class BlogPageTest(WagtailPageTestCase):
         Test that BlogPage.
         """
         self.assertEqual(
-            f'/{self.blog_index_page.slug}/{self.blog_page.pk}/{self.blog_page.slug}/',
+            f"/{self.blog_index_page.slug}/{self.blog_page.pk}/{self.blog_page.slug}/",
             self.blog_page.get_id_and_slug_url(),
         )
 

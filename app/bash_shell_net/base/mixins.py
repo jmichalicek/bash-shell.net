@@ -22,7 +22,7 @@ class IdAndSlugUrlIndexMixin:
     # For now, these are tested indirectly because I have written tests for the models which use these mixins.
 
     # I don't like duplicating this on IdAndSlugUrlMixin.  Maybe that can optionally take a IdAndSlugUrlIndexMixin parent class?
-    id_and_slug_url_name: str = ''
+    id_and_slug_url_name: str = ""
     id_and_slug_url_class: type | str
 
     def get_id_and_slug_url_name(self) -> str:
@@ -52,7 +52,7 @@ class IdAndSlugUrlIndexMixin:
         # TODO: I am using this pattern in several places, make it more generic/reusable even if not on the mixin
         assert isinstance(self, Page)
         page = self.get_id_and_slug_url_class().objects.filter(pk=id)
-        if not getattr(request, 'is_preview', False):
+        if not getattr(request, "is_preview", False):
             page = page.live()
         page = page.first()
         if not page:
@@ -62,7 +62,7 @@ class IdAndSlugUrlIndexMixin:
             # TODO: review wagtail docs to see if there is a simple and efficient way to have it just default
             # to the id and slug url for page.url
             return HttpResponseRedirect(
-                self.url + self.reverse_subpage(self.get_id_and_slug_url_name(), kwargs={'id': id, 'slug': page.slug})
+                self.url + self.reverse_subpage(self.get_id_and_slug_url_name(), kwargs={"id": id, "slug": page.slug})
             )
         # or return blog_page.serve(request, *args, **kwargs) ??
         return page.serve(request, *args, **kwargs)
@@ -79,7 +79,7 @@ class IdAndSlugUrlMixin:
     # which includes the blog.tests app so that these models get loaded.
     # For now, these are tested indirectly because I have written tests for the models which use these mixins.
 
-    id_and_slug_url_name = ''
+    id_and_slug_url_name: str = ""
 
     @cached_property
     def id_and_slug_url(self) -> str:
@@ -98,7 +98,7 @@ class IdAndSlugUrlMixin:
             # Could use a property and then a classmethod on IdAndSlugUrlIndexMixin completely avoiding any
             # db lookups, but I feel like I'm overengineering to solve a performance problem which does not yet exist.
             parent_page = self.get_parent().specific
-            if hasattr(parent_page, 'get_id_and_slug_url_name'):
+            if hasattr(parent_page, "get_id_and_slug_url_name"):
                 return parent_page.get_id_and_slug_url_name()
         return self.id_and_slug_url_name
 
@@ -110,9 +110,9 @@ class IdAndSlugUrlMixin:
         # lightly modified from https://github.com/wagtail/wagtail/blob/ba6f94def17b8bbc66002cbc7af60ed422658ff1/wagtail/contrib/routable_page/templatetags/wagtailroutablepage_tags.py#L10
         parent = self.get_parent().specific
         base_url = parent.relative_url(self.get_site())
-        routed_url = parent.reverse_subpage(self.get_id_and_slug_url_name(), kwargs={'id': self.pk, 'slug': self.slug})
-        if not base_url.endswith('/'):
-            base_url += '/'
+        routed_url = parent.reverse_subpage(self.get_id_and_slug_url_name(), kwargs={"id": self.pk, "slug": self.slug})
+        if not base_url.endswith("/"):
+            base_url += "/"
         return base_url + routed_url
 
     def get_full_id_and_slug_url(self, request) -> str:
@@ -127,7 +127,7 @@ class IdAndSlugUrlMixin:
         if url_parts is None or url_parts[1] is None and url_parts[2] is None:
             # page is not routable
             # TODO: possibly should raise exception
-            return ''
+            return ""
 
         site_id, root_url, page_path = url_parts
 
@@ -141,9 +141,9 @@ class IdAndSlugUrlMixin:
         assert isinstance(self, Page)
         return [
             {
-                'location': self.get_full_id_and_slug_url(request=request),
+                "location": self.get_full_id_and_slug_url(request=request),
                 # fall back on latest_revision_created_at if last_published_at is null
                 # (for backwards compatibility from before last_published_at was added)
-                'lastmod': (self.last_published_at or self.latest_revision_created_at),
+                "lastmod": (self.last_published_at or self.latest_revision_created_at),
             }
         ]

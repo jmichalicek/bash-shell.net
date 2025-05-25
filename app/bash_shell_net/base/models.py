@@ -1,22 +1,21 @@
-from typing import TYPE_CHECKING
 from django.db import models
 
 from wagtail.admin.panels import FieldPanel
 from wagtail.fields import StreamField
+from wagtail.models import Page
 from wagtail.search import index
 
 from bash_shell_net.blog.models import BlogPageIndexMixin
 from bash_shell_net.wagtail_blocks.fields import STANDARD_STREAMFIELD_FIELDS
 
+# if TYPE_CHECKING:
+#     from wagtail.models import Page as _Page
 
-if TYPE_CHECKING:
-    from wagtail.models import Page as _Page
+#     class Page(_Page, models.Model):
+#         pass
+# else:
+#     from wagtail.models import Page
 
-    class Page(_Page, models.Model):
-        pass
-else:
-    from wagtail.models import Page
-    
 
 class Homepage(BlogPageIndexMixin, Page):
     """
@@ -26,7 +25,7 @@ class Homepage(BlogPageIndexMixin, Page):
     # Just a dummy page because if I set BlogIndexPage to the site root
     # then it basically breaks everything, because everything needs to be a child
     # of that.
-    template = 'base/homepage.html'
+    template = "base/homepage.html"
 
     # subpage_types = ['BlogPost']
 

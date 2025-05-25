@@ -1,8 +1,12 @@
 from .base import *
 import structlog
 
-WAGTAIL_SITE_NAME = 'bash-shell.net development'
-CACHES = {'default': {'BACKEND': 'django.core.cache.backends.dummy.DummyCache',}}
+WAGTAIL_SITE_NAME = "bash-shell.net development"
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+    }
+}
 DEBUG = True
 SECURE_SSL_REDIRECT = False
 SESSION_COOKIE_SECURE = False
@@ -28,31 +32,49 @@ structlog.configure(
 )
 
 LOGGING = {
-    'version': 1,
+    "version": 1,
     # 'disable_existing_loggers': True,
-    'disable_existing_loggers': False,
-    'root': {'level': 'WARN', 'handlers': ['console_key_value'],},
-    'formatters': {
-        'verbose': {'format': '%(levelname)s %(asctime)s %(module)s ' '%(process)d %(thread)d %(message)s'},
+    "disable_existing_loggers": False,
+    "root": {
+        "level": "WARN",
+        "handlers": ["console_key_value"],
+    },
+    "formatters": {
+        "verbose": {"format": "%(levelname)s %(asctime)s %(module)s " "%(process)d %(thread)d %(message)s"},
         "json_formatter": {
             "()": structlog.stdlib.ProcessorFormatter,
             "processor": structlog.processors.JSONRenderer(),
         },
-        "plain_console": {"()": structlog.stdlib.ProcessorFormatter, "processor": structlog.dev.ConsoleRenderer(),},
+        "plain_console": {
+            "()": structlog.stdlib.ProcessorFormatter,
+            "processor": structlog.dev.ConsoleRenderer(),
+        },
         "key_value": {
             "()": structlog.stdlib.ProcessorFormatter,
-            "processor": structlog.processors.KeyValueRenderer(key_order=['timestamp', 'level', 'event', 'logger']),
+            "processor": structlog.processors.KeyValueRenderer(key_order=["timestamp", "level", "event", "logger"]),
         },
     },
-    'handlers': {
-        'console_json': {'level': 'DEBUG', 'class': 'logging.StreamHandler', 'formatter': 'json_formatter'},
-        'console_plain': {'level': 'DEBUG', 'class': 'logging.StreamHandler', 'formatter': 'plain_console'},
-        'console_key_value': {'level': 'DEBUG', 'class': 'logging.StreamHandler', 'formatter': 'key_value'},
+    "handlers": {
+        "console_json": {"level": "DEBUG", "class": "logging.StreamHandler", "formatter": "json_formatter"},
+        "console_plain": {"level": "DEBUG", "class": "logging.StreamHandler", "formatter": "plain_console"},
+        "console_key_value": {"level": "DEBUG", "class": "logging.StreamHandler", "formatter": "key_value"},
     },
-    'loggers': {
-        'django': {'level': 'INFO', 'handlers': ['console_key_value'], 'propagate': False,},
-        'django.request': {'handlers': ['console_key_value'], 'level': 'DEBUG', 'propagate': False,},
-        'django.server': {'handlers': ['console_key_value'], 'level': 'DEBUG', 'propagate': False,},
+    "loggers": {
+        "django": {
+            "level": "INFO",
+            "handlers": ["console_key_value"],
+            "propagate": False,
+        },
+        "django.request": {
+            "handlers": ["console_key_value"],
+            "level": "DEBUG",
+            "propagate": False,
+        },
+        "django.server": {
+            "handlers": ["console_key_value"],
+            "level": "DEBUG",
+            "propagate": False,
+        },
         # Log SQL queries - noisy, but sometimes useful
         # 'django.db.backends': {'handlers': ['console_plain'], 'level': 'DEBUG', 'propagate': False,},
     },

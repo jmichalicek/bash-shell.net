@@ -29,7 +29,7 @@ from bash_shell_net.on_tap.models import (
     VolumeUnit,
 )
 
-DATE_FORMAT = '%B %d, %Y'
+DATE_FORMAT = "%B %d, %Y"
 
 # TODO: These tests are a bit slow, I suspect due to creating pages and then publishing them separately
 # rather than just creating already published pages. Will sort this out when I implement factory_boy
@@ -40,7 +40,7 @@ def publish_page(page: Page) -> None:
     """
     Publish the latest revision of a page
     """
-    revision = page.revisions.latest('id')
+    revision = page.revisions.latest("id")
     revision.publish()
 
 
@@ -85,11 +85,11 @@ class OnTapPageTest(WagtailPageTestCase):
         """
         r = self.client.get(self.on_tap_page.url)
         self.assertEqual(r.status_code, 200)
-        self.assertQuerySetEqual(r.context['currently_on_tap'], [])
-        self.assertQuerySetEqual(r.context['upcoming_batches'], [])
-        self.assertQuerySetEqual(r.context['past_batches'], [])
-        self.assertTrue('page_obj' in r.context)
-        self.assertTrue('paginator' in r.context)
+        self.assertQuerySetEqual(r.context["currently_on_tap"], [])
+        self.assertQuerySetEqual(r.context["upcoming_batches"], [])
+        self.assertQuerySetEqual(r.context["past_batches"], [])
+        self.assertTrue("page_obj" in r.context)
+        self.assertTrue("paginator" in r.context)
 
     def test_get_request_with_batches(self):
         """
@@ -98,39 +98,39 @@ class OnTapPageTest(WagtailPageTestCase):
         on_tap_batch = add_wagtail_factory_page(
             BatchLogPageFactory,
             parent_page=self.batch_log_index_page,
-            slug='on-tap-batch',
-            brewed_date='2020-07-10',
-            packaged_date='2020-07-25',
-            on_tap_date='2020-07-25',
-            status='complete',
+            slug="on-tap-batch",
+            brewed_date="2020-07-10",
+            packaged_date="2020-07-25",
+            on_tap_date="2020-07-25",
+            status="complete",
             recipe_page=self.recipe_page,
         )
 
         planned_batch = add_wagtail_factory_page(
             BatchLogPageFactory,
             parent_page=self.batch_log_index_page,
-            slug='planned-batch',
-            status='planned',
+            slug="planned-batch",
+            status="planned",
             recipe_page=self.recipe_page,
         )
 
         fermenting_batch = add_wagtail_factory_page(
             BatchLogPageFactory,
             parent_page=self.batch_log_index_page,
-            slug='fermenting-batch',
-            status='fermenting',
-            brewed_date='2020-06-10',
+            slug="fermenting-batch",
+            status="fermenting",
+            brewed_date="2020-06-10",
             recipe_page=self.recipe_page,
         )
 
         previous_batch = add_wagtail_factory_page(
             BatchLogPageFactory,
             parent_page=self.batch_log_index_page,
-            brewed_date='2020-06-10',
-            packaged_date='2020-06-25',
-            on_tap_date='2020-06-25',
-            off_tap_date='2020-07-25',
-            status='complete',
+            brewed_date="2020-06-10",
+            packaged_date="2020-06-25",
+            on_tap_date="2020-06-25",
+            off_tap_date="2020-07-25",
+            status="complete",
             recipe_page=self.recipe_page,
         )
 
@@ -138,15 +138,15 @@ class OnTapPageTest(WagtailPageTestCase):
 
         r = self.client.get(page.url)
         self.assertEqual(r.status_code, 200)
-        self.assertEqual(list(r.context['currently_on_tap']), [on_tap_batch])
-        self.assertEqual(list(r.context['upcoming_batches']), [fermenting_batch, planned_batch])
-        self.assertEqual(list(r.context['past_batches']), [previous_batch])
-        self.assertTrue('page_obj' in r.context)
-        self.assertTrue('paginator' in r.context)
+        self.assertEqual(list(r.context["currently_on_tap"]), [on_tap_batch])
+        self.assertEqual(list(r.context["upcoming_batches"]), [fermenting_batch, planned_batch])
+        self.assertEqual(list(r.context["past_batches"]), [previous_batch])
+        self.assertTrue("page_obj" in r.context)
+        self.assertTrue("paginator" in r.context)
 
         with self.subTest(scaled_recipe=False):
             # TODO: Test the whole block of html for this which would allow verifying that it's in the right place?
-            expected_on_tap_batches = f'''
+            expected_on_tap_batches = f"""
                 <div class="col-md-4 col-12 mt-3 mt-md-0 pr-0">
                     <div class="card currently-on-tap">
                         <div class="card-header text-center">
@@ -162,9 +162,9 @@ class OnTapPageTest(WagtailPageTestCase):
                         </div>
                     </div>
                 </div>
-            '''
+            """
 
-            expected_coming_soon_batches = f'''
+            expected_coming_soon_batches = f"""
             <tbody>
                 <tr>
                 <td>
@@ -188,9 +188,9 @@ class OnTapPageTest(WagtailPageTestCase):
                 <td></td>
                 </tr>
             </tbody>
-            '''
-            self.assertInHTML(expected_on_tap_batches, r.content.decode('utf-8'))
-            self.assertInHTML(expected_coming_soon_batches, r.content.decode('utf-8'))
+            """
+            self.assertInHTML(expected_on_tap_batches, r.content.decode("utf-8"))
+            self.assertInHTML(expected_coming_soon_batches, r.content.decode("utf-8"))
 
         # now test the html with a scaled recipe
         for b in [on_tap_batch, fermenting_batch, planned_batch]:
@@ -202,7 +202,7 @@ class OnTapPageTest(WagtailPageTestCase):
         r = self.client.get(page.url)
 
         with self.subTest(scaled_recipe=True):
-            expected_on_tap_batches = f'''
+            expected_on_tap_batches = f"""
                 <div class="col-md-4 col-12 mt-3 mt-md-0 pr-0">
                     <div class="card currently-on-tap">
                         <div class="card-header text-center">
@@ -218,9 +218,9 @@ class OnTapPageTest(WagtailPageTestCase):
                         </div>
                     </div>
                 </div>
-            '''
+            """
 
-            expected_coming_soon_batches = f'''
+            expected_coming_soon_batches = f"""
             <tbody>
                 <tr>
                 <td>
@@ -244,10 +244,10 @@ class OnTapPageTest(WagtailPageTestCase):
                 <td></td>
                 </tr>
             </tbody>
-            '''
+            """
 
-            self.assertInHTML(expected_on_tap_batches, r.content.decode('utf-8'))
-            self.assertInHTML(expected_coming_soon_batches, r.content.decode('utf-8'))
+            self.assertInHTML(expected_on_tap_batches, r.content.decode("utf-8"))
+            self.assertInHTML(expected_coming_soon_batches, r.content.decode("utf-8"))
 
 
 class RecipePageTest(WagtailPageTestCase):
@@ -278,7 +278,7 @@ class RecipePageTest(WagtailPageTestCase):
         self.recipe_page = add_wagtail_factory_page(RecipePageFactory, parent_page=self.recipe_index_page)
         self.beverage_style: BeverageStyle = self.recipe_page.style
 
-    @unittest.skip('Skipped because I have not written this but at least I will see skipped tests now.')
+    @unittest.skip("Skipped because I have not written this but at least I will see skipped tests now.")
     def test_calculate_color_srm(self):
         pass
 
@@ -290,13 +290,13 @@ class RecipePageTest(WagtailPageTestCase):
         # TODO: More tests - one with minimum post data one with everything.
         form_data = nested_form_data(
             {
-                'title': 'Test Case Recipe',
-                'slug': 'test-case-recipe',
-                'seo_title': '',
-                'search_description': '',
-                'go_live_at': '',
-                'expire_at': '',
-                'name': 'Test Case Recipe',
+                "title": "Test Case Recipe",
+                "slug": "test-case-recipe",
+                "seo_title": "",
+                "search_description": "",
+                "go_live_at": "",
+                "expire_at": "",
+                "name": "Test Case Recipe",
                 "short_description": "Test Recipe",
                 "recipe_type": "all_grain",
                 "style": self.beverage_style.pk,
@@ -334,7 +334,7 @@ class RecipePageTest(WagtailPageTestCase):
             },
         )
         self.assertCanCreate(self.recipe_index_page, RecipePage, form_data)
-        page = RecipePage.objects.filter(slug='test-case-recipe').first()
+        page = RecipePage.objects.filter(slug="test-case-recipe").first()
         publish_page(page)
         page.refresh_from_db()
         # Not 100% certain this is a super useful test with wagtail
@@ -348,7 +348,7 @@ class RecipePageTest(WagtailPageTestCase):
         """
         page = self.recipe_page
         # /on-tap/recipes/<pk>/<slug>/
-        self.assertEqual(f'{self.recipe_index_page.get_url()}{page.pk}/{page.slug}/', page.get_id_and_slug_url())
+        self.assertEqual(f"{self.recipe_index_page.get_url()}{page.pk}/{page.slug}/", page.get_id_and_slug_url())
 
     def test_request_by_id_and_slug_route(self):
         # Technically a method/route on RecipePageIndex but it is to route to this model... :shrug:
@@ -366,7 +366,7 @@ class RecipePageTest(WagtailPageTestCase):
         page = self.recipe_page
 
         url = page.get_id_and_slug_url()
-        url = f'{url[:-1]}1/'
+        url = f"{url[:-1]}1/"
         r = self.client.get(url)
         self.assertRedirects(
             r,
@@ -381,7 +381,7 @@ class RecipePageTest(WagtailPageTestCase):
         # the relationships/managers for the reverse foreign keys
         scaled_recipe = copy.copy(self.recipe_page)
         scaled_recipe.scale_to_volume(
-            target_volume=scaled_recipe.batch_size * Decimal('2.00'), unit=VolumeUnit(scaled_recipe.volume_units)
+            target_volume=scaled_recipe.batch_size * Decimal("2.00"), unit=VolumeUnit(scaled_recipe.volume_units)
         )
         self.assertEqual(self.recipe_page.batch_size * 2, scaled_recipe.batch_size)
         self.assertEqual(
@@ -406,7 +406,7 @@ class RecipePageTest(WagtailPageTestCase):
         Test that recipe_page.get_scaled_recipe() returns a new instance of RecipePage which has been scaled to the specified volume
         """
         scaled_recipe = self.recipe_page.get_scaled_recipe(
-            target_volume=self.recipe_page.batch_size * Decimal('2.00'), unit=VolumeUnit(self.recipe_page.volume_units)
+            target_volume=self.recipe_page.batch_size * Decimal("2.00"), unit=VolumeUnit(self.recipe_page.volume_units)
         )
         self.assertEqual(self.recipe_page.pk, scaled_recipe.pk)
         self.assertFalse(self.recipe_page is scaled_recipe)
@@ -470,12 +470,8 @@ class BatchLogPageTest(WagtailPageTestCase):
     def setUpTestData(cls):
         super().setUpTestData()
         on_tap_page: OnTapPage = add_wagtail_factory_page(OnTapPageFactory)
-        cls.recipe_index_page = add_wagtail_factory_page(
-            RecipeIndexPageFactory, parent_page=on_tap_page
-        )
-        cls.batch_log_index_page = add_wagtail_factory_page(
-            BatchLogIndexPageFactory, parent_page=on_tap_page
-        )
+        cls.recipe_index_page = add_wagtail_factory_page(RecipeIndexPageFactory, parent_page=on_tap_page)
+        cls.batch_log_index_page = add_wagtail_factory_page(BatchLogIndexPageFactory, parent_page=on_tap_page)
 
     def setUp(self):
         super().setUp()
@@ -489,8 +485,8 @@ class BatchLogPageTest(WagtailPageTestCase):
         self.batch_log_page = add_wagtail_factory_page(
             BatchLogPageFactory,
             parent_page=self.batch_log_index_page,
-            slug='on-tap-batch',
-            status='planned',
+            slug="on-tap-batch",
+            status="planned",
             recipe_page=self.recipe_page,
             final_gravity=Decimal("0"),
         )
@@ -528,7 +524,7 @@ class BatchLogPageTest(WagtailPageTestCase):
         r = self.client.get(self.batch_log_page.full_url)
         self.assertEqual(200, r.status_code)
         # todo: tests for brewed, packaged, on tap, etc to validate those dates are in correctly
-        expected_basic_details_html = f'''
+        expected_basic_details_html = f"""
         <div class="card row">
           <div class="card-body">
             <ul class="list-unstyled">
@@ -539,14 +535,14 @@ class BatchLogPageTest(WagtailPageTestCase):
             </ul>
           </div>
         </div>
-        '''
-        self.assertInHTML(expected_basic_details_html, r.content.decode('utf-8'))
+        """
+        self.assertInHTML(expected_basic_details_html, r.content.decode("utf-8"))
 
         # test scaled
         self.batch_log_page.target_post_boil_volume = self.batch_log_page.recipe_page.batch_size * 2
         self.batch_log_page.save()
         r = self.client.get(self.batch_log_page.full_url)
-        expected_basic_details_html = f'''
+        expected_basic_details_html = f"""
         <div class="card row">
           <div class="card-body">
             <ul class="list-unstyled">
@@ -557,8 +553,8 @@ class BatchLogPageTest(WagtailPageTestCase):
             </ul>
           </div>
         </div>
-        '''
-        self.assertInHTML(expected_basic_details_html, r.content.decode('utf-8'))
+        """
+        self.assertInHTML(expected_basic_details_html, r.content.decode("utf-8"))
 
     def test_can_create_page(self):
         """
@@ -567,22 +563,22 @@ class BatchLogPageTest(WagtailPageTestCase):
         # TODO: More tests - one with minimum post data one with everything.
         form_data = nested_form_data(
             {
-                'title': 'Test Case Batch',
-                'slug': 'test-case-batch',
-                'seo_title': '',
-                'search_description': '',
-                'go_live_at': '',
-                'expire_at': '',
-                'name': 'Brewing The Test Case Recipe',
-                'recipe_page': self.recipe_page.pk,
-                'brewed_date': '2020-07-10',
-                'packaged_date': '2020-07-25',
-                'on_tap_date': '2020-07-25',
-                'off_tap_date': '',
-                'original_gravity': 1.050,
-                'final_gravity': 1.016,
-                'status': 'complete',
-                'body': streamfield(
+                "title": "Test Case Batch",
+                "slug": "test-case-batch",
+                "seo_title": "",
+                "search_description": "",
+                "go_live_at": "",
+                "expire_at": "",
+                "name": "Brewing The Test Case Recipe",
+                "recipe_page": self.recipe_page.pk,
+                "brewed_date": "2020-07-10",
+                "packaged_date": "2020-07-25",
+                "on_tap_date": "2020-07-25",
+                "off_tap_date": "",
+                "original_gravity": 1.050,
+                "final_gravity": 1.016,
+                "status": "complete",
+                "body": streamfield(
                     [
                         (
                             "paragraph",
@@ -590,13 +586,13 @@ class BatchLogPageTest(WagtailPageTestCase):
                         )
                     ]
                 ),
-                'volume_in_fermenter': 2.75,
-                'volume_units': 'gal',
-                'target_post_boil_volume': '',
+                "volume_in_fermenter": 2.75,
+                "volume_units": "gal",
+                "target_post_boil_volume": "",
             },
         )
         self.assertCanCreate(self.batch_log_index_page, BatchLogPage, form_data)
-        page = BatchLogPage.objects.filter(slug='test-case-batch').first()
+        page = BatchLogPage.objects.filter(slug="test-case-batch").first()
         publish_page(page)
         page.refresh_from_db()
         r = self.client.get(page.url)
@@ -618,7 +614,7 @@ class BatchLogPageTest(WagtailPageTestCase):
         page = self.batch_log_page
 
         url = page.get_id_and_slug_url()
-        url = f'{url[:-1]}1/'
+        url = f"{url[:-1]}1/"
         r = self.client.get(url)
         self.assertRedirects(
             r,
@@ -631,18 +627,18 @@ class BatchLogPageTest(WagtailPageTestCase):
         """
         # page = BatchLogPage.objects.first()
         page = self.batch_log_page
-        self.assertEqual(f'{self.batch_log_index_page.get_url()}{page.pk}/{page.slug}/', page.get_id_and_slug_url())
+        self.assertEqual(f"{self.batch_log_index_page.get_url()}{page.pk}/{page.slug}/", page.get_id_and_slug_url())
 
     def test_fermenter_volume_as_gallons(self):
         expected_conversion = {
             VolumeUnit.GALLON: Decimal(1),
-            VolumeUnit.FLUID_OZ: Decimal('0.0078125'),
-            VolumeUnit.QUART: Decimal('0.25'),
-            VolumeUnit.LITER: Decimal('0.26417287'),
+            VolumeUnit.FLUID_OZ: Decimal("0.0078125"),
+            VolumeUnit.QUART: Decimal("0.25"),
+            VolumeUnit.LITER: Decimal("0.26417287"),
         }
         # page = BatchLogPage.objects.first()
         page = self.batch_log_page
-        base_volume = Decimal('2.75')
+        base_volume = Decimal("2.75")
         for unit in [VolumeUnit.GALLON, VolumeUnit.FLUID_OZ, VolumeUnit.QUART, VolumeUnit.LITER]:
             page.volume_in_fermenter = Decimal(2.75) / expected_conversion[unit]
             page.volume_units = unit.value
@@ -652,13 +648,13 @@ class BatchLogPageTest(WagtailPageTestCase):
     def test_post_boil_volume_as_gallons(self):
         expected_conversion = {
             VolumeUnit.GALLON: Decimal(1),
-            VolumeUnit.FLUID_OZ: Decimal('0.0078125'),
-            VolumeUnit.QUART: Decimal('0.25'),
-            VolumeUnit.LITER: Decimal('0.26417287'),
+            VolumeUnit.FLUID_OZ: Decimal("0.0078125"),
+            VolumeUnit.QUART: Decimal("0.25"),
+            VolumeUnit.LITER: Decimal("0.26417287"),
         }
         # page = BatchLogPage.objects.first()
         page = self.batch_log_page
-        base_volume = Decimal('2.75')
+        base_volume = Decimal("2.75")
         for unit in [VolumeUnit.GALLON, VolumeUnit.FLUID_OZ, VolumeUnit.QUART, VolumeUnit.LITER]:
             page.post_boil_volume = Decimal(2.75) / expected_conversion[unit]
             page.volume_units = unit.value
@@ -668,14 +664,14 @@ class BatchLogPageTest(WagtailPageTestCase):
     def test_calculate_color_srm(self):
         page = self.batch_log_page
         test_matrix: list[dict[str, Decimal | int]] = [
-            {'volume': Decimal('2.75'), 'expected_srm': 24},
-            {'volume': Decimal('3.00'), 'expected_srm': 23},
-            {'volume': Decimal('5.00'), 'expected_srm': 16},
+            {"volume": Decimal("2.75"), "expected_srm": 24},
+            {"volume": Decimal("3.00"), "expected_srm": 23},
+            {"volume": Decimal("5.00"), "expected_srm": 16},
         ]
         for t in test_matrix:
-            page.post_boil_volume = Decimal(t['volume'])
+            page.post_boil_volume = Decimal(t["volume"])
             with self.subTest(volume=page.post_boil_volume):
-                self.assertEqual(Decimal(t['expected_srm']), page.calculate_color_srm())
+                self.assertEqual(Decimal(t["expected_srm"]), page.calculate_color_srm())
 
     def test_get_actual_or_expected_srm(self):
         page = self.batch_log_page
@@ -686,20 +682,20 @@ class BatchLogPageTest(WagtailPageTestCase):
             target_post_boil_volume: None | Decimal
 
         test_matrix: list[TestParams] = [
-            {'volume': None, 'expected_srm': 26, 'target_post_boil_volume': None},  # the recipe srm
-            {'volume': Decimal('2.75'), 'expected_srm': 24, 'target_post_boil_volume': None},
+            {"volume": None, "expected_srm": 26, "target_post_boil_volume": None},  # the recipe srm
+            {"volume": Decimal("2.75"), "expected_srm": 24, "target_post_boil_volume": None},
             # Everything scaled evenly, so srm should match the recipe expected srm
-            {'volume': Decimal('5.00'), 'expected_srm': 26, 'target_post_boil_volume': Decimal('5.00')},
+            {"volume": Decimal("5.00"), "expected_srm": 26, "target_post_boil_volume": Decimal("5.00")},
             # # these are scaling weird after fixes applied to setUp() vs setUpTestData() for django 4.1/wagtail 4.1
-            {'volume': Decimal('3.00'), 'expected_srm': 23, 'target_post_boil_volume': None},
-            {'volume': Decimal('5.00'), 'expected_srm': 16, 'target_post_boil_volume': None},
+            {"volume": Decimal("3.00"), "expected_srm": 23, "target_post_boil_volume": None},
+            {"volume": Decimal("5.00"), "expected_srm": 16, "target_post_boil_volume": None},
         ]
         for t in test_matrix:
             page.refresh_from_db()
-            page.post_boil_volume = t['volume']
-            page.target_post_boil_volume = t['target_post_boil_volume']
+            page.post_boil_volume = t["volume"]
+            page.target_post_boil_volume = t["target_post_boil_volume"]
             with self.subTest(**t):
-                self.assertEqual(t['expected_srm'], page.get_actual_or_expected_srm())
+                self.assertEqual(t["expected_srm"], page.get_actual_or_expected_srm())
 
         # add test for a scaled recipe
 
@@ -715,63 +711,63 @@ class BatchLogPageTest(WagtailPageTestCase):
 
         test_matrix: list[TestParams] = [
             {
-                'target_post_boil_volume': None,
-                'batch_size': Decimal(2.5),
-                'batch_volume_units': VolumeUnit('gal'),
-                'recipe_volume_units': VolumeUnit('gal'),
-                'expected': False,
+                "target_post_boil_volume": None,
+                "batch_size": Decimal(2.5),
+                "batch_volume_units": VolumeUnit("gal"),
+                "recipe_volume_units": VolumeUnit("gal"),
+                "expected": False,
             },
             {
-                'target_post_boil_volume': Decimal(2.5),
-                'batch_size': Decimal(2.5),
-                'batch_volume_units': VolumeUnit('gal'),
-                'recipe_volume_units': VolumeUnit('gal'),
-                'expected': False,
+                "target_post_boil_volume": Decimal(2.5),
+                "batch_size": Decimal(2.5),
+                "batch_volume_units": VolumeUnit("gal"),
+                "recipe_volume_units": VolumeUnit("gal"),
+                "expected": False,
             },
             {
-                'target_post_boil_volume': Decimal(2.5),
-                'batch_size': Decimal(2.5),
-                'batch_volume_units': VolumeUnit('fl_oz'),
-                'recipe_volume_units': VolumeUnit('gal'),
-                'expected': True,
+                "target_post_boil_volume": Decimal(2.5),
+                "batch_size": Decimal(2.5),
+                "batch_volume_units": VolumeUnit("fl_oz"),
+                "recipe_volume_units": VolumeUnit("gal"),
+                "expected": True,
             },
             {
-                'target_post_boil_volume': Decimal(2.6),
-                'batch_size': Decimal(2.5),
-                'batch_volume_units': VolumeUnit('gal'),
-                'recipe_volume_units': VolumeUnit('gal'),
-                'expected': True,
+                "target_post_boil_volume": Decimal(2.6),
+                "batch_size": Decimal(2.5),
+                "batch_volume_units": VolumeUnit("gal"),
+                "recipe_volume_units": VolumeUnit("gal"),
+                "expected": True,
             },
         ]
 
         for t in test_matrix:
-            page.target_post_boil_volume = t['target_post_boil_volume']
-            page.volume_units = t['batch_volume_units']
-            page.recipe_page.batch_size = t['batch_size']
-            page.recipe_page.volume_units = t['recipe_volume_units']
+            page.target_post_boil_volume = t["target_post_boil_volume"]
+            page.volume_units = t["batch_volume_units"]
+            page.recipe_page.batch_size = t["batch_size"]
+            page.recipe_page.volume_units = t["recipe_volume_units"]
             with self.subTest(**t):
-                self.assertEqual(t['expected'], page.uses_scaled_recipe)
+                self.assertEqual(t["expected"], page.uses_scaled_recipe)
 
     def test_get_abv(self):
         page = self.batch_log_page
         test_matrix = [
-            {'final_gravity': Decimal('1.010'), 'original_gravity': Decimal('1.050'), 'expected_abv': Decimal('5.250')},
+            {"final_gravity": Decimal("1.010"), "original_gravity": Decimal("1.050"), "expected_abv": Decimal("5.250")},
             {
-                'final_gravity': Decimal('1.010'),
-                'original_gravity': Decimal('1.060'),
-                'expected_abv': Decimal('6.56250'),
+                "final_gravity": Decimal("1.010"),
+                "original_gravity": Decimal("1.060"),
+                "expected_abv": Decimal("6.56250"),
             },
             {
-                'final_gravity': Decimal('1.015'),
-                'original_gravity': Decimal('1.050'),
-                'expected_abv': Decimal('4.59375'),
+                "final_gravity": Decimal("1.015"),
+                "original_gravity": Decimal("1.050"),
+                "expected_abv": Decimal("4.59375"),
             },
         ]
         for t in test_matrix:
-            page.final_gravity = t['final_gravity']
-            page.original_gravity = t['original_gravity']
+            page.final_gravity = t["final_gravity"]
+            page.original_gravity = t["original_gravity"]
             with self.subTest(**t):
-                self.assertEqual(t['expected_abv'], page.get_abv())
+                self.assertEqual(t["expected_abv"], page.get_abv())
 
     def test_get_context(self):
         request = self.request_factory.get(self.batch_log_page.url)
@@ -786,31 +782,31 @@ class BatchLogPageTest(WagtailPageTestCase):
         test_matrix: list[TestParams] = [
             # scaled recipe
             {
-                'target_post_boil_volume': Decimal(2.6),
-                'batch_size': Decimal(2.5),
-                'batch_volume_units': VolumeUnit('gal'),
-                'recipe_volume_units': VolumeUnit('gal'),
-                'expected': True,
+                "target_post_boil_volume": Decimal(2.6),
+                "batch_size": Decimal(2.5),
+                "batch_volume_units": VolumeUnit("gal"),
+                "recipe_volume_units": VolumeUnit("gal"),
+                "expected": True,
             },
             # not scaled recipe
             {
-                'target_post_boil_volume': None,
-                'batch_size': Decimal(2.5),
-                'batch_volume_units': VolumeUnit('gal'),
-                'recipe_volume_units': VolumeUnit('gal'),
-                'expected': True,
+                "target_post_boil_volume": None,
+                "batch_size": Decimal(2.5),
+                "batch_volume_units": VolumeUnit("gal"),
+                "recipe_volume_units": VolumeUnit("gal"),
+                "expected": True,
             },
         ]
 
         for t in test_matrix:
-            self.batch_log_page.target_post_boil_volume = t['target_post_boil_volume']
-            self.batch_log_page.volume_units = t['batch_volume_units']
-            self.batch_log_page.recipe_page.batch_size = t['batch_size']
-            self.batch_log_page.recipe_page.volume_units = t['recipe_volume_units']
+            self.batch_log_page.target_post_boil_volume = t["target_post_boil_volume"]
+            self.batch_log_page.volume_units = t["batch_volume_units"]
+            self.batch_log_page.recipe_page.batch_size = t["batch_size"]
+            self.batch_log_page.recipe_page.volume_units = t["recipe_volume_units"]
             with self.subTest(**t):
                 context = self.batch_log_page.get_context(request=request)
-                self.assertEqual(self.batch_log_page.get_actual_or_expected_srm(), context['calculated_srm'])
-                self.assertEqual(self.batch_log_page.recipe_page, context['recipe_page'])
+                self.assertEqual(self.batch_log_page.get_actual_or_expected_srm(), context["calculated_srm"])
+                self.assertEqual(self.batch_log_page.recipe_page, context["recipe_page"])
 
     def test_recipe_url(self):
         """
@@ -829,15 +825,15 @@ class BatchLogPageTest(WagtailPageTestCase):
         expected_url = self.batch_log_page.recipe_page.id_and_slug_url
         query_params = urlencode(
             {
-                'scale_volume': self.batch_log_page.target_post_boil_volume,
-                'scale_unit': self.batch_log_page.volume_units,
+                "scale_volume": self.batch_log_page.target_post_boil_volume,
+                "scale_unit": self.batch_log_page.volume_units,
             }
         )
-        expected_url = f'{expected_url}?{query_params}'
+        expected_url = f"{expected_url}?{query_params}"
         self.assertEqual(expected_url, self.batch_log_page.recipe_url)
 
 
 class RecipeFermentableTest(TestCase):
-    @unittest.skip('Skipped because I have not written this but at least I will see skipped tests now.')
+    @unittest.skip("Skipped because I have not written this but at least I will see skipped tests now.")
     def test_calculate_mcu(self):
         pass

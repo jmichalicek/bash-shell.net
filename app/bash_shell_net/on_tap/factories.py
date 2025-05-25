@@ -39,12 +39,12 @@ class BeverageStyleFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = BeverageStyle
-        django_get_or_create = ('name', 'style_guide', 'category', 'category_number')
+        django_get_or_create = ("name", "style_guide", "category", "category_number")
 
 
 class OnTapPageFactory(wagtail_factories.PageFactory):
 
-    title = 'On Tap'
+    title = "On Tap"
 
     class Meta:
         model = OnTapPage
@@ -52,7 +52,7 @@ class OnTapPageFactory(wagtail_factories.PageFactory):
 
 class BatchLogIndexPageFactory(wagtail_factories.PageFactory):
 
-    title = 'Batch Logs'
+    title = "Batch Logs"
 
     class Meta:
         model = BatchLogIndexPage
@@ -60,9 +60,9 @@ class BatchLogIndexPageFactory(wagtail_factories.PageFactory):
 
 class BatchLogPageFactory(wagtail_factories.PageFactory):
 
-    title = factory.Sequence(lambda n: f'Batch {n}')
-    recipe_page = factory.SubFactory('bash_shell_net.on_tap.factories.RecipePageFactory')
-    body = wagtail_factories.StreamFieldFactory({'0': wagtail_factories.CharBlockFactory})
+    title = factory.Sequence(lambda n: f"Batch {n}")
+    recipe_page = factory.SubFactory("bash_shell_net.on_tap.factories.RecipePageFactory")
+    body = wagtail_factories.StreamFieldFactory({"0": wagtail_factories.CharBlockFactory})
 
     class Meta:
         model = BatchLogPage
@@ -70,14 +70,14 @@ class BatchLogPageFactory(wagtail_factories.PageFactory):
 
 class RecipeIndexPageFactory(wagtail_factories.PageFactory):
 
-    title = 'Recipes'
+    title = "Recipes"
 
     class Meta:
         model = RecipeIndexPage
 
 
 class RecipeFermentableFactory(factory.django.DjangoModelFactory):
-    recipe_page = factory.SubFactory('bash_shell_net.on_tap.factories.RecipePageFactory')
+    recipe_page = factory.SubFactory("bash_shell_net.on_tap.factories.RecipePageFactory")
     amount = Decimal("3.600")
     amount_units = "lb"
     name = "Maris Otter"
@@ -89,7 +89,7 @@ class RecipeFermentableFactory(factory.django.DjangoModelFactory):
 
 
 class RecipeHopFactory(factory.django.DjangoModelFactory):
-    recipe_page = factory.SubFactory('bash_shell_net.on_tap.factories.RecipePageFactory')
+    recipe_page = factory.SubFactory("bash_shell_net.on_tap.factories.RecipePageFactory")
     name = "Fuggles"
     alpha_acid_percent = Decimal("5.000")
     amount = Decimal("0.70")
@@ -104,7 +104,7 @@ class RecipeHopFactory(factory.django.DjangoModelFactory):
 
 class RecipePageFactory(wagtail_factories.PageFactory):
 
-    title = factory.Sequence(lambda n: f'Recipe {n}')
+    title = factory.Sequence(lambda n: f"Recipe {n}")
     recipe_type = "all_grain"
     style = factory.SubFactory(BeverageStyleFactory)
     brewer = "Justin Michalicek"
@@ -118,8 +118,8 @@ class RecipePageFactory(wagtail_factories.PageFactory):
     original_gravity = Decimal("1.050")
     final_gravity = Decimal("1.013")
     ibus_tinseth = Decimal("25.00")
-    introduction = wagtail_factories.StreamFieldFactory({'0': wagtail_factories.CharBlockFactory()})
-    conclusion = wagtail_factories.StreamFieldFactory({'0': wagtail_factories.CharBlockFactory()})
+    introduction = wagtail_factories.StreamFieldFactory({"0": wagtail_factories.CharBlockFactory()})
+    conclusion = wagtail_factories.StreamFieldFactory({"0": wagtail_factories.CharBlockFactory()})
 
     class Meta:
         model = RecipePage
@@ -128,9 +128,9 @@ class RecipePageFactory(wagtail_factories.PageFactory):
     def _build(cls, model_class, *args, **kwargs) -> RecipePage:
         # factory.post_generation AND factory.SubFactory both seem to save the BeverageStyle after wagtail
         # has done its model validation, resulting in exceptions being raised due to missing the style
-        if not (beverage_style := kwargs.get('style')):
+        if not (beverage_style := kwargs.get("style")):
             beverage_style = BeverageStyleFactory.build()
-            kwargs.update({'style': beverage_style})
+            kwargs.update({"style": beverage_style})
 
         if not beverage_style.pk:
             beverage_style.save()
@@ -139,7 +139,7 @@ class RecipePageFactory(wagtail_factories.PageFactory):
 
 
 class RecipeYeastFactory(factory.django.DjangoModelFactory):
-    recipe_page = factory.SubFactory('bash_shell_net.on_tap.factories.RecipePageFactory')
+    recipe_page = factory.SubFactory("bash_shell_net.on_tap.factories.RecipePageFactory")
     name = "SafAle S-04"
     amount = Decimal("0.388")
     amount_units = "oz"
@@ -157,7 +157,7 @@ def create_default_recipe_page() -> RecipePage:
     recipe.fermentables = [
         # default is maris otter. May turn these all into traits
         RecipeFermentableFactory.build(
-            maltster='William Crisp',
+            maltster="William Crisp",
         ),
         RecipeFermentableFactory.build(
             amount=Decimal("8.00"),
@@ -165,7 +165,7 @@ def create_default_recipe_page() -> RecipePage:
             name="Crisp Brown Malt",
             type="grain",
             color=Decimal("85.000"),
-            maltster='William Crisp',
+            maltster="William Crisp",
         ),
         RecipeFermentableFactory.build(
             amount=Decimal("5.00"),
@@ -173,7 +173,7 @@ def create_default_recipe_page() -> RecipePage:
             name="Caramel 40",
             type="grain",
             color=Decimal("40.000"),
-            maltster='Briess',
+            maltster="Briess",
         ),
         RecipeFermentableFactory.build(
             amount=Decimal("3.00"),
@@ -181,7 +181,7 @@ def create_default_recipe_page() -> RecipePage:
             name="Caramel 80",
             type="grain",
             color=Decimal("80.000"),
-            maltster='Briess',
+            maltster="Briess",
         ),
         RecipeFermentableFactory.build(
             amount=Decimal("2.00"),
@@ -189,7 +189,7 @@ def create_default_recipe_page() -> RecipePage:
             name="Chocolate Malt",
             type="grain",
             color=Decimal("450.000"),
-            maltster='William Crisp',
+            maltster="William Crisp",
         ),
         RecipeFermentableFactory.build(
             amount=Decimal("1.500"),
@@ -197,7 +197,7 @@ def create_default_recipe_page() -> RecipePage:
             name="Pale Chocolate Malt",
             type="grain",
             color=Decimal("225.000"),
-            maltster='William Crisp',
+            maltster="William Crisp",
         ),
     ]
 

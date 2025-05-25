@@ -11,7 +11,7 @@ register = template.Library()
 @register.filter
 @stringfilter
 def render_markdown(value):
-    return markdown.markdown(value, output_format='html', extensions=settings.MARKDOWN_EXTENSIONS)
+    return markdown.markdown(value, output_format="html", extensions=settings.MARKDOWN_EXTENSIONS)
 
 
 @register.tag(name="markdown")
@@ -22,7 +22,7 @@ def markdown_tag(parser, token):
     The style arg could be updated to allow using specific markdown extensions - I assume that is what it does
     in markdown_deux anyway.
     """
-    nodelist = parser.parse(('endmarkdown',))
+    nodelist = parser.parse(("endmarkdown",))
     bits = token.split_contents()
     if len(bits) == 1:
         style = "default"

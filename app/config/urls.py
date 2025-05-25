@@ -18,31 +18,31 @@ from .sitemaps import BatchLogPageSitemap, BlogSitemap, OnTapSitemap, ProjectSit
 admin.autodiscover()
 
 sitemaps = {
-    'on_tap': OnTapSitemap,
-    'on_tap-batches': BatchLogPageSitemap,
-    'on_tap-recipes': RecipePageSitemap,
-    'blog': BlogSitemap,
-    'project': ProjectSiteMap,
-    'projects': ProjectsSiteMap,
+    "on_tap": OnTapSitemap,
+    "on_tap-batches": BatchLogPageSitemap,
+    "on_tap-recipes": RecipePageSitemap,
+    "blog": BlogSitemap,
+    "project": ProjectSiteMap,
+    "projects": ProjectsSiteMap,
 }
 
 urlpatterns = [
     # path('watchman/', include('watchman.urls')),
-    path('cms/', include(wagtailadmin_urls)),
-    path('documents/', include(wagtaildocs_urls)),
-    path('admin/doc/', include('django.contrib.admindocs.urls')),
-    path('admin/', admin.site.urls),
+    path("cms/", include(wagtailadmin_urls)),
+    path("documents/", include(wagtaildocs_urls)),
+    path("admin/doc/", include("django.contrib.admindocs.urls")),
+    path("admin/", admin.site.urls),
     path(
-        'sitemap.xml',
+        "sitemap.xml",
         index,
         {
-            'sitemaps': sitemaps,
+            "sitemaps": sitemaps,
         },
     ),
-    path('sitemap-<section>.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
-    path('feeds/blog/rss/', BlogFeedRss()),
-    path('about/', TemplateView.as_view(template_name="about.html"), name="about"),
-    path('opensource/', TemplateView.as_view(template_name="open_source.html"), name="opensource"),
-    path('projects/', include('bash_shell_net.projects.urls')),
-    path('', include(wagtail_urls)),
+    path("sitemap-<section>.xml", sitemap, {"sitemaps": sitemaps}, name="django.contrib.sitemaps.views.sitemap"),
+    path("feeds/blog/rss/", BlogFeedRss()),
+    path("about/", TemplateView.as_view(template_name="about.html"), name="about"),
+    path("opensource/", TemplateView.as_view(template_name="open_source.html"), name="opensource"),
+    path("projects/", include("bash_shell_net.projects.urls")),
+    path("", include(wagtail_urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

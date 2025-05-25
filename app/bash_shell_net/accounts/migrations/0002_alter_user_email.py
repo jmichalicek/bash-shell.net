@@ -5,27 +5,29 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('accounts', '0001_initial'),
-        ('base', '0008_case_insensitive_collation'),
+        ("accounts", "0001_initial"),
+        ("base", "0008_case_insensitive_collation"),
     ]
 
     operations = [
         # need to drop the unique index and then re-add it with the db_collation. Applying the collation
         # with an existing index blows things up.
         migrations.AlterField(
-            model_name='user',
-            name='email',
-            field=models.EmailField(max_length=254, verbose_name='Email address'),
+            model_name="user",
+            name="email",
+            field=models.EmailField(max_length=254, verbose_name="Email address"),
         ),
         migrations.RunSQL(
-            sql=[("DROP INDEX IF EXISTS accounts_user_email_like")],
-            reverse_sql=[("CREATE INDEX IF NOT EXISTS accounts_user_email_like ON public.accounts_user USING btree (email varchar_pattern_ops)")],
+            sql=["DROP INDEX IF EXISTS accounts_user_email_like"],
+            reverse_sql=[
+                "CREATE INDEX IF NOT EXISTS accounts_user_email_like ON public.accounts_user USING btree (email varchar_pattern_ops)"
+            ],
         ),
         migrations.AlterField(
-            model_name='user',
-            name='email',
+            model_name="user",
+            name="email",
             field=models.EmailField(
-                db_collation='case_insensitive', max_length=254, unique=True, verbose_name='Email address'
+                db_collation="case_insensitive", max_length=254, unique=True, verbose_name="Email address"
             ),
         ),
     ]

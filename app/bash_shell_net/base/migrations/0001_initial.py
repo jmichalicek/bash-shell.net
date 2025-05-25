@@ -14,32 +14,132 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('wagtailimages', '0001_squashed_0021'),
-        ('wagtailcore', '0041_group_collection_permissions_verbose_name_plural'),
+        ("wagtailimages", "0001_squashed_0021"),
+        ("wagtailcore", "0041_group_collection_permissions_verbose_name_plural"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Homepage',
+            name="Homepage",
             fields=[
-                ('page_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='wagtailcore.Page')),
+                (
+                    "page_ptr",
+                    models.OneToOneField(
+                        auto_created=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        parent_link=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="wagtailcore.Page",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
-            bases=('wagtailcore.page',),
+            bases=("wagtailcore.page",),
         ),
         migrations.CreateModel(
-            name='StandardPage',
+            name="StandardPage",
             fields=[
-                ('page_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='wagtailcore.Page')),
-                ('introduction', models.TextField(blank=True, help_text='Text to describe the page')),
-                ('body', wagtail.fields.StreamField([('heading', wagtail.blocks.CharBlock(classname='full title')), ('paragraph', wagtail.blocks.RichTextBlock()), ('code', wagtail.blocks.StructBlock([('language', wagtail.blocks.ChoiceBlock(blank=True, choices=[('', 'Auto'), ('bash', 'Bash/Shell'), ('batch', 'Batch'), ('c', 'C'), ('cpp', 'C++'), ('csharp', 'C#'), ('css', 'CSS'), ('docker', 'Dockerfile'), ('elixir', 'Elixir'), ('go', 'Go'), ('htmldjango', 'Django Template'), ('html', 'HTML'), ('javascript', 'JavaScript'), ('json', 'JSON'), ('lisp', 'Lisp'), ('make', 'Makefile'), ('nginx', 'NGiNX Config'), ('perl', 'Perl'), ('php', 'PHP'), ('python', 'Python'), ('jsx', 'React JSX'), ('ruby', 'Ruby'), ('erb', 'Ruby Template/ERB'), ('sass', 'SASS'), ('scss', 'SCSS'), ('sql', 'SQL'), ('terraform', 'Terraform'), ('yaml', 'YAML')], required=False)), ('code', wagtail.blocks.TextBlock(default='', required=False)), ('line_numbers', wagtail.blocks.ChoiceBlock(choices=[('', 'None'), ('table', 'Table'), ('inline', 'Inline')], required=False))])), ('quote', wagtail.blocks.BlockQuoteBlock()), ('other_page', wagtail.blocks.PageChooserBlock()), ('document', wagtail.documents.blocks.DocumentChooserBlock()), ('image', wagtail.images.blocks.ImageChooserBlock()), ('embed', wagtail.embeds.blocks.EmbedBlock()), ('text', wagtail.blocks.TextBlock()), ('raw_html', wagtail.blocks.RawHTMLBlock())], blank=True, default=None, null=True)),
-                ('image', models.ForeignKey(blank=True, help_text='Landscape mode only; horizontal width between 1000px and 3000px.', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to='wagtailimages.Image')),
+                (
+                    "page_ptr",
+                    models.OneToOneField(
+                        auto_created=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        parent_link=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="wagtailcore.Page",
+                    ),
+                ),
+                ("introduction", models.TextField(blank=True, help_text="Text to describe the page")),
+                (
+                    "body",
+                    wagtail.fields.StreamField(
+                        [
+                            ("heading", wagtail.blocks.CharBlock(classname="full title")),
+                            ("paragraph", wagtail.blocks.RichTextBlock()),
+                            (
+                                "code",
+                                wagtail.blocks.StructBlock(
+                                    [
+                                        (
+                                            "language",
+                                            wagtail.blocks.ChoiceBlock(
+                                                blank=True,
+                                                choices=[
+                                                    ("", "Auto"),
+                                                    ("bash", "Bash/Shell"),
+                                                    ("batch", "Batch"),
+                                                    ("c", "C"),
+                                                    ("cpp", "C++"),
+                                                    ("csharp", "C#"),
+                                                    ("css", "CSS"),
+                                                    ("docker", "Dockerfile"),
+                                                    ("elixir", "Elixir"),
+                                                    ("go", "Go"),
+                                                    ("htmldjango", "Django Template"),
+                                                    ("html", "HTML"),
+                                                    ("javascript", "JavaScript"),
+                                                    ("json", "JSON"),
+                                                    ("lisp", "Lisp"),
+                                                    ("make", "Makefile"),
+                                                    ("nginx", "NGiNX Config"),
+                                                    ("perl", "Perl"),
+                                                    ("php", "PHP"),
+                                                    ("python", "Python"),
+                                                    ("jsx", "React JSX"),
+                                                    ("ruby", "Ruby"),
+                                                    ("erb", "Ruby Template/ERB"),
+                                                    ("sass", "SASS"),
+                                                    ("scss", "SCSS"),
+                                                    ("sql", "SQL"),
+                                                    ("terraform", "Terraform"),
+                                                    ("yaml", "YAML"),
+                                                ],
+                                                required=False,
+                                            ),
+                                        ),
+                                        ("code", wagtail.blocks.TextBlock(default="", required=False)),
+                                        (
+                                            "line_numbers",
+                                            wagtail.blocks.ChoiceBlock(
+                                                choices=[("", "None"), ("table", "Table"), ("inline", "Inline")],
+                                                required=False,
+                                            ),
+                                        ),
+                                    ]
+                                ),
+                            ),
+                            ("quote", wagtail.blocks.BlockQuoteBlock()),
+                            ("other_page", wagtail.blocks.PageChooserBlock()),
+                            ("document", wagtail.documents.blocks.DocumentChooserBlock()),
+                            ("image", wagtail.images.blocks.ImageChooserBlock()),
+                            ("embed", wagtail.embeds.blocks.EmbedBlock()),
+                            ("text", wagtail.blocks.TextBlock()),
+                            ("raw_html", wagtail.blocks.RawHTMLBlock()),
+                        ],
+                        blank=True,
+                        default=None,
+                        null=True,
+                    ),
+                ),
+                (
+                    "image",
+                    models.ForeignKey(
+                        blank=True,
+                        help_text="Landscape mode only; horizontal width between 1000px and 3000px.",
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="+",
+                        to="wagtailimages.Image",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
-            bases=('wagtailcore.page',),
+            bases=("wagtailcore.page",),
         ),
     ]
