@@ -6,7 +6,6 @@ tmp/
 *.code-workspace
 .devcontainer
 .python-version
-codeship.aes
 media
 .envrc
 .python-version

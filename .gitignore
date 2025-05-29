@@ -15,9 +15,6 @@ main.css
 main.css.map
 **/static/js/bundled/*
 
-# secrets and stuff
-codeship.aes
-
 # code editors/ides
 *.code-workspace
 .vscode
