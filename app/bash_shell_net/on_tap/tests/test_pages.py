@@ -335,6 +335,7 @@ class RecipePageTest(WagtailPageTestCase):
         )
         self.assertCanCreate(self.recipe_index_page, RecipePage, form_data)
         page = RecipePage.objects.filter(slug="test-case-recipe").first()
+        assert page is not None
         publish_page(page)
         page.refresh_from_db()
         # Not 100% certain this is a super useful test with wagtail
@@ -593,6 +594,7 @@ class BatchLogPageTest(WagtailPageTestCase):
         )
         self.assertCanCreate(self.batch_log_index_page, BatchLogPage, form_data)
         page = BatchLogPage.objects.filter(slug="test-case-batch").first()
+        assert page is not None
         publish_page(page)
         page.refresh_from_db()
         r = self.client.get(page.url)

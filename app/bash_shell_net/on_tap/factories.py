@@ -61,8 +61,8 @@ class BatchLogIndexPageFactory(wagtail_factories.PageFactory):
 class BatchLogPageFactory(wagtail_factories.PageFactory):
 
     title = factory.Sequence(lambda n: f"Batch {n}")
-    recipe_page = factory.SubFactory("bash_shell_net.on_tap.factories.RecipePageFactory")
-    body = wagtail_factories.StreamFieldFactory({"0": wagtail_factories.CharBlockFactory})
+    recipe_page = factory.SubFactory("bash_shell_net.on_tap.factories.RecipePageFactory")  # type:ignore[var-annotated]
+    body = wagtail_factories.StreamFieldFactory({"0": wagtail_factories.CharBlockFactory})  # type:ignore[var-annotated]
 
     class Meta:
         model = BatchLogPage
@@ -77,7 +77,7 @@ class RecipeIndexPageFactory(wagtail_factories.PageFactory):
 
 
 class RecipeFermentableFactory(factory.django.DjangoModelFactory):
-    recipe_page = factory.SubFactory("bash_shell_net.on_tap.factories.RecipePageFactory")
+    recipe_page = factory.SubFactory("bash_shell_net.on_tap.factories.RecipePageFactory")  # type:ignore[var-annotated]
     amount = Decimal("3.600")
     amount_units = "lb"
     name = "Maris Otter"
@@ -89,7 +89,7 @@ class RecipeFermentableFactory(factory.django.DjangoModelFactory):
 
 
 class RecipeHopFactory(factory.django.DjangoModelFactory):
-    recipe_page = factory.SubFactory("bash_shell_net.on_tap.factories.RecipePageFactory")
+    recipe_page = factory.SubFactory("bash_shell_net.on_tap.factories.RecipePageFactory")  # type:ignore[var-annotated]
     name = "Fuggles"
     alpha_acid_percent = Decimal("5.000")
     amount = Decimal("0.70")
@@ -106,7 +106,7 @@ class RecipePageFactory(wagtail_factories.PageFactory):
 
     title = factory.Sequence(lambda n: f"Recipe {n}")
     recipe_type = "all_grain"
-    style = factory.SubFactory(BeverageStyleFactory)
+    style = factory.SubFactory(BeverageStyleFactory)  # type:ignore[var-annotated]
     brewer = "Justin Michalicek"
     assistant_brewer = ""
     volume_units = "gal"
@@ -139,7 +139,7 @@ class RecipePageFactory(wagtail_factories.PageFactory):
 
 
 class RecipeYeastFactory(factory.django.DjangoModelFactory):
-    recipe_page = factory.SubFactory("bash_shell_net.on_tap.factories.RecipePageFactory")
+    recipe_page = factory.SubFactory("bash_shell_net.on_tap.factories.RecipePageFactory")  # type:ignore[var-annotated]
     name = "SafAle S-04"
     amount = Decimal("0.388")
     amount_units = "oz"

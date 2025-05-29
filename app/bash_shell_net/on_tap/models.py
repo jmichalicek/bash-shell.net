@@ -31,6 +31,9 @@ if TYPE_CHECKING:
     from wagtail.models import Page as _Page
 
     class Page(_Page, models.Model):
+        objects: Any
+        tagged_items: Any
+        # batch_log_pages: Any
         def __str__(self) -> str: ...
 
 else:
@@ -118,7 +121,8 @@ class ScalableAmountMixin:
 
 
 class RecipePageTag(TaggedItemBase):
-    content_object = ParentalKey("on_tap.RecipePage", on_delete=models.CASCADE, related_name="tagged_items")
+    tagged_items: Any
+    content_object: Any = ParentalKey("on_tap.RecipePage", on_delete=models.CASCADE, related_name="tagged_items")
 
     def __str__(self) -> str:
         return f"{self.content_object} tagged {self.tag}"
@@ -654,7 +658,7 @@ class BeverageStyle(models.Model):  # type: ignore
         return ""
 
 
-class RecipePage(IdAndSlugUrlMixin, Page):
+class RecipePage(IdAndSlugUrlMixin, Page):  # type: ignore[django-manager-missing]
     """
     Page for a beer recipe
 
