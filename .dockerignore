@@ -16,3 +16,4 @@ src/
 main.css
 main.css.map
 **/static/js/bundled/*
+.uv_cache/

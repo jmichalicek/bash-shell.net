@@ -16,12 +16,14 @@ if TYPE_CHECKING:
     from wagtail.models import Page as _Page
     from wagtail.models import PageManager as _PageManager
     from wagtail.models import PageQuerySet
+
     class PageManager(BasePageManager, PageQuerySet):
         pass
 
     class Page(_Page, models.Model):
         objects: type[_PageManager]
         alias_of: RelatedManager
+
         def __str__(self) -> str: ...
 
 else:

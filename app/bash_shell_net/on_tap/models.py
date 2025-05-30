@@ -33,6 +33,7 @@ if TYPE_CHECKING:
     class Page(_Page, models.Model):
         objects: Any
         tagged_items: Any
+
         # batch_log_pages: Any
         def __str__(self) -> str: ...
 

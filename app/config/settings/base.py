@@ -344,3 +344,5 @@ CSP_FRAME_SRC = env("CSP_FRAME_SRC", list, ["'self'"])
 CSP_INCLUDE_NONCE_IN = ["script-src", "style-src"]
 
 TEST_RUNNER = "bash_shell_net.base.test_runner.TimedLoggingDiscoverRunner"
+
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 10000
