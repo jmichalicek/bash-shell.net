@@ -17,7 +17,7 @@ class BlogSitemap(WagtailSitemap):
     limit = 50
 
     def items(self):
-        return BlogPage.objects.live().public().order_by('-first_published_at')
+        return BlogPage.objects.live().public().order_by("-first_published_at")
 
     def lastmod(self, obj):
         return obj.last_published_at
@@ -34,10 +34,10 @@ class OnTapSitemap(WagtailSitemap):
     # changefreq = "never"
     limit = 50
     priority = 0.5
-    protocol = 'https'
+    protocol = "https"
 
     def items(self):
-        return OnTapPage.objects.live().public().order_by('-first_published_at')
+        return OnTapPage.objects.live().public().order_by("-first_published_at")
 
     def lastmod(self, obj):
         return obj.last_published_at
@@ -51,10 +51,10 @@ class RecipePageSitemap(WagtailSitemap):
     # changefreq = "never"
     limit = 50
     priority = 0.5
-    protocol = 'https'
+    protocol = "https"
 
     def items(self):
-        return RecipePage.objects.live().public().order_by('-first_published_at')
+        return RecipePage.objects.live().public().order_by("-first_published_at")
 
     def lastmod(self, obj):
         return obj.last_published_at
@@ -68,10 +68,10 @@ class BatchLogPageSitemap(WagtailSitemap):
     # changefreq = "never"
     limit = 50
     priority = 0.5
-    protocol = 'https'
+    protocol = "https"
 
     def items(self):
-        return BatchLogPage.objects.live().public().order_by('-first_published_at')
+        return BatchLogPage.objects.live().public().order_by("-first_published_at")
 
     def lastmod(self, obj):
         return obj.last_published_at
@@ -84,7 +84,7 @@ class ProjectSiteMap(Sitemap):
     limit = 50
 
     def items(self):
-        return [reverse('projects_project_list')]
+        return [reverse("projects_project_list")]
 
     def location(self, obj):
         # we overwrite this to stop it calling get_absolute_url

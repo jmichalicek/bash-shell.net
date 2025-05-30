@@ -23,6 +23,7 @@ class BlogPageTag(TaggedItemBase):
         # really should have something with more info here, like what the tag is.
         return f"{self.content_object} tagged {self.tag}"
 
+
 class BlogPageIndexMixin:
     def _get_context(self, request, context):
         posts = BlogPage.objects.descendant_of(self).live().order_by("-first_published_at", "-last_published_at")
@@ -54,7 +55,7 @@ class BlogPageIndex(RoutablePageMixin, IdAndSlugUrlIndexMixin, BlogPageIndexMixi
     id_and_slug_url_name = "blog_post_by_id_and_slug"
     id_and_slug_url_class = "bash_shell_net.blog.models.BlogPage"
 
-    subpage_types = ['blog.BlogPage']
+    subpage_types = ["blog.BlogPage"]
 
     def __str__(self) -> str:
         return self.title
@@ -73,7 +74,6 @@ class BlogPageIndex(RoutablePageMixin, IdAndSlugUrlIndexMixin, BlogPageIndexMixi
         context = super().get_context(request)
         # Why am I not using self.children()?
         return self._get_context(request, context)
-
 
     @route(r"^(?P<id>\d+)/(?P<slug>[-_\w]+)/$", name="blog_post_by_id_and_slug")
     def blog_post_by_id_and_slug(self, request, id, slug, *args, **kwargs) -> HttpResponse:

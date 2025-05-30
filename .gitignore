@@ -15,9 +15,6 @@ main.css
 main.css.map
 **/static/js/bundled/*
 
-# secrets and stuff
-codeship.aes
-
 # code editors/ides
 *.code-workspace
 .vscode
@@ -34,3 +31,4 @@ node_modules/
 .DS_Store
 src/
 *.sqlite
+.uv_cache/

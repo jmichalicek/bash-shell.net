@@ -12,7 +12,7 @@ class BlogFeedRss(Feed):
     description = "Latest bash-shell.net posts"
 
     def items(self):
-        return BlogPage.objects.live().order_by('-first_published_at')[:5]
+        return BlogPage.objects.live().order_by("-first_published_at")[:5]
 
     def item_title(self, item):
         return item.title
@@ -22,7 +22,7 @@ class BlogFeedRss(Feed):
         # seems to be ok so far even though some things I read suggested
         # html in the rss could be bad
         # TODO: almost definitely needs updated for wagtail
-        return '%s...' % (item.body[:250])
+        return "%s..." % (item.body[:250])
 
     def item_link(self, item):
         return item.id_and_slug_url

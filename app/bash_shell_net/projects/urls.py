@@ -1,8 +1,8 @@
-from django.urls import re_path
+from django.urls import path
 
 from . import views
 
 urlpatterns = [
-    re_path(r'^(?P<slug>.+)/$', views.ProjectDetailView.as_view(), name='projects_project_detail'),
-    re_path(r'^$', views.ProjectListView.as_view(), name='projects_project_list'),
+    path("<path:slug>/", views.ProjectDetailView.as_view(), name="projects_project_detail"),
+    path("", views.ProjectListView.as_view(), name="projects_project_list"),
 ]

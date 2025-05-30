@@ -1,49 +1,48 @@
-ARG PYTHON_VERSION=3.12.2
+ARG PYTHON_VERSION=3.13.3
 ARG DISTRO=bookworm
 FROM python:$PYTHON_VERSION-$DISTRO AS dev
 LABEL maintainer="Justin Michalicek <jmichalicek@gmail.com>"
 ENV PYTHONUNBUFFERED=1 DEBIAN_FRONTEND=noninteractive PYTHONFAULTHANDLER=1
 
-RUN apt-get update && apt-get install -y --allow-unauthenticated \
+RUN apt-get update && apt-get upgrade -y \
+  && apt-get install -y --allow-unauthenticated \
   lsb-release \
-  && apt-get autoremove && apt-get clean
-
-RUN curl -sL https://deb.nodesource.com/setup_20.x | bash
-RUN wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O - | apt-key add - \
-    && echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" >> /etc/apt/sources.list.d/pgdg.list
-
-RUN apt-get update && apt-get install -y --allow-unauthenticated \
+  postgresql-common \
+  bash-completion \
   software-properties-common \
   sudo \
   vim \
   telnet \
+  && apt-get autoremove \
+  && apt-get clean
+
+RUN curl -sL https://deb.nodesource.com/setup_20.x | bash
+RUN YES=1 /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh
+RUN apt-get update && apt-get install -y --allow-unauthenticated \
   postgresql-client \
   nodejs \
-  bash-completion \
   && apt-get autoremove && apt-get clean
 RUN pip install -U pip
 RUN useradd -ms /bin/bash -d /django django && echo "django ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 USER django
+ADD --chown=django https://astral.sh/uv/0.7.5/install.sh /django/uv-installer.sh
+RUN sh /django/uv-installer.sh && rm /django/uv-installer.sh
 ENV HOME=/django/ \
-    PATH=/django/bash-shell.net/app/.venv/bin:/django/.local/bin:/django/bash-shell.net/node_modules/.bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
+    PATH=/django/bash-shell.net/app/.venv/bin:/django/.local/bin:/django/bash-shell.net/node_modules/.bin:$PATH \
     LC_ALL=C.UTF-8 \
     LANG=C.UTF-8 \
     PYTHONIOENCODING=utf-8
 
 FROM dev AS build
-# need the venv not in /app/ so that we can relocate it
-RUN mkdir -p /django/bash-shell.net/ && python -m venv /django/bash-shell.net/.venv
+RUN mkdir -p /django/bash-shell.net/ && uv venv /django/bash-shell.net/.venv
 ENV PATH=/django/bash-shell.net/.venv/bin:$PATH
-# https://stackoverflow.com/a/28210626
-# python -m venv only copies the bundled pip, even if you've done a pip install -U pip to get
-# a newer version installed, so update it in the virtualenv
-RUN pip install pip -U
-RUN pip install pip-tools
-COPY --chown=django ./app/requirements.txt /django/bash-shell.net/
 WORKDIR /django/bash-shell.net/
+# need the venv not in /app/ so that we can relocate it
+COPY ./app/pyproject.toml /django/bash-shell.net/pyproject.toml
+COPY ./app/uv.lock /django/bash-shell.net/uv.lock
 # I am being lazy and installing dev requirements here to make it easy to run my tests on the prod image
 # since they don't add much size
-RUN pip-sync requirements.txt --pip-args '--no-cache-dir --no-deps'
+RUN uv sync --locked --no-cache
 COPY --chown=django ./app/package.json ./app/package-lock.json /django/bash-shell.net/
 RUN npm ci
 RUN mkdir -p /django/bash-shell.net/config/static
