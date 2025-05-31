@@ -40,8 +40,6 @@ if TYPE_CHECKING:
 else:
     from wagtail.models import Page
 
-# from wagtail.models import Page
-
 
 class VolumeToGallonsConverter(Enum):
     """
@@ -66,10 +64,10 @@ class WeightUnits(models.TextChoices):
     KILOGRAMS = "kg", "Kilogram"
 
 
-class VolumeUnits(models.TextChoices):
+class VolumeUnit(models.TextChoices):
     TEASPOON = "tsp", "Teaspoon"
     TABLESPOON = "tbsp", "Tablespoon"
-    FLUID_OUNCE = "fl_oz", "Fluid Oz"
+    FLUID_OZ = "fl_oz", "Fluid Oz"
     LITER = "l", "Liter"
     QUART = "quart"
     GALLON = "gal", "Gallon"
@@ -84,14 +82,6 @@ class RecipeType:
     ALL_GRAIN = "all_grain"
     EXTRACT = "extract"
     PARTIAL_MASH = "partial_mash"
-
-
-class VolumeUnit(Enum):
-    # TODO: Django's models.TextChoices would be great here.
-    FLUID_OZ = "fl_oz"
-    LITER = "l"
-    GALLON = "gal"
-    QUART = "quart"
 
 
 def convert_volume_to_gallons(volume: Decimal, unit: VolumeUnit) -> Decimal:
@@ -676,13 +666,6 @@ class RecipePage(IdAndSlugUrlMixin, Page):  # type: ignore[django-manager-missin
         (RecipeType.PARTIAL_MASH, "Partial Mash"),
     )
 
-    VOLUME_UNIT_CHOICES = (
-        (VolumeUnit.FLUID_OZ.value, "Fluid Oz."),
-        (VolumeUnit.LITER.value, "Liters"),
-        (VolumeUnit.GALLON.value, "Gallons"),
-        (VolumeUnit.QUART.value, "Quarts"),
-    )
-
     tags = ClusterTaggableManager(through=RecipePageTag, blank=True)
 
     short_description = models.TextField(
@@ -712,7 +695,7 @@ class RecipePage(IdAndSlugUrlMixin, Page):  # type: ignore[django-manager-missin
     brewer = models.CharField(max_length=250, blank=True, default="")  # or fk to a user?
     assistant_brewer = models.CharField(max_length=250, blank=True, default="")
 
-    volume_units = models.CharField(max_length=10, choices=VOLUME_UNIT_CHOICES, blank=False)
+    volume_units = models.CharField(max_length=10, choices=VolumeUnit, blank=False)
     batch_size = models.DecimalField(
         blank=False,
         null=False,
@@ -953,17 +936,14 @@ class RecipePage(IdAndSlugUrlMixin, Page):  # type: ignore[django-manager-missin
         return scaled_recipe
 
 
-class BatchStatus:
+class BatchStatus(models.TextChoices):
     """
     States a brew batch could be in
     """
 
     PLANNED = "planned"
-    BREWING = "brewing"  # why? It's only in this state for a few hours.
     FERMENTING = "fermenting"
     COMPLETE = "complete"
-
-    IN_PROGRESS_STATUSES = [PLANNED, BREWING, FERMENTING]
 
 
 class BatchLogPageTag(TaggedItemBase):
@@ -981,13 +961,6 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):  # type: ignore
     TODO: On save, if setting on tap date for first time and status is FERMENTING then change to COMPLETE automatically?
     """
 
-    VOLUME_UNIT_CHOICES = (
-        (VolumeUnit.FLUID_OZ.value, "Fluid Oz."),
-        (VolumeUnit.LITER.value, "Liters"),
-        (VolumeUnit.GALLON.value, "Gallons"),
-        (VolumeUnit.QUART.value, "Quarts"),
-    )
-
     template = "on_tap/batch_log.html"
     id_and_slug_url_name = "on_tap_batch_log_by_id_and_slug"
 
@@ -1003,23 +976,14 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):  # type: ignore
     status = models.CharField(
         max_length=25,
         blank=False,
-        choices=(
-            (BatchStatus.PLANNED, "Planned"),
-            (BatchStatus.BREWING, "Brewing"),
-            (BatchStatus.FERMENTING, "Fermenting"),
-            (BatchStatus.COMPLETE, "Complete"),
-        ),
+        choices=BatchStatus,
         default=BatchStatus.PLANNED,
     )
     brewed_date = models.DateField(blank=True, null=True, default=None)
     packaged_date = models.DateField(blank=True, null=True, default=None)
-    on_tap_date = models.DateField(blank=True, null=True, default=None)
-    off_tap_date = models.DateField(blank=True, null=True, default=None)
     original_gravity = models.DecimalField(max_digits=4, decimal_places=3, blank=True, null=True, default=None)
     final_gravity = models.DecimalField(max_digits=4, decimal_places=3, blank=True, null=True, default=None)
-    volume_units = models.CharField(
-        max_length=10, choices=VOLUME_UNIT_CHOICES, blank=False, default=VolumeUnit.GALLON.value
-    )
+    volume_units = models.CharField(max_length=10, choices=VolumeUnit, blank=False, default=VolumeUnit.GALLON)
     post_boil_volume = models.DecimalField(
         blank=True,
         null=True,
@@ -1061,8 +1025,6 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):  # type: ignore
         FieldPanel("status"),
         FieldPanel("brewed_date"),
         FieldPanel("packaged_date"),
-        FieldPanel("on_tap_date"),
-        FieldPanel("off_tap_date"),
         MultiFieldPanel(
             [
                 FieldRowPanel(
@@ -1083,6 +1045,7 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):  # type: ignore
             ]
         ),
         FieldPanel("body"),
+        InlinePanel("on_tap_records"),
     ]
 
     promote_panels = Page.promote_panels + [
@@ -1100,8 +1063,6 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):  # type: ignore
         index.FilterField("status"),
         index.FilterField("brewed_date"),
         index.FilterField("packaged_date"),
-        index.FilterField("on_tap_date"),
-        index.FilterField("off_tap_date"),
         index.FilterField("original_gravity"),
         index.FilterField("final_gravity"),
         index.FilterField("volume_in_fermenter"),
@@ -1116,11 +1077,9 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):  # type: ignore
 
     class Meta:
         indexes = [
-            models.Index(fields=["on_tap_date"]),
-            models.Index(fields=["off_tap_date"]),
             models.Index(fields=["brewed_date"]),
             models.Index(fields=["status"]),
-            models.Index(fields=["status", "brewed_date", "on_tap_date", "off_tap_date"]),
+            models.Index(fields=["status", "brewed_date"]),
         ]
 
     def __str__(self) -> str:
@@ -1241,6 +1200,24 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):  # type: ignore
         return context
 
 
+class BatchOnTapRecord(models.Model):
+    batch_log_page = ParentalKey(BatchLogPage, on_delete=models.CASCADE, related_name="on_tap_records")
+    on_tap_date = models.DateField()
+    off_tap_date = models.DateField(null=True, blank=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["on_tap_date", "off_tap_date"])
+        ]
+        ordering = ("-on_tap_date", "-off_tap_date")
+
+    def __str__(self) -> str:
+        val = f"{self.batch} from {self.on_tap_date}"
+        if self.off_tap_date:
+            val = f"{val} through {self.off_tap_date}"
+        return val
+
+
 class OnTapPage(Page):  # type: ignore
     """
     The main On Tap index
@@ -1278,40 +1255,38 @@ class OnTapPage(Page):  # type: ignore
         """
         Returns the currently on tap batches
         """
-        currently_on_tap = BatchLogPage.objects.descendant_of(self).live()
-        currently_on_tap = (
-            currently_on_tap.filter(on_tap_date__lte=timezone.now(), off_tap_date=None, status=BatchStatus.COMPLETE)
-            .exclude(on_tap_date=None)
-            .order_by("-on_tap_date")
+        return (
+            BatchLogPage.objects.descendant_of(self)
+            .live()
+            .filter(on_tap_records__on_tap_date__lte=timezone.now().date(), on_tap_records__off_tap_date=None)
             .select_related("recipe_page")
+            .order_by("-on_tap_records__on_tap_date", "pk")
         )
-        return currently_on_tap
 
     def get_upcoming_batches(self: "OnTapPage") -> "QuerySet[BatchLogPage]":
         """
         Returns the batches which are planned and not currently on tap ordered from newest to oldest. These may be
         just planned, fermenting, or packaged and just waiting to go on tap.
         """
-        batches = BatchLogPage.objects.descendant_of(self).live()
-        batches = (
-            batches.filter(on_tap_date=None, off_tap_date=None)
-            .order_by(models.F("brewed_date").desc(nulls_last=True), "-last_published_at")
+        return (
+            BatchLogPage.objects.descendant_of(self)
+            .live()
+            .filter(on_tap_records=None)
+            .order_by(models.F("brewed_date").desc(nulls_last=True), "pk")
             .select_related("recipe_page")
         )
-        return batches
 
     def get_past_batches(self: "OnTapPage") -> "QuerySet[BatchLogPage]":
         """
         Returns previous batches which are no longer on tap.
         """
-        batches = BatchLogPage.objects.descendant_of(self).live()
-        batches = (
-            batches.filter(status=BatchStatus.COMPLETE)
-            .exclude(off_tap_date=None)
-            .order_by("-brewed_date", "-last_published_at")
+        return (
+            BatchLogPage.objects.descendant_of(self)
+            .live()
+            .filter(on_tap_records__off_tap_date__lte=timezone.now().date())
+            .order_by("-on_tap_records__off_tap_date", "pk")
             .select_related("recipe_page")
         )
-        return batches
 
     def paginate(
         self: "OnTapPage", queryset: "QuerySet[BatchLogPage]", page_number: int = 1
@@ -1332,7 +1307,6 @@ class OnTapPage(Page):  # type: ignore
         context = super().get_context(request)
         currently_on_tap = self.get_on_tap_batches()
 
-        # paginate this
         try:
             page_number = int(request.GET.get("page", 1))
         except Exception:
@@ -1343,16 +1317,16 @@ class OnTapPage(Page):  # type: ignore
         else:
             upcoming_batches = None
         past_batches = self.get_past_batches()
-        paginator, page = self.paginate(past_batches, page_number)
+        past_batches_paginator, past_batches_page = self.paginate(past_batches, page_number)
         context.update(
             {
                 "currently_on_tap": currently_on_tap,
                 "upcoming_batches": upcoming_batches,
-                "past_batches": page.object_list,
+                "past_batches": past_batches_page.object_list,
                 # not the page being viewed, but the paginator page. This is a confusing name in the template context.
                 # really need to review django pagination and clean up how I do these.
-                "page_obj": page,
-                "paginator": paginator,
+                "page_obj": past_batches_page,
+                "paginator": past_batches_paginator,
             }
         )
 
