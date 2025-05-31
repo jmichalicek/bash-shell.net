@@ -101,7 +101,8 @@ class OnTapPageTest(WagtailPageTestCase):
             slug="on-tap-batch",
             brewed_date="2020-07-10",
             packaged_date="2020-07-25",
-            on_tap_date="2020-07-25",
+            on_tap=True,
+            on_tap_record__on_tap_date="2020-07-25",
             status="complete",
             recipe_page=self.recipe_page,
         )
@@ -128,11 +129,17 @@ class OnTapPageTest(WagtailPageTestCase):
             parent_page=self.batch_log_index_page,
             brewed_date="2020-06-10",
             packaged_date="2020-06-25",
-            on_tap_date="2020-06-25",
-            off_tap_date="2020-07-25",
+            off_tap=True,
+            on_tap_record__on_tap_date="2020-06-25",
+            on_tap_record__off_tap_date="2020-07-25",
             status="complete",
             recipe_page=self.recipe_page,
         )
+
+        print(on_tap_batch.on_tap_records.all())
+        from bash_shell_net.on_tap.models import BatchOnTapRecord
+        print("ALL BATCH ON TAP RECORDS!!!!")
+        print(BatchOnTapRecord.objects.all())
 
         page = self.on_tap_page
 
