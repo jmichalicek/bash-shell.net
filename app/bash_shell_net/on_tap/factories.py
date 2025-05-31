@@ -7,6 +7,7 @@ import wagtail_factories
 from bash_shell_net.on_tap.models import (
     BatchLogIndexPage,
     BatchLogPage,
+    BatchOnTapRecord,
     BeverageStyle,
     OnTapPage,
     RecipeFermentable,
@@ -71,6 +72,22 @@ class BatchLogPageFactory(wagtail_factories.PageFactory):
 
     class Meta:
         model = BatchLogPage
+
+    class Params:
+        on_tap: factory.Trait = factory.Trait(
+            on_tap_records=factory.RelatedFactory(
+                "bash_shell_net.on_tap.factories.BatchOnTapRecordFactory",
+                factory_related_name="batch_log_page",
+                on_tap=True,
+            )
+        )
+        off_tap: factory.Trait = factory.Trait(
+            on_tap_records=factory.RelatedFactory(
+                "bash_shell_net.on_tap.factories.BatchOnTapRecordFactory",
+                factory_related_name="batch_log_page",
+                off_tap=True,
+            )
+        )
 
 
 class RecipeIndexPageFactory(wagtail_factories.PageFactory):
@@ -208,3 +225,16 @@ def create_default_recipe_page() -> RecipePage:
 
     recipe.yeasts = [RecipeYeastFactory.build()]
     return recipe
+
+
+class BatchOnTapRecordFactory(factory.django.DjangoModelFactory):
+    batch_log_page: factory.SubFactory = factory.SubFactory(BatchLogPageFactory)
+
+    class Meta:
+        model = BatchOnTapRecord
+
+    class Params:
+        on_tap: factory.Trait = factory.Trait(on_tap_date=factory.Faker("past_date", start_date="-2y"))
+        off_tap: factory.Trait = factory.Trait(
+            on_tap=True, off_tap_date=factory.Faker("past_date", start_date=factory.SelfAttribute("..on_tap_date"))
+        )
