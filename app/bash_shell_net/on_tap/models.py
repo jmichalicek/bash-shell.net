@@ -19,7 +19,7 @@ from taggit.models import TaggedItemBase
 from wagtail.admin.panels import FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 from wagtail.fields import RichTextField, StreamField
-from wagtail.models import Orderable
+from wagtail.models import Orderable, PageManager, PageQuerySet
 from wagtail.search import index
 from wagtail.snippets.models import register_snippet
 
@@ -659,6 +659,19 @@ class BeverageStyle(models.Model):  # type: ignore
         return ""
 
 
+class BaseRecipePageManager(PageManager):
+    def get_queryset(self):
+        return (
+            super()
+            .get_queryset()
+            .prefetch_related("miscellaneous_ingredients", "yeasts", "fermentables", "hops", "tagged_items__tag")
+            .select_related("style")
+        )
+
+
+RecipePageManager: BaseRecipePageManager = BaseRecipePageManager.from_queryset(PageQuerySet)
+
+
 class RecipePage(IdAndSlugUrlMixin, Page):  # type: ignore[django-manager-missing]
     """
     Page for a beer recipe
@@ -866,6 +879,8 @@ class RecipePage(IdAndSlugUrlMixin, Page):  # type: ignore[django-manager-missin
         "on_tap.RecipeIndexPage",
     ]
 
+    objects: BaseRecipePageManager = RecipePageManager()
+
     class Meta:
         indexes = [
             models.Index(fields=["recipe_type"]),
@@ -971,6 +986,14 @@ class BatchLogPageTag(TaggedItemBase):
 
     def __str__(self) -> str:
         return f"{self.content_object} tagged {self.tag}"
+
+
+class BaseBatchLogPagePageManager(PageManager):
+    def get_queryset(self):
+        return super().get_queryset().live().prefetch_related("tagged_items__tag").select_related("recipe_page")
+
+
+BatchLogPageManager = BaseBatchLogPagePageManager.from_queryset(PageQuerySet)
 
 
 class BatchLogPage(IdAndSlugUrlMixin, Page):  # type: ignore
@@ -1113,6 +1136,8 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):  # type: ignore
     parent_page_types = [
         "on_tap.BatchLogIndexPage",
     ]
+
+    objects: BaseBatchLogPagePageManager = BatchLogPageManager()
 
     class Meta:
         indexes = [
@@ -1283,7 +1308,7 @@ class OnTapPage(Page):  # type: ignore
             currently_on_tap.filter(on_tap_date__lte=timezone.now(), off_tap_date=None, status=BatchStatus.COMPLETE)
             .exclude(on_tap_date=None)
             .order_by("-on_tap_date")
-            .select_related("recipe_page")
+            .select_related("recipe_page__style")
         )
         return currently_on_tap
 
@@ -1296,7 +1321,7 @@ class OnTapPage(Page):  # type: ignore
         batches = (
             batches.filter(on_tap_date=None, off_tap_date=None)
             .order_by(models.F("brewed_date").desc(nulls_last=True), "-last_published_at")
-            .select_related("recipe_page")
+            .select_related("recipe_page__style")
         )
         return batches
 
@@ -1309,7 +1334,7 @@ class OnTapPage(Page):  # type: ignore
             batches.filter(status=BatchStatus.COMPLETE)
             .exclude(off_tap_date=None)
             .order_by("-brewed_date", "-last_published_at")
-            .select_related("recipe_page")
+            .select_related("recipe_page__style")
         )
         return batches
 
