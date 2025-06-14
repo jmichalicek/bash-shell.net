@@ -96,7 +96,7 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "5@r3yfc1j@cyh*uya0w&lrx_eyjt((
 
 # Ordering based on https://docs.djangoproject.com/en/3.1/ref/middleware/#middleware-ordering
 # and http://whitenoise.evans.io/en/stable/django.html#enable-whitenoise
-MIDDLEWARE = (
+MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -110,7 +110,8 @@ MIDDLEWARE = (
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
     "csp.middleware.CSPMiddleware",
     "django_structlog.middlewares.RequestMiddleware",
-)
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
+]
 
 ROOT_URLCONF = "config.urls"
 
@@ -141,7 +142,7 @@ TEMPLATES = [
     },
 ]
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -173,13 +174,14 @@ INSTALLED_APPS = (
     "taggit",
     # Health/monitoring
     # 'watchman',
+    "debug_toolbar",
     # My stuff
     "bash_shell_net.accounts",
     "bash_shell_net.blog",
     "bash_shell_net.projects",
     "bash_shell_net.base",
     "bash_shell_net.on_tap",
-)
+]
 
 COVERAGE_PATH_EXCLUDES = [r".svn", r".git", r"templates", r"static"]
 
