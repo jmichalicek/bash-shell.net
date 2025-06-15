@@ -2,7 +2,6 @@ import copy
 from decimal import Decimal
 from enum import Enum
 from typing import TYPE_CHECKING, Any
-from urllib.parse import urlencode
 
 from django.core.paginator import EmptyPage
 from django.core.paginator import Page as PaginatorPage
@@ -11,7 +10,6 @@ from django.db import models
 from django.db.models import F, QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.utils import timezone
-from django.utils.safestring import mark_safe
 
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from modelcluster.fields import ParentalKey, create_deferring_foreign_related_manager
@@ -19,7 +17,7 @@ from taggit.models import TaggedItemBase
 from wagtail.admin.panels import FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 from wagtail.fields import RichTextField, StreamField
-from wagtail.models import Orderable
+from wagtail.models import BasePageManager, Orderable, PageManager, PageQuerySet
 from wagtail.search import index
 from wagtail.snippets.models import register_snippet
 
@@ -659,6 +657,19 @@ class BeverageStyle(models.Model):  # type: ignore
         return ""
 
 
+class BaseRecipePageManager(PageManager):
+    def get_queryset(self):
+        return (
+            super()
+            .get_queryset()
+            .prefetch_related("miscellaneous_ingredients", "yeasts", "fermentables", "hops", "tagged_items__tag")
+            .select_related("style")
+        )
+
+
+RecipePageManager: BaseRecipePageManager = BaseRecipePageManager.from_queryset(PageQuerySet)
+
+
 class RecipePage(IdAndSlugUrlMixin, Page):  # type: ignore[django-manager-missing]
     """
     Page for a beer recipe
@@ -866,6 +877,9 @@ class RecipePage(IdAndSlugUrlMixin, Page):  # type: ignore[django-manager-missin
         "on_tap.RecipeIndexPage",
     ]
 
+    objects: BaseRecipePageManager = RecipePageManager()
+    objects_no_prefetch: BasePageManager = PageManager()
+
     class Meta:
         indexes = [
             models.Index(fields=["recipe_type"]),
@@ -971,6 +985,14 @@ class BatchLogPageTag(TaggedItemBase):
 
     def __str__(self) -> str:
         return f"{self.content_object} tagged {self.tag}"
+
+
+class BaseBatchLogPagePageManager(PageManager):
+    def get_queryset(self):
+        return super().get_queryset().live().prefetch_related("tagged_items__tag").select_related("recipe_page")
+
+
+BatchLogPageManager = BaseBatchLogPagePageManager.from_queryset(PageQuerySet)
 
 
 class BatchLogPage(IdAndSlugUrlMixin, Page):  # type: ignore
@@ -1114,6 +1136,9 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):  # type: ignore
         "on_tap.BatchLogIndexPage",
     ]
 
+    objects: BaseBatchLogPagePageManager = BatchLogPageManager()
+    objects_no_prefetch: BasePageManager = PageManager()
+
     class Meta:
         indexes = [
             models.Index(fields=["on_tap_date"]),
@@ -1128,7 +1153,6 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):  # type: ignore
 
     @property
     def uses_scaled_recipe(self) -> bool:
-        # might replace this with a BooleanField
         return bool(
             self.target_post_boil_volume
             and (
@@ -1136,14 +1160,6 @@ class BatchLogPage(IdAndSlugUrlMixin, Page):  # type: ignore
                 or self.volume_units != self.recipe_page.volume_units
             )
         )
-
-    @property
-    def recipe_url(self) -> str:
-        url = self.recipe_page.id_and_slug_url
-        if self.uses_scaled_recipe:
-            query_params = urlencode({"scale_volume": self.target_post_boil_volume, "scale_unit": self.volume_units})
-            url = f"{url}?{query_params}"
-        return mark_safe(url)
 
     def recipe_scaled_to_target_volume(self) -> RecipePage:
         """
@@ -1283,7 +1299,7 @@ class OnTapPage(Page):  # type: ignore
             currently_on_tap.filter(on_tap_date__lte=timezone.now(), off_tap_date=None, status=BatchStatus.COMPLETE)
             .exclude(on_tap_date=None)
             .order_by("-on_tap_date")
-            .select_related("recipe_page")
+            .select_related("recipe_page__style")
         )
         return currently_on_tap
 
@@ -1296,7 +1312,7 @@ class OnTapPage(Page):  # type: ignore
         batches = (
             batches.filter(on_tap_date=None, off_tap_date=None)
             .order_by(models.F("brewed_date").desc(nulls_last=True), "-last_published_at")
-            .select_related("recipe_page")
+            .select_related("recipe_page__style")
         )
         return batches
 
@@ -1309,7 +1325,7 @@ class OnTapPage(Page):  # type: ignore
             batches.filter(status=BatchStatus.COMPLETE)
             .exclude(off_tap_date=None)
             .order_by("-brewed_date", "-last_published_at")
-            .select_related("recipe_page")
+            .select_related("recipe_page__style")
         )
         return batches
 
@@ -1366,7 +1382,6 @@ class RecipeIndexPage(RoutablePageMixin, IdAndSlugUrlIndexMixin, Page):  # type:
 
     template = "on_tap/recipe_index.html"
     id_and_slug_url_name = "on_tap_recipe_by_id_and_slug"
-    id_and_slug_url_class = "bash_shell_net.on_tap.models.RecipePage"
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -1386,7 +1401,7 @@ class RecipeIndexPage(RoutablePageMixin, IdAndSlugUrlIndexMixin, Page):  # type:
         """
         # TODO: Find a cleaner way to do this where I do not have to decorate a method here just to directly call
         # the method on IdAndSlugUrlIndexMixin?
-        return self.page_by_id_and_slug(request, id, slug, *args, **kwargs)
+        return self.child_page_by_id_and_slug(request, id, slug, *args, **kwargs)
 
 
 class BatchLogIndexPage(RoutablePageMixin, IdAndSlugUrlIndexMixin, Page):
@@ -1402,7 +1417,6 @@ class BatchLogIndexPage(RoutablePageMixin, IdAndSlugUrlIndexMixin, Page):
 
     template = "on_tap/recipe_index.html"
     id_and_slug_url_name = "on_tap_batch_log_by_id_and_slug"
-    id_and_slug_url_class = "bash_shell_net.on_tap.models.BatchLogPage"
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -1422,4 +1436,4 @@ class BatchLogIndexPage(RoutablePageMixin, IdAndSlugUrlIndexMixin, Page):
         """
         # TODO: Find a cleaner way to do this where I do not have to decorate a method here just to directly call
         # the method on IdAndSlugUrlIndexMixin?
-        return self.page_by_id_and_slug(request, id, slug, *args, **kwargs)
+        return self.child_page_by_id_and_slug(request, id, slug, *args, **kwargs)

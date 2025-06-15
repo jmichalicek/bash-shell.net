@@ -21,7 +21,7 @@ if TYPE_CHECKING:
         pass
 
     class Page(_Page, models.Model):
-        objects: type[_PageManager]
+        objects: "type[_PageManager]"
         alias_of: RelatedManager
 
         def __str__(self) -> str: ...

@@ -1,4 +1,5 @@
 from decimal import Decimal
+from typing import Any
 
 import factory
 import wagtail_factories
@@ -63,6 +64,10 @@ class BatchLogPageFactory(wagtail_factories.PageFactory):
     title = factory.Sequence(lambda n: f"Batch {n}")
     recipe_page = factory.SubFactory("bash_shell_net.on_tap.factories.RecipePageFactory")  # type:ignore[var-annotated]
     body = wagtail_factories.StreamFieldFactory({"0": wagtail_factories.CharBlockFactory})  # type:ignore[var-annotated]
+    volume_units: Any = factory.SelfAttribute("recipe_page.volume_units")
+    target_post_boil_volume: Any = factory.SelfAttribute("recipe_page.batch_size")
+    post_boil_volume: Any = factory.SelfAttribute("target_post_boil_volume")
+    volume_in_fermenter: Any = factory.LazyAttribute(lambda o: o.recipe_page.batch_size - Decimal("0.25"))
 
     class Meta:
         model = BatchLogPage

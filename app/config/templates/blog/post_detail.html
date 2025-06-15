@@ -22,7 +22,7 @@
     {% include_block page.body %}
   </div>
   <nav class="blog-pagination">
-    <a class="btn btn-outline-primary {% if not next_post %}disabled{% endif %}" href="{% if next_post %}{{ next_post.id_and_slug_url }}{% else %}#{% endif %}">Newer</a>
-    <a class="btn btn-outline-primary {% if not previous_post %}disabled{% endif %}" href="{% if previous_post %}{{ previous_post.id_and_slug_url }}{% else %}#{% endif %}">Older</a>
+    <a class="btn btn-outline-primary {% if not next_post %}disabled{% endif %}" href="{% if next_post %}{% pageurl next_post %}{% else %}#{% endif %}">Newer</a>
+    <a class="btn btn-outline-primary {% if not previous_post %}disabled{% endif %}" href="{% if previous_post %}{% pageurl previous_post %}{% else %}#{% endif %}">Older</a>
   </nav>
 {% endblock %}

@@ -33,3 +33,7 @@ LOGGING = {
         "level": "CRITICAL",
     },
 }
+
+
+INSTALLED_APPS.remove("debug_toolbar")
+MIDDLEWARE.remove("debug_toolbar.middleware.DebugToolbarMiddleware")

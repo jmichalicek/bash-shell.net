@@ -22,9 +22,6 @@ class BlogSitemap(WagtailSitemap):
     def lastmod(self, obj):
         return obj.last_published_at
 
-    def location(self, obj):
-        return obj.get_id_and_slug_url()
-
 
 class OnTapSitemap(WagtailSitemap):
     """
@@ -54,7 +51,7 @@ class RecipePageSitemap(WagtailSitemap):
     protocol = "https"
 
     def items(self):
-        return RecipePage.objects.live().public().order_by("-first_published_at")
+        return RecipePage.objects_no_prefetch.live().public().order_by("-first_published_at")
 
     def lastmod(self, obj):
         return obj.last_published_at
@@ -71,7 +68,7 @@ class BatchLogPageSitemap(WagtailSitemap):
     protocol = "https"
 
     def items(self):
-        return BatchLogPage.objects.live().public().order_by("-first_published_at")
+        return BatchLogPage.objects_no_prefetch.live().public().order_by("-first_published_at")
 
     def lastmod(self, obj):
         return obj.last_published_at
