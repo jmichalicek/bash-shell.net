@@ -53,7 +53,6 @@ class BlogPageIndex(RoutablePageMixin, IdAndSlugUrlIndexMixin, BlogPageIndexMixi
     # and for general: https://github.com/wagtail/bakerydemo/blob/master/bakerydemo/blog/models.py#L133
     template = "blog/post_index.html"
     id_and_slug_url_name = "blog_post_by_id_and_slug"
-    id_and_slug_url_class = "bash_shell_net.blog.models.BlogPage"
 
     subpage_types = ["blog.BlogPage"]
 
@@ -82,7 +81,7 @@ class BlogPageIndex(RoutablePageMixin, IdAndSlugUrlIndexMixin, BlogPageIndexMixi
         """
         # TODO: Find a cleaner way to do this where I do not have to decorate a method here just to directly call
         # the method on IdAndSlugUrlIndexMixin?
-        return self.page_by_id_and_slug(request, id, slug, *args, **kwargs)
+        return self.child_page_by_id_and_slug(request, id, slug, *args, **kwargs)
 
 
 class BlogPage(IdAndSlugUrlMixin, Page):

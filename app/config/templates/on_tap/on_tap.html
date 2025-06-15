@@ -17,7 +17,7 @@
         <div class="col-md-4 col-12 mt-3 mt-md-0 pr-0">
           <div class="card currently-on-tap">
             <div class="card-header text-center">
-              <div class="w-100"><a href="{{ batch.recipe_url }}">{{ batch.recipe_page.title }}</a></div>
+              <div class="w-100"><a href="{% pageurl batch.recipe_page %}{% querystring scale_volume=batch.target_post_boil_volume scale_unit=batch.volume_units %}">{{ batch.recipe_page.title }}</a></div>
               <small>{{ batch.recipe_page.style.name }}{% if batch.recipe_page.style.bjcp_category %} ({{ batch.recipe_page.style.bjcp_category }}){% endif %}</small>
             </div>
             <div class="card-body">
@@ -25,7 +25,7 @@
               <p class="card-text">On Tap {{ batch.on_tap_date }}</p>
             </div>
             <div class="card-footer">
-              <a href="{{ batch.id_and_slug_url }}" class="card-link">Details</a>
+              <a href="{% pageurl batch %}" class="card-link">Details</a>
             </div>
           </div>
         </div>
@@ -56,8 +56,8 @@
           {% for batch in upcoming_batches %}
             <tr>
               <td>
-                <a href="{{ batch.recipe_url }}">{{ batch.recipe_page.title }}</a>
-                {% if batch.status != 'planned' %} (<a href="{{ batch.id_and_slug_url }}">Log</a>){% endif %}
+                <a href="{% pageurl batch.recipe_page %}{% querystring scale_volume=batch.target_post_boil_volume scale_unit=batch.volume_units %}">{{ batch.recipe_page.title }}</a>
+                {% if batch.status != 'planned' %} (<a href="{% pageurl batch %}">Log</a>){% endif %}
               </td>
               <td>{{ batch.recipe_page.style }}</td>
               <td>{{ batch.get_status_display }}</td>
@@ -83,7 +83,7 @@
       <tbody>
         {% for batch in past_batches %}
           <tr>
-            <td><a href="{{ batch.recipe_url }}">{{ batch.recipe_page.title }}</a> (<a href="{{ batch.id_and_slug_url }}">Log</a>)</td><td>{{ batch.recipe_page.style }}</td><td>{{ batch.get_status_display }}</td><td>{{ batch.brewed_date }}</td><td>{{ batch.packaged_date|default:"" }}</td><td>{{ batch.on_tap_date|default:"" }}</td>
+            <td><a href="{% pageurl batch.recipe_page %}{% querystring scale_volume=batch.target_post_boil_volume scale_unit=batch.volume_units %}">{{ batch.recipe_page.title }}</a> (<a href="{% pageurl batch %}">Log</a>)</td><td>{{ batch.recipe_page.style }}</td><td>{{ batch.get_status_display }}</td><td>{{ batch.brewed_date }}</td><td>{{ batch.packaged_date|default:"" }}</td><td>{{ batch.on_tap_date|default:"" }}</td>
           </tr>
         {% endfor %}
       </tbody>

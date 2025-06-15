@@ -32,29 +32,3 @@ class BlogPageTest(WagtailPageTestCase):
         Test creating a BlogPage under the BlogPageIndex via form with expected data creates the page.
         """
         pass
-
-    def test_get_id_and_slug_url(self):
-        """
-        Test that BlogPage.
-        """
-        self.assertEqual(
-            f"/{self.blog_index_page.slug}/{self.blog_page.pk}/{self.blog_page.slug}/",
-            self.blog_page.get_id_and_slug_url(),
-        )
-
-    def test_request_by_id_and_slug_route(self):
-        r = self.client.get(self.blog_page.get_id_and_slug_url())
-        self.assertEqual(200, r.status_code)
-
-    def test_request_by_id_and_slug_route_redirects_on_slug_mismatch(self):
-        """
-        Test that a GET request to the id_and_slug_url redirects to the correct slug if the requested slug does not
-        match the current slug.
-        """
-        url = self.blog_page.get_id_and_slug_url()
-        url = f"{url[:-1]}1/"
-        r = self.client.get(url)
-        self.assertRedirects(
-            r,
-            self.blog_page.get_id_and_slug_url(),
-        )
