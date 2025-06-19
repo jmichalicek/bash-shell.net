@@ -13,6 +13,7 @@ from bash_shell_net.base.test_utils import add_wagtail_factory_page
 from bash_shell_net.on_tap.factories import (
     BatchLogIndexPageFactory,
     BatchLogPageFactory,
+    BatchOnTapRecordFactory,
     OnTapPageFactory,
     RecipeIndexPageFactory,
     RecipePageFactory,
@@ -100,10 +101,10 @@ class OnTapPageTest(WagtailPageTestCase):
             slug="on-tap-batch",
             brewed_date="2020-07-10",
             packaged_date="2020-07-25",
-            on_tap_date="2020-07-25",
             status="complete",
             recipe_page=self.recipe_page,
         )
+        currently_on_tap_record = BatchOnTapRecordFactory.create(on_tap=True, batch_log_page=on_tap_batch)
 
         planned_batch = add_wagtail_factory_page(
             BatchLogPageFactory,
@@ -127,19 +128,19 @@ class OnTapPageTest(WagtailPageTestCase):
             parent_page=self.batch_log_index_page,
             brewed_date="2020-06-10",
             packaged_date="2020-06-25",
-            on_tap_date="2020-06-25",
-            off_tap_date="2020-07-25",
+            off_tap=True,
             status="complete",
             recipe_page=self.recipe_page,
         )
+        previous_batch_on_tap_record = BatchOnTapRecordFactory.create(off_tap=True, batch_log_page=previous_batch)
 
         page = self.on_tap_page
 
         r = self.client.get(page.url)
         self.assertEqual(r.status_code, 200)
-        self.assertEqual(list(r.context["currently_on_tap"]), [on_tap_batch])
+        self.assertEqual(list(r.context["currently_on_tap"]), [currently_on_tap_record])
         self.assertEqual(list(r.context["upcoming_batches"]), [fermenting_batch, planned_batch])
-        self.assertEqual(list(r.context["past_batches"]), [previous_batch])
+        self.assertEqual(list(r.context["past_batches"]), [previous_batch_on_tap_record])
         self.assertTrue("page_obj" in r.context)
         self.assertTrue("paginator" in r.context)
 
@@ -147,21 +148,23 @@ class OnTapPageTest(WagtailPageTestCase):
             # TODO: Test the whole block of html for this which would allow verifying that it's in the right place?
             expected_on_tap_batches = f"""
                 <div class="col-md-4 col-12 mt-3 mt-md-0 pr-0">
-                    <div class="card currently-on-tap">
-                        <div class="card-header text-center">
-                            <div class="w-100"><a href="{on_tap_batch.recipe_page.url}?scale_volume={on_tap_batch.target_post_boil_volume}&amp;scale_unit={on_tap_batch.volume_units}">{on_tap_batch.recipe_page.title}</a></div>
-                            <small>{on_tap_batch.recipe_page.style.name} ({on_tap_batch.recipe_page.style.bjcp_category()})</small>
-                        </div>
-                        <div class="card-body">
-                            <p class="card-text">{on_tap_batch.recipe_page.short_description}</p>
-                            <p class="card-text">On Tap {on_tap_batch.on_tap_date.strftime('%B %d, %Y')}</p>
-                        </div>
-                        <div class="card-footer">
-                            <a href="{on_tap_batch.url}" class="card-link">Details</a>
-                        </div>
+                  <div class="card currently-on-tap">
+                    <div class="card-header text-center">
+                      <div class="w-100">
+                        <a href="{on_tap_batch.recipe_page.url}?scale_volume={on_tap_batch.target_post_boil_volume}&amp;scale_unit={on_tap_batch.volume_units}">{on_tap_batch.recipe_page.title}</a>
+                      </div>
+                      <small>{on_tap_batch.recipe_page.style.name} ({on_tap_batch.recipe_page.style.bjcp_category()})</small>
                     </div>
+                    <div class="card-body">
+                      <p class="card-text">{on_tap_batch.recipe_page.short_description}</p>
+                      <p class="card-text">On Tap {currently_on_tap_record.on_tap_date.strftime(DATE_FORMAT)}</p>
+                    </div>
+                    <div class="card-footer">
+                      <a href="{on_tap_batch.url}" class="card-link">Details</a>
+                    </div>
+                  </div>
                 </div>
-            """
+            """.strip()
 
             expected_coming_soon_batches = f"""
             <tbody>
@@ -485,8 +488,6 @@ class BatchLogPageTest(WagtailPageTestCase):
                 "recipe_page": self.recipe_page.pk,
                 "brewed_date": "2020-07-10",
                 "packaged_date": "2020-07-25",
-                "on_tap_date": "2020-07-25",
-                "off_tap_date": "",
                 "original_gravity": 1.050,
                 "final_gravity": 1.016,
                 "status": "complete",
@@ -500,7 +501,9 @@ class BatchLogPageTest(WagtailPageTestCase):
                 ),
                 "volume_in_fermenter": 2.75,
                 "volume_units": "gal",
-                "target_post_boil_volume": "",
+                "target_post_boil_volume": 3.00,
+                "on_tap_records": inline_formset([]),
+                "comments": inline_formset([]),
             },
         )
         self.assertCanCreate(self.batch_log_index_page, BatchLogPage, form_data)
@@ -523,7 +526,7 @@ class BatchLogPageTest(WagtailPageTestCase):
         base_volume = Decimal("2.75")
         for unit in [VolumeUnit.GALLON, VolumeUnit.FLUID_OZ, VolumeUnit.QUART, VolumeUnit.LITER]:
             page.volume_in_fermenter = Decimal(2.75) / expected_conversion[unit]
-            page.volume_units = unit.value
+            page.volume_units = unit
             with self.subTest(volume_units=page.get_volume_units_display(), volume=page.volume_in_fermenter):
                 self.assertEqual(base_volume, page.fermenter_volume_as_gallons().quantize(base_volume))
 
@@ -539,7 +542,7 @@ class BatchLogPageTest(WagtailPageTestCase):
         base_volume = Decimal("2.75")
         for unit in [VolumeUnit.GALLON, VolumeUnit.FLUID_OZ, VolumeUnit.QUART, VolumeUnit.LITER]:
             page.post_boil_volume = Decimal(2.75) / expected_conversion[unit]
-            page.volume_units = unit.value
+            page.volume_units = unit
             with self.subTest(volume_units=page.get_volume_units_display(), volume=page.volume_in_fermenter):
                 self.assertEqual(base_volume, page.post_boil_volume_as_gallons().quantize(base_volume))
 
