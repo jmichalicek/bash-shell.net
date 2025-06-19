@@ -1,75 +1,73 @@
 {
-  {
-    "editor.formatOnSave": true,
-    "files.insertFinalNewline": true,
-    "files.trimTrailingWhitespace": true,
-    "files.associations": {
-      "*.tsx": "typescriptreact",
-      ".eslintrc": "json"
-    },
-    "editorconfig.generateAuto": false,
-    "workbench.startupEditor": "newUntitledFile",
-    "workbench.editorAssociations": {
-      "*.ipynb": "jupyter-notebook"
-    },
-    "[javascript]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[terraform]": {
-      "editor.defaultFormatter": "hashicorp.terraform",
-      "editor.formatOnSaveMode": "file"
-    },
-    "[terraform-vars]": {
-      "editor.defaultFormatter": "hashicorp.terraform",
-      "editor.formatOnSaveMode": "file"
-    },
-    "html.format.indentInnerHtml": true,
-    "html.format.templating": true,
-    "[html]": {
-      "editor.formatOnSave": false
-    },
-    "[typescriptreact]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "eslint.format.enable": true,
-    "editor.renderWhitespace": "all",
-    "[python]": {
-      "editor.defaultFormatter": "ms-python.black-formatter"
-    },
-    "python.testing.autoTestDiscoverOnSaveEnabled": false,
-    "isort.check": true,
-    "isort.args": [
-      "--settings-path",
-      "${workspaceFolder}/app/pyproject.toml"
-    ],
-    "black-formatter.importStrategy": "fromEnvironment",
-    "black-formatter.args": [
-      "--config=${workspaceFolder}/app/pyproject.toml"
-    ],
-    "ruff.organizeImports": false,
-    "[typescript]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[yaml]": {
-      "editor.defaultFormatter": "redhat.vscode-yaml"
-    },
-    "[json]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[jsonc]": {
-      "editor.defaultFormatter": "vscode.json-language-features"
-    },
-    "[scss]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "scss.format.spaceAroundSelectorSeparator": true,
-    "stylelint.configFile": "${workspaceFolder}/app/frontend/.stylelintrc.json",
-    "stylelint.validate": [
-      "css",
-      "scss"
-    ],
-    "emmet.includeLanguages": {
-      "django-html": "html"
-    }
+  "editor.formatOnSave": true,
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "files.associations": {
+    "*.tsx": "typescriptreact",
+    ".eslintrc": "json"
+  },
+  "editorconfig.generateAuto": false,
+  "workbench.startupEditor": "newUntitledFile",
+  "workbench.editorAssociations": {
+    "*.ipynb": "jupyter-notebook"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[terraform]": {
+    "editor.defaultFormatter": "hashicorp.terraform",
+    "editor.formatOnSaveMode": "file"
+  },
+  "[terraform-vars]": {
+    "editor.defaultFormatter": "hashicorp.terraform",
+    "editor.formatOnSaveMode": "file"
+  },
+  "html.format.indentInnerHtml": true,
+  "html.format.templating": true,
+  "[html]": {
+    "editor.formatOnSave": false
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "eslint.format.enable": true,
+  "editor.renderWhitespace": "all",
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  },
+  "python.testing.autoTestDiscoverOnSaveEnabled": false,
+  "isort.check": true,
+  "isort.args": [
+    "--settings-path",
+    "${workspaceFolder}/app/pyproject.toml"
+  ],
+  "black-formatter.importStrategy": "fromEnvironment",
+  "black-formatter.args": [
+    "--config=${workspaceFolder}/app/pyproject.toml"
+  ],
+  "ruff.organizeImports": false,
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[scss]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "scss.format.spaceAroundSelectorSeparator": true,
+  "stylelint.configFile": "${workspaceFolder}/app/frontend/.stylelintrc.json",
+  "stylelint.validate": [
+    "css",
+    "scss"
+  ],
+  "emmet.includeLanguages": {
+    "django-html": "html"
   }
 }
