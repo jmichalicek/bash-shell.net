@@ -1,89 +1,89 @@
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const StylelintPlugin = require('stylelint-webpack-plugin');
-const path = require('path');
+import CopyPlugin from "copy-webpack-plugin";
+// import ESLintPlugin from "eslint-webpack-plugin"
+import HtmlWebpackPlugin from "html-webpack-plugin";
+import MiniCssExtractPlugin from "mini-css-extract-plugin";
+import path from "path";
+import StylelintPlugin from "stylelint-webpack-plugin";
+import { fileURLToPath } from "url";
+import webpack from "webpack";
+import { WebpackManifestPlugin } from "webpack-manifest-plugin";
 
-var config = {
-  mode: 'development',
-  devtool: 'source-map',
-  entry: [
-    './config/static/js/index.js',
-    './config/static/scss/main.scss',
-  ],
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+export default (env, argv) => ({
+  mode: argv.mode,
+  devtool: argv.mode === "development" ? "eval-cheap-source-map" : "source-map",
+  context: path.resolve(__dirname),
+  entry: ["./config/static/js/index.js", "./config/static/css/src/main.css"],
   output: {
-    path: path.resolve(__dirname , 'webpack_assets/'),
-    // filename: './config/static/js/bundled/index.bundle.js',
-    // where we want it to write relative to path above or maybe we should use path.resolve here as well
-    filename: '../config/static/js/bundled/index.bundle.js',
+    path: path.resolve(__dirname, "webpack_assets/"),
+    filename: "./config/static/js/bundled/index.bundle.js",
     publicPath: "/static/", // Should match Django STATIC_URL
-  },
-  devServer: {
-    writeToDisk: true, // Write files to disk in dev mode, so Django can serve the assets
   },
   module: {
     rules: [
       {
-        test: /\.scss$/,
-        // use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'resolve-url-loader', 'sass-loader'],
-        use: [
-          MiniCssExtractPlugin.loader,          
-          { loader: 'css-loader', options: { sourceMap: true, importLoaders: 1 } },
-          { loader: 'postcss-loader', options: {
-            postcssOptions: {
-              plugins: {
-                autoprefixer: {},
-                "postcss-pxtorem": {
-                  propList: ['font', 'font-size', 'line-height', 'letter-spacing', 'margin*', "padding*", "*width", "*height", "grid-template*"]
-                }
+        test: /\.js$/,
+        enforce: "pre",
+        use: {
+          loader: "source-map-loader",
+          options: {
+            filterSourceMappingUrl: (url, _resourcePath) => {
+              if (/.+\.bundle\.js$/i.test(url)) {
+                return "skip";
               }
-            }
-          }},
-          { loader: 'resolve-url-loader'},
-          { loader: 'sass-loader', options: { sourceMap: true } },
-        ]
+              // or change to true to have 3rd party library sourcemaps included
+              return false;
+            },
+          },
+        },
       },
       {
+        // Maybe should use type rather than test - https://webpack.js.org/plugins/mini-css-extract-plugin/#chunkfilename
+        // says "Note that type should be used instead of test in Webpack 5, or else an extra .js file can be generated besides the .css file."
         test: /\.css$/,
-        loader: 'css-loader',
+        use: [MiniCssExtractPlugin.loader, "css-loader", "postcss-loader"],
+        exclude: [/node_modules/],
       },
-      // These create copies of files which there is really no need to. Can't figure out how to
-      // make these work without doing that, though. Possibly `asset/source` to leave as is.
-      // The old config used `asset/inline` for the images and `url-loader` for the fonts.
-      // This resulted in inlining all of these which made for HUGE css files, several MB in size.
-      // This also specifies the filename so that webpack will not use the hashes. Django already
-      // hashes these when we run collectstatic and updates the css files. We want the non-hashed
-      // names so that we know what the real filenmes django sees will be so that we can preload them
       {
         test: /\.(jpg|jpeg|png|gif|webp|svg|mp4)(\?.*)?$/,
-        type: 'asset/resource',
+        type: "asset/resource",
         generator: {
-          filename: '[name][ext]',
+          filename: (source) => source.filename.replace("static/", ""),
         },
       },
       {
         test: /\.(ttf|eot|woff|woff2)$/,
-        type: 'asset/resource',
+        type: "asset/resource",
         generator: {
-          filename: '[name][ext]',
+          filename: (source) => source.filename.replace("static/", ""),
         },
-      }
-
+      },
     ],
   },
+  // optimization: {
+  //   minimize: true,
+  //   minimizer: [
+  //     `...`,
+  //     new CssMinimizerPlugin({
+  //       test: /\.css$/,
+  //     }),
+  //   ],
+  // },
   plugins: [
+    // new webpack.DefinePlugin({
+    //   SENTRY_RELEASE: JSON.stringify(process.env.SENTRY_RELEASE),
+    // }),
     new MiniCssExtractPlugin({
-      // filename: './config/static/css/index.css',
-      filename: '../config/static/css/main.css', // where we want it to write relative to path above
+      // path we want to write to relative to output path defined above, which is webpack_assets
+      // filename: './static/css/[name].css',  <- in normal template I use now, but keeping with what has worked.
+      filename: "../config/static/css/main.css", // where we want it to write relative to path above
     }),
     // new StylelintPlugin({
-    //   files: path.join('config/static/scss', '**/*.s?(a|c)ss'),
+    //   context: path.resolve(__dirname),
+    //   files: path.join('static/scss', '**/*.s?(a|c)ss'),
+    //   configFile: path.join(path.resolve(__dirname), '.stylelintrc.json'),
     // }),
+    // new ESLintPlugin({ extensions: ['js', 'ts'] }),
   ],
-  watch: true
-};
-
-module.exports = (env, argv) => {
-  if (argv.mode === 'production') {
-    config.watch = false;
-  }
-  return config;
-}
+});

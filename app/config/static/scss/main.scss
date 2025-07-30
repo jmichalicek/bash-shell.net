@@ -1,10 +1,36 @@
-@import "~bootswatch/dist/superhero/variables";
-@import "~bootstrap/scss/bootstrap";
-@import "~bootswatch/dist/superhero/bootswatch";
+@import "tailwindcss";
 
-/* everything below here probably belongs in a different .scss file, really possibly along with
- * a variables.scss and a custom.scss as suggested at https://getbootstrap.com/docs/5.0/getting-started/webpack/#importing-precompiled-sass
- */
+@theme {
+  --color-orange-accent: #df691a;
+  --color-orange-hover: #ff8905;
+  --color-dark-bg: #2b3e50;
+  --color-darker-bg: #45515f;
+  --color-code-bg: #0b1025;
+  --color-card-bg: #45515f;
+}
+
+/* Custom styles for existing functionality */
+
+html, body {
+  min-height: 100%;
+}
+
+body {
+  background: linear-gradient(rgb(43, 62, 80), rgb(0, 0, 21));
+  height: 100%;
+}
+
+header.blog-header {
+  padding-bottom: 1.25rem;
+  margin-bottom: 2rem;
+  border-bottom: 0.05rem solid #eee;
+  padding-top: 1.25rem;
+  background-color: transparent;
+}
+
+header.blog-header .title {
+  text-align: left;
+}
 
 .twitter-svg,
 .github-svg {
@@ -25,73 +51,23 @@ pre {
 .codehilite pre {
   background-color: #0b1025;
 }
+
 .card {
   background-color: #45515f;
 }
 
 .card-header a:hover,
 .card-footer a:hover {
-  /* These look terrible when they fade to the default a:hover color */
   color: #df691a;
 }
 
 .page-header {
-  /* padding: 1rem .5rem; */
   padding: 1rem;
   background-color: #2b3e50;
   margin-bottom: 0.25rem;
 }
 
-body {
-  background: linear-gradient(#2b3e50, #000015);
-  height: 100%;
-  /*background: repeating-linear-gradient(#000020, #2B3E50);*/
-}
-
-header.blog-header {
-  /*background-color: #45515f;*/
-  /*text-align: center;*/
-  padding-bottom: 1.25rem;
-  margin-bottom: 2rem;
-  border-bottom: 0.05rem solid #eee;
-  padding-top: 1.25rem;
-
-  /*background: linear-gradient(#566577, #2B3E50);*/
-  background-color: 0;
-}
-
-header.blog-header .title {
-  text-align: left;
-}
-
-header.blog-header .nav {
-  justify-content: flex-end;
-}
-
-.blog-title {
-  /* TODO: is this used? */
-  margin-bottom: 0;
-  font-size: 2rem;
-  font-weight: 400;
-  color: white;
-}
-.blog-description {
-  /* TODO: is this used? */
-  font-size: 1.1rem;
-  /*color: #DEC062;*/
-  color: #df691a;
-}
-
-@media (min-width: 40em) {
-  .blog-title {
-    font-size: 3.5rem;
-  }
-}
-
 aside {
-  /*background-color: #E6ECF0;*/
-  /*background-color: #4F99C4;*/
-  /*background-color: #45515f;*/
   background-color: #2b3e50;
   padding-top: 0.5rem;
   border-radius: 0.5rem;
@@ -100,95 +76,42 @@ aside {
 .sidebar-module {
   padding: 0 1rem 1rem;
 }
+
 .sidebar-module-inset {
   padding: 1rem;
   background-color: #f5f5f5;
   border-radius: 0.25rem;
 }
+
 .sidebar-module-inset p:last-child,
 .sidebar-module-inset ul:last-child,
 .sidebar-module-inset ol:last-child {
   margin-bottom: 0;
 }
 
-/* Pagination */
-.blog-pagination {
-  margin-bottom: 4rem;
-}
-.blog-pagination > .btn {
-  border-radius: 2rem;
-}
-
-.blog-pagination .btn,
-.blog-pagination .btn-outline-primary {
-  color: #df691a;
-  border-color: #df691a;
-}
-
-.blog-pagination .btn-outline-primary.disabled {
-  color: #f0ad4e;
-  border-color: #f0ad4e;
-}
-
-a {
-  /* my main issue with bootstrap... so much has to be !important to override it */
-  color: #df691a !important;
-
-  &:active.btn.btn-outline-primary {
-    border-color: #df691a !important;
-    background-color: #df691a !important;
-    color: #ff8905 !important;
-    outline: none !important;
-    box-shadow: none !important;
-  }
-}
-
-.btn:hover,
-.btn-outline-primary:hover {
-  background-color: #ff8905;
-  color: #fff;
-  border-color: #ff8905;
-}
-
-/*
-   * Blog posts
-   */
-
+/* Blog posts */
 .blog-post {
   margin-bottom: 1rem;
   background-color: #2b3e50;
   padding: 1rem;
 }
+
 .blog-post-title {
-  /* TODO: used on post list views, but not the actual post... can probably get rid of it.*/
   margin-bottom: 0.25rem;
   font-size: 2.5rem;
 }
+
 .blog-post-meta {
-  /* TODO: used on post list views, but not the actual post... can probably get rid of it.*/
   margin-bottom: 1.25rem;
   color: #999;
 }
 
-/* main 2nd column */
-
-  #column-2.default {
-    border-radius: .5rem;
-    padding: .5rem;
-  } 
-
-/* footer */
-.blog-footer {
-  padding: 2.5rem 0;
-  text-align: center;
-  // font-size: .7rem;
-  margin-top: 0.5rem;
-  background-color: rgba(0, 0, 0, 0);
-}
-.blog-footer p:last-child {
-  margin-bottom: 0;
+#column-2.default {
+  border-radius: 0.5rem;
+  padding: 0.5rem;
 }
 
+/* Navigation tabs */
 .nav-tabs .nav-item.show .nav-link,
 .nav-tabs .nav-link.active {
   border-color: #df691a;
@@ -204,7 +127,6 @@ a {
 }
 
 .nav-tabs .nav-link {
-  /*border-bottom-color: rgb(223, 105, 26);*/
   border-bottom-color: #df691a;
 }
 

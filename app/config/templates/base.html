@@ -30,16 +30,16 @@
     <script async src="//static.getclicky.com/js"></script>
   </head>
   <body>
-    <div class="container-lg pb-5">
-      <header role="header" class="row">
+    <div class="max-w-screen-lg mx-auto pb-20">
+      <header role="header" class="flex flex-wrap">
         <div class="blog-header">
           <div class="title">
-            <div class="col-12">
-              <h1 class="blog-title">Bash-Shell.Net</h1>
-              <p class="lead blog-description">I'm a developer, not a writer.</p>
+            <div class="w-full">
+              <h1 class="text-white text-2xl md:text-6xl mb-0 font-normal">Bash-Shell.Net</h1>
+              <p class="text-orange-accent text-lg">I'm a developer, not a writer.</p>
             </div>
           </div>
-          <ul class="nav">
+          <ul class="flex justify-end list-none p-0 m-0">
             {% comment %}
               Using a couple known paths here rather than wagtail slugurl which hits the db for each one while
               requiring the exact same known info - the slug. slugurl would only be useful if I know the slug
@@ -48,22 +48,22 @@
               somepage.url, but no matter what, some knowledge has to be assumed, so keep it the lightest
               weight option.
             {% endcomment %}
-            <li class="nav-item"><a class="nav-link" href="/blog">Home</a></li>
-            <li class="nav-item"><a class="nav-link" href="/on-tap">On Tap</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'projects_project_list' %}">Projects</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'opensource' %}">Open Source</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
+            <li class="mx-2"><a class="text-orange-accent hover:text-orange-hover px-3 py-2 block" href="/blog">Home</a></li>
+            <li class="mx-2"><a class="text-orange-accent hover:text-orange-hover px-3 py-2 block" href="/on-tap">On Tap</a></li>
+            <li class="mx-2"><a class="text-orange-accent hover:text-orange-hover px-3 py-2 block" href="{% url 'projects_project_list' %}">Projects</a></li>
+            <li class="mx-2"><a class="text-orange-accent hover:text-orange-hover px-3 py-2 block" href="{% url 'opensource' %}">Open Source</a></li>
+            <li class="mx-2"><a class="text-orange-accent hover:text-orange-hover px-3 py-2 block" href="{% url 'about' %}">About</a></li>
           </ul>
         </div>
       </header>
-      <main role="main" class="row">
+      <main role="main" class="flex flex-wrap">
         {% block sidebar %}{% endblock sidebar %}
         {% block col2_default %}
-          <div id="column-2" class="col">
-            <div class="row">
+          <div id="column-2" class="flex-1">
+            <div class="flex flex-wrap">
               {% block primary %}
                 {% block page_header %}
-                  <div class="page-header col-12">
+                  <div class="page-header w-full">
                     <h2>{{ page_title }}</h2>
                   </div>
                 {% endblock %}
@@ -72,33 +72,33 @@
           </div>
         {% endblock col2_default %}
       </main>
-      <footer role="footer" class="blog-footer row">
-        <div class="col-2"></div>
-        <div class="col">
+      <footer role="footer" class="text-center py-10 mt-2 bg-transparent flex flex-wrap">
+        <div class="w-2/12"></div>
+        <div class="flex-1">
           <h6>Sections</h6>
-          <ul class="nav flex-column">
+          <ul class="flex flex-col p-0 m-0">
             <li><a href="/#">Home</a></li>
             <li><a href="{% url 'projects_project_list' %}">Projects</a></li>
             <li><a href="{% url 'opensource' %}">Open Source</a></li>
             <li><a href="{% url 'about' %}">About</a></li>
           </ul>
         </div>
-        <div class="col">
+        <div class="flex-1">
           <h6>Social</h6>
-          <ol class="list-unstyled">
+          <ol class="list-none p-0 m-0">
             <li><a href="https://github.com/jmichalicek/"><img type="image/svg+xml" src="{% static 'img/github.svg' %}" class="github-svg" height="16" width="16" loading="lazy" alt="GitHub Logo"> GitHub</a></li>
             <li><a href="https://twitter.com/zingaya"><img type="image/svg+xml" src="{% static 'img/twitter.svg' %}" class="twitter-svg" height="16" width="16" loading="lazy" alt="Twitter Logo"> Twitter</a></li>
           </ol>
         </div>
-        <div class="col">
+        <div class="flex-1">
           <h6>Other</h6>
-          <ul class="list-unstyled">
+          <ul class="list-none p-0 m-0">
             <li>Hosted on <a href="https://m.do.co/c/d39bb8f7dd5d">Digital Ocean&nbsp;&nbsp;<img nonce="{{ request.csp_nonce }}" type="image/svg+xml" src="{% static 'img/digitalocean.svg' %}" class="digitalocean-svg" height="12" width="12" loading="lazy" alt="Digital Ocean Logo"></a>
             </li>
             <li>Web and App Development @ <a href="https://mobelux.com/">Mobelux</a></li>
           </ul>
         </div>
-        <div class="col-2"></div>
+        <div class="w-2/12"></div>
       </footer>
     </div> {# end main container #}
     {% block javascript %}
