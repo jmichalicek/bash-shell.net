@@ -14,10 +14,10 @@ export default (env, argv) => ({
   mode: argv.mode,
   devtool: argv.mode === "development" ? "eval-cheap-source-map" : "source-map",
   context: path.resolve(__dirname),
-  entry: ["./config/static/js/index.js", "./config/static/scss/main.css"],
+  entry: ["./static/js/index.js", "./static/scss/main.css"],
   output: {
     path: path.resolve(__dirname, "webpack_assets/"),
-    filename: "./config/static/js/bundled/[name].bundle.js",
+    filename: "../config/static/js/bundled/[name].bundle.js",
     publicPath: "/static/", // Should match Django STATIC_URL
   },
   module: {
@@ -77,7 +77,7 @@ export default (env, argv) => ({
     new MiniCssExtractPlugin({
       // path we want to write to relative to output path defined above, which is webpack_assets
       // filename: './static/css/[name].css',  <- in normal template I use now, but keeping with what has worked.
-      filename: "../config/static/css/main.css", // where we want it to write relative to path above
+      filename: "./static/css/main.css", // where we want it to write relative to path above
     }),
     // new StylelintPlugin({
     //   context: path.resolve(__dirname),

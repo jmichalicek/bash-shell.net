@@ -1,6 +1,5 @@
 @layer theme, base, components, utilities;
-@import "tailwindcss" source("../..");
-
+@import "tailwindcss" source("../../..");
 @theme {
   /* Add custom colors to orange palette */
   --color-orange-accent: #df691a;

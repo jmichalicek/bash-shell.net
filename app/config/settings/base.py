@@ -17,6 +17,7 @@ TESTING = sys.argv[1:2] == ["test"]
 # the dir with manage.py
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 CONFIG_DIR = os.path.dirname(os.path.dirname(__file__))
+TEMPLATES_DIR = os.path.join(os.path.dirname(PROJECT_ROOT), "frontend", "templates")
 AUTH_USER_MODEL = "accounts.User"
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 DEBUG = env("DEBUG", bool, False)
@@ -74,7 +75,8 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    os.path.join(os.path.dirname(os.path.dirname(__file__)), "static"),
+    os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "frontend", "static"),
+    os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "frontend", "webpack_assets", "static"),
 )
 
 # List of finder classes that know how to find static files in
@@ -122,7 +124,7 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
-            os.path.join(CONFIG_DIR, "templates"),
+            TEMPLATES_DIR,
         ],
         "APP_DIRS": True,
         "OPTIONS": {
