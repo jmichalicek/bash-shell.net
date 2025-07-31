@@ -1,8 +1,12 @@
-@import "tailwindcss";
+@layer theme, base, components, utilities;
+@import "tailwindcss" source("../..");
 
 @theme {
+  /* Add custom colors to orange palette */
   --color-orange-accent: #df691a;
   --color-orange-hover: #ff8905;
+
+  /* Background colors */
   --color-dark-bg: #2b3e50;
   --color-darker-bg: #45515f;
   --color-code-bg: #0b1025;
@@ -11,7 +15,8 @@
 
 /* Custom styles for existing functionality */
 
-html, body {
+html,
+body {
   min-height: 100%;
 }
 
@@ -224,7 +229,7 @@ aside {
 
 /* On tap stuff - should move to its own scss */
 .card.currently-on-tap {
-  min-height: 275px; // TODO: convert to rem
+  min-height: 275px; /* TODO: convert to rem */
 }
 /* srm colors for background */
 .bg-srm-1 {

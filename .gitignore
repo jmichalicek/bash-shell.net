@@ -11,7 +11,7 @@ static_collected
 media
 
 # compiled static files
-main.css
+config/static/scss/main.css
 main.css.map
 **/static/js/bundled/*
 

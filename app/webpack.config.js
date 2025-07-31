@@ -14,10 +14,10 @@ export default (env, argv) => ({
   mode: argv.mode,
   devtool: argv.mode === "development" ? "eval-cheap-source-map" : "source-map",
   context: path.resolve(__dirname),
-  entry: ["./config/static/js/index.js", "./config/static/css/src/main.css"],
+  entry: ["./config/static/js/index.js", "./config/static/scss/main.css"],
   output: {
     path: path.resolve(__dirname, "webpack_assets/"),
-    filename: "./config/static/js/bundled/index.bundle.js",
+    filename: "./config/static/js/bundled/[name].bundle.js",
     publicPath: "/static/", // Should match Django STATIC_URL
   },
   module: {
