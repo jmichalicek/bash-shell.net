@@ -19,7 +19,7 @@
             <div class="bg-card-bg min-h-[275px] rounded border">
               <div class="bg-darker-bg text-center p-3 rounded-t border-b">
                 <div class="w-full">
-                  <a href="{% pageurl batch.recipe_page %}{% querystring scale_volume=batch.target_post_boil_volume scale_unit=batch.volume_units %}">{{ batch.recipe_page.title }}</a>
+                  <a class="" href="{% pageurl batch.recipe_page %}{% querystring scale_volume=batch.target_post_boil_volume scale_unit=batch.volume_units %}">{{ batch.recipe_page.title }}</a>
                 </div>
                 <small>{{ batch.recipe_page.style.name }}{% if batch.recipe_page.style.bjcp_category %} ({{ batch.recipe_page.style.bjcp_category }}){% endif %}</small>
               </div>
@@ -28,7 +28,7 @@
                 <p class="mb-3">On Tap {{ on_tap_record.on_tap_date|date:"F d, Y" }}</p>
               </div>
               <div class="bg-darker-bg p-3 rounded-b border-t">
-                <a href="{% pageurl batch %}" class="card-link">Details</a>
+                <a class="" href="{% pageurl batch %}">Details</a>
               </div>
             </div>
           </div>
@@ -60,8 +60,8 @@ I might get fancy and paginate these lists and show both all the time with two s
           {% for batch in upcoming_batches %}
             <tr>
               <td>
-                <a href="{% pageurl batch.recipe_page %}{% querystring scale_volume=batch.target_post_boil_volume scale_unit=batch.volume_units %}">{{ batch.recipe_page.title }}</a>
-                {% if batch.status != 'planned' %} (<a href="{% pageurl batch %}">Log</a>){% endif %}
+                <a class="" href="{% pageurl batch.recipe_page %}{% querystring scale_volume=batch.target_post_boil_volume scale_unit=batch.volume_units %}">{{ batch.recipe_page.title }}</a>
+                {% if batch.status != 'planned' %} (<a class="" href="{% pageurl batch %}">Log</a>){% endif %}
               </td>
               <td>{{ batch.recipe_page.style }}</td>
               <td>{{ batch.get_status_display }}</td>
@@ -93,8 +93,8 @@ I might get fancy and paginate these lists and show both all the time with two s
         {% for on_tap_record in past_batches %}
           {% with batch=on_tap_record.batch_log_page %}
             <tr>
-              <td><a href="{% pageurl batch.recipe_page %}{% querystring scale_volume=batch.target_post_boil_volume scale_unit=batch.volume_units %}">{{ batch.recipe_page.title }}</a>
-                (<a href="{% pageurl batch %}">Log</a>)</td>
+              <td><a class="" href="{% pageurl batch.recipe_page %}{% querystring scale_volume=batch.target_post_boil_volume scale_unit=batch.volume_units %}">{{ batch.recipe_page.title }}</a>
+                (<a class="" href="{% pageurl batch %}">Log</a>)</td>
               <td>{{ batch.recipe_page.style }}</td>
               <td>{{ batch.get_status_display }}</td>
               <td>{{ batch.brewed_date|date:"F d, Y" }}</td>

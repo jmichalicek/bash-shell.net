@@ -1,140 +1,146 @@
 {% extends 'base.html' %}
 {% load blog_tags %}
 
-{% block title %}Open Source{% endblock title %}
+<div class="bg-card-bg p-4 border border-gray-600">
+        <h3      <div class="bg-card-bg p-4 border border-gray-600">
+        <h3 class="text-white mb-2"><a href="https://wagtail.io" class="hover:text-orange-500">Wagtail</a></h3>
+        <p class="text-gray-300 mb-2">
+          <a href="https://github.com/wagtail/wagtail/commits?author=jmichalicek" class="hover:text-orange-500">Contributions</a>
+        </p>s="text-white mb-2"><a href="https://github.com/ivancrneto/django-factory-boy-tools" class="hover:text-orange-500">django-factory-boy-tools</a></h3>
+        <p class="text-gray-300 leading-relaxed">
 {% block og_title %}Open Source{% endblock og_title %}
 {% block og_description %}My thoughts on open source software and contributions to it.{% endblock og_description %}
 
 {% block primary %}
-  <div class="page-header col-12">
-    <h2>Open Source</h2>
+  <div class="page-header w-full">
+    <h2 class="text-white text-3xl font-bold mb-6">Open Source</h2>
   </div>
-  <div class="blog-post col-12">
-    <h2>Why Open Source?</h2>
-    <p>
+  <div class="blog-post w-full text-white">
+    <h2 class="text-white text-2xl font-bold mb-4">Why Open Source?</h2>
+    <p class="text-gray-300 mb-4 leading-relaxed">
       Open Source Software has been a major part of my daily life since the mid-90s.  Years before I was familiar with the term Open Source I was running Slackware Linux 2.0, compiling horribly written code with gcc, and hosting toy websites no one visited using Apache on a dialup internet connection (which of course were only available when I was online and had given someone my ip address for that session).  Those free, professional, production quality tools gave me a head start on learning and helped keep my interest long enough to turn it all into a career where I am paid well to do more or less what I'd be doing with much of my free time (and still do with a lot of it) anyway.
     </p>
-    <p>
-      Because of what Open Source has done for me (and for many others) I have a strong desire to contribute back and to encourage others to do so.  I have all too infrequently contributed bug fixes and features to projects I use regularly and thanks to my employer [Mobelux](https://mobelux.com/) and our client/partner [Livio](https://livio.io/) I have been able to release a few projects from work.  I have also released a few of my own projects which others may find useful, although they are still mostly toys for me to learn and I have little desire to have to grow a community of contributors around them.
+    <p class="text-gray-300 mb-4 leading-relaxed">
+      Because of what Open Source has done for me (and for many others) I have a strong desire to contribute back and to encourage others to do so.  I have all too infrequently contributed bug fixes and features to projects I use regularly and thanks to my employer <a href="https://mobelux.com/" class="hover:text-orange-500">Mobelux</a> and our client/partner <a href="https://livio.io/" class="hover:text-orange-500">Livio</a> I have been able to release a few projects from work.  I have also released a few of my own projects which others may find useful, although they are still mostly toys for me to learn and I have little desire to have to grow a community of contributors around them.
     </p>
-    <p>A more complete blog post about Open Source and its benefits will be coming in the near future.</p>
+    <p class="text-gray-300 mb-6 leading-relaxed">A more complete blog post about Open Source and its benefits will be coming in the near future.</p>
 
-    <h2>Contributions</h2>
-    <h3>My Projects</h3>
-    <p>
-      Here are some of my more recent and/or interesting and active Open Source projects.  There are many more on <a href="https://github.com/jmichalicek">my github profile</a>,
+    <h2 class="text-white text-2xl font-bold mb-4">Contributions</h2>
+    <h3 class="text-white text-xl font-semibold mb-4">My Projects</h3>
+    <p class="text-gray-300 mb-6 leading-relaxed">
+      Here are some of my more recent and/or interesting and active Open Source projects.  There are many more on <a href="https://github.com/jmichalicek" class="hover:text-orange-500">my github profile</a>,
       but many of those are old, abandoned, etc.
     </p>
-    <div class="row ml-0 mr-0">
-      <div class="col-sm-4 card">
-        <h3>django-mailviewer</h3>
-        <p><a href="https://django-mail-viewer.readthedocs.io/en/latest/">Docs</a> | <a href="https://github.com/jmichalicek/django-mail-viewer">github</a></p>
-        <p>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-x-1 gap-y-0 mb-2">
+      <div class="bg-card-bg p-4 border border-gray-600">
+        <h3 class="text-white mb-2">django-mailviewer</h3>
+        <p class="text-gray-300 mb-2"><a href="https://django-mail-viewer.readthedocs.io/en/latest/" class="hover:text-orange-500">Docs</a> | <a href="https://github.com/jmichalicek/django-mail-viewer" class="hover:text-orange-500">github</a></p>
+        <p class="text-gray-300 leading-relaxed">
           A Django application which provides mail backends to store SMTP data and views to look that data up and display it for easy visual testing of email content and attachments during development.
         </p>
       </div>
-      <div class="col-sm-4 card">
-        <h3>django-fractions</h3>
-        <p><a href="https://django-fractions.readthedocs.io/en/latest/">Docs</a> | <a href="https://github.com/jmichalicek/django-fractions">github</a></p>
-        <p>A set of template tags and form fields for handling and displaying fractions on a Django website</p>
+      <div class="bg-card-bg p-4 border border-gray-600">
+        <h3 class="text-white mb-2">django-fractions</h3>
+        <p class="text-gray-300 mb-2"><a href="https://django-fractions.readthedocs.io/en/latest/" class="hover:text-orange-500">Docs</a> | <a href="https://github.com/jmichalicek/django-fractions" class="hover:text-orange-500">github</a></p>
+        <p class="text-gray-300 leading-relaxed">A set of template tags and form fields for handling and displaying fractions on a Django website</p>
       </div>
-      <div class="col-sm-4 card">
-        <h3>WorryWort</h3>
-        <p><a href="https://github.com/jmichalicek/worrywort-server-go">Go Server</a></p>
-        <p>
+      <div class="bg-card-bg p-4 border border-gray-600">
+        <h3 class="text-white mb-2">WorryWort</h3>
+        <p class="text-gray-300 mb-2"><a href="https://github.com/jmichalicek/worrywort-server-go" class="hover:text-orange-500">Go Server</a></p>
+        <p class="text-gray-300 leading-relaxed">
           A system for logging homebrew fermentation temperatures. It has been used an experiment for learning
           different programming languages and frameworks. Its current codebase is a Go web service
           and a Xamarin.Forms client. The client is not currently open source due to the licenses of a few libraries
-          which I hope to replace. This was originally a <a href="https://github.com/jmichalicek/worrywort">Phoenix/Elixir server</a>
-          and a <a href="https://github.com/jmichalicek/worrywort-client-react-native">React Native mobile app</a>. After
+          which I hope to replace. This was originally a <a href="https://github.com/jmichalicek/worrywort" class="hover:text-orange-500">Phoenix/Elixir server</a>
+          and a <a href="https://github.com/jmichalicek/worrywort-client-react-native" class="hover:text-orange-500">React Native mobile app</a>. After
           a long break due to a second child being born and changes in my language interests, that version was abandoned to start the current codebase.
           Eventually I will also add code for monitoring and reporting temperatures from a
           Raspberry Pi and possibly Arduino.
         </p>
       </div>
     </div>
-    <hr />
-    <h3>Other Projects</h3>
-    <div class="row ml-0 mr-0">
-      <div class="col-sm-4 card">
-        <h3><a href="https://djangoproject.com">Django</a></h3>
-        <p>
-          <a href="https://github.com/django/django/commits?author=jmichalicek">Contributions</a>
+    <hr class="border-gray-600 my-6" />
+    <h3 class="text-white text-xl font-semibold mb-4">Other Projects</h3>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-x-1 gap-y-0 mb-2">
+      <div class="bg-card-bg p-4 border border-gray-600">
+        <h3 class="text-white mb-2"><a href="https://djangoproject.com" class="hover:text-orange-500">Django</a></h3>
+        <p class="text-gray-300 mb-2">
+          <a href="https://github.com/django/django/commits?author=jmichalicek" class="hover:text-orange-500">Contributions</a>
         </p>
-        <p>
+        <p class="text-gray-300 leading-relaxed">
           One of the big Python web frameworks.  It runs this site, many of the sites we build at Mobelux, and many popular
-          sites on the web such as <a href="https://instagram.com/">Instagram</a>, <a href="https://mozilla.org/">Mozilla</a>, and <a href="https://disqus.com">Disqus</a>.
+          sites on the web such as <a href="https://instagram.com/" class="hover:text-orange-500">Instagram</a>, <a href="https://mozilla.org/" class="hover:text-orange-500">Mozilla</a>, and <a href="https://disqus.com" class="hover:text-orange-500">Disqus</a>.
         </p>
       </div>
-      <div class="col-sm-4 card">
-        <h3><a href="https://www.intenct.nl/projects/django-allauth/">Django AllAuth</a></h3>
-        <p><a href="https://github.com/pennersr/django-allauth/commits?author=jmichalicek">Contributions</a></p>
-        <p>
+      <div class="bg-card-bg p-4 border border-gray-600">
+        <h3 class="text-white mb-2"><a href="https://www.intenct.nl/projects/django-allauth/" class="hover:text-orange-500">Django AllAuth</a></h3>
+        <p class="text-gray-300 mb-2"><a href="https://github.com/pennersr/django-allauth/commits?author=jmichalicek" class="hover:text-orange-500">Contributions</a></p>
+        <p class="text-gray-300 leading-relaxed">
           Django AllAuth is an alternative authentication framework for Django. Django's built in auth system only covers
           authentication and password reset type functionality. Django AllAuth adds in things like social auth and user registration.
         </p>
       </div>
-      <div class="col-sm-4 card">
-        <h3><a href="https://github.com/docker/docker-py/">Docker-py</a></h3>
-        <p><a href="https://github.com/docker/docker-py/commits?author=jmichalicek">Contributions</a></p>
-        <p>It's the (now old version of the) Python <a href="https://www.docker.com/docker-community">Docker</a> client.</a>
+      <div class="bg-card-bg p-4 border border-gray-600">
+        <h3 class="text-white mb-2"><a href="https://github.com/docker/docker-py/" class="hover:text-orange-500">Docker-py</a></h3>
+        <p class="text-gray-300 mb-2"><a href="https://github.com/docker/docker-py/commits?author=jmichalicek" class="hover:text-orange-500">Contributions</a></p>
+        <p class="text-gray-300 leading-relaxed">It's the (now old version of the) Python <a href="https://www.docker.com/docker-community" class="hover:text-orange-500">Docker</a> client.</p>
       </div>
     </div>
-    <div class="row ml-0 mr-0">
-      <div class="col-sm-4 card">
-        <h3><a href="https://github.com/livio/DocDown-Python">DocDown-Python</a></h3>
-        <p>
-          This was developed by my employer, <a href="https://mobelux.com">Mobelux</a> for <a href="https://livio.io">Livio</a>
-          and the <a href="https://smartdevicelink.com">SmartDeviceLink</a> project. Livio chose to open source the
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-x-1 gap-y-0 mb-2">
+      <div class="bg-card-bg p-4 border border-gray-600">
+        <h3 class="text-white mb-2"><a href="https://github.com/livio/DocDown-Python" class="hover:text-orange-500">DocDown-Python</a></h3>
+        <p class="text-gray-300 leading-relaxed">
+          This was developed by my employer, <a href="https://mobelux.com" class="hover:text-orange-500">Mobelux</a> for <a href="https://livio.io" class="hover:text-orange-500">Livio</a>
+          and the <a href="https://smartdevicelink.com" class="hover:text-orange-500">SmartDeviceLink</a> project. Livio chose to open source the
           project. I get an unfair amount of credit in the commits on this one. The majority was developed by a
-          <a href="https://github.com/jemeric">a co-worker</a>, but I got to extract it out of the original project into
+          <a href="https://github.com/jemeric" class="hover:text-orange-500">a co-worker</a>, but I got to extract it out of the original project into
           its own package.
         </p>
       </div>
-      <div class="col-sm-4 card">
-        <h3><a href="https://github.com/livio/DocDown-JS">Remarkable DocDown</a></h3>
-        <p>This is the JavaScript version of DocDown for use with the JavaScript Markdown library Remarkable.</p>
+      <div class="bg-card-bg p-4 border border-gray-600">
+        <h3 class="text-white mb-2"><a href="https://github.com/livio/DocDown-JS" class="hover:text-orange-500">Remarkable DocDown</a></h3>
+        <p class="text-gray-300 leading-relaxed">This is the JavaScript version of DocDown for use with the JavaScript Markdown library Remarkable.</p>
       </div>
-      <div class="col-sm-4 card">
-        <h3><a href="https://github.com/Mobelux/jwt_apns_client">JWT APNS Client</a></h3>
-        <p><a href="https://github.com/Mobelux/jwt_apns_client/commits?author=jmichalicek">Contributions</a></p>
-        <p>
-          JWT APNS Client was built at <a href="https://mobelux.com">Mobelux</a> for the now defunct New Custom project.
+      <div class="bg-card-bg p-4 border border-gray-600">
+        <h3 class="text-white mb-2"><a href="https://github.com/Mobelux/jwt_apns_client" class="hover:text-orange-500">JWT APNS Client</a></h3>
+        <p class="text-gray-300 mb-2"><a href="https://github.com/Mobelux/jwt_apns_client/commits?author=jmichalicek" class="hover:text-orange-500">Contributions</a></p>
+        <p class="text-gray-300 leading-relaxed">
+          JWT APNS Client was built at <a href="https://mobelux.com" class="hover:text-orange-500">Mobelux</a> for the now defunct New Custom project.
           Mobelux and New Custom were under the same ownership and it was chosen to be open sourced for ease of use in
           other Mobelux projects which needed to send Apple push notifications at a time when there were no other clients
           using their newer protocol.
         </p>
       </div>
     </div>
-    <div class="row ml-0 mr-0">
-      <div class="col-sm-4 card">
-        <h3><a href="https://wagtail.io">Wagtail</a></h3>
-        <p>
-          <a href="https://github.com/wagtail/wagtail/commits?author=jmichalicek">Contributions</a>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-x-1 gap-y-0 mb-2">
+      <div class="bg-card-bg p-4 border border-gray-600">
+        <h3 class="text-white mb-2"><a href="https://wagtail.io" class="hover:text-orange-500">Wagtail</a></h3>
+        <p class="text-gray-300 mb-2">
+          <a href="https://github.com/wagtail/wagtail/commits?author=jmichalicek" class="hover:text-orange-500">Contributions</a>
         </p>
-        <p>
+        <p class="text-gray-300 leading-relaxed">
           Wagtail is a CMS or framework for more easily building a CMS on top of Django. I use it for my personal website as well as
-          for several projects with my employer <a href="https://mobelux.com">Mobelux</a>. It provides an easy to work with editor UI and what it
+          for several projects with my employer <a href="https://mobelux.com" class="hover:text-orange-500">Mobelux</a>. It provides an easy to work with editor UI and what it
           calls a StreamField and blocks, which are more polished versions of things I end up building on a regularly and so saves a lot of
           time and effort.
         </p>
       </div>
     </div>
-    <hr />
-    <h2>Find ways to contribute</h2>
-    <p>Here are a few of my favorites with a large and interesting community around them.</p>
-    <ul>
-      <li><a href="https://docs.djangoproject.com/en/dev/internals/contributing/">Django</a></li>
-      <li><a href="https://channels.readthedocs.io/en/stable/contributing.html">Django Channels</a></li>
-      <li><a href="http://guides.rubyonrails.org/contributing_to_ruby_on_rails.html">Ruby On Rails</a></li>
-      <li><a href="https://github.com/phoenixframework/phoenix/blob/master/CONTRIBUTING.md">Phoenix</a></li>
-      <li><a href="https://letsencrypt.org/getinvolved/">Let's Encrypt</a></li>
+    <hr class="border-gray-600 my-6" />
+    <h2 class="text-white text-2xl font-bold mb-4">Find ways to contribute</h2>
+    <p class="text-gray-300 mb-4 leading-relaxed">Here are a few of my favorites with a large and interesting community around them.</p>
+    <ul class="list-disc list-inside text-gray-300 mb-4 space-y-1">
+      <li><a href="https://docs.djangoproject.com/en/dev/internals/contributing/" class="hover:text-orange-500">Django</a></li>
+      <li><a href="https://channels.readthedocs.io/en/stable/contributing.html" class="hover:text-orange-500">Django Channels</a></li>
+      <li><a href="http://guides.rubyonrails.org/contributing_to_ruby_on_rails.html" class="hover:text-orange-500">Ruby On Rails</a></li>
+      <li><a href="https://github.com/phoenixframework/phoenix/blob/master/CONTRIBUTING.md" class="hover:text-orange-500">Phoenix</a></li>
+      <li><a href="https://letsencrypt.org/getinvolved/" class="hover:text-orange-500">Let's Encrypt</a></li>
     </ul>
-    <p>Here are some resources for just finding projects to contribute to</p>
-    <ul>
-      <li><a href="https://www.codetriage.com/">Code Triage</a></li>
-      <li><a href="https://help.github.com/articles/finding-open-source-projects-on-github/">Explore GitHub</a></li>
-      <li><a href="http://up-for-grabs.net/#/">Up For Grabs</a></li>
+    <p class="text-gray-300 mb-4 leading-relaxed">Here are some resources for just finding projects to contribute to</p>
+    <ul class="list-disc list-inside text-gray-300 space-y-1">
+      <li><a href="https://www.codetriage.com/" class="hover:text-orange-500">Code Triage</a></li>
+      <li><a href="https://help.github.com/articles/finding-open-source-projects-on-github/" class="hover:text-orange-500">Explore GitHub</a></li>
+      <li><a href="http://up-for-grabs.net/#/" class="hover:text-orange-500">Up For Grabs</a></li>
     </ul>
   </div>
 {% endblock %}

@@ -10,7 +10,7 @@
         <h3>{{ language.grouper }}</h3>
         <ul>
           {% for project in language.list %}
-            <li><a href="{{ project.get_absolute_url }}">{{ project.name }}</a></li>
+            <li><a class="" href="{{ project.get_absolute_url }}">{{ project.name }}</a></li>
           {% endfor %}
         </ul>
       </div>

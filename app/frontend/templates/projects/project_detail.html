@@ -5,10 +5,10 @@
     <div class="col-sm-12 project_detail__nav_row">
       <ul class="nav nav-tabs" role="tablist">
         <li class="nav-item" role="presentation">
-          <a id="info-tab" class="nav-link active" href="#info-content" data-bs-content="#info-content" data-bs-toggle="tab" role="tabpanel" aria-controls="info" aria-selected="true">Info</a>
+          <a id="info-tab" class="nav-link active hover:text-orange-hover" href="#info-content" data-bs-content="#info-content" data-bs-toggle="tab" role="tabpanel" aria-controls="info" aria-selected="true">Info</a>
         </li>
         <li class="nav-item" role="presentation">
-          <a id="news-tab" class="nav-link" href="#news-content" data-bs-target="#news-content" data-bs-toggle="tab" role="tabpanel" aria-control="news" aria-selected="false">News</a>
+          <a id="news-tab" class="nav-link hover:text-orange-hover" href="#news-content" data-bs-target="#news-content" data-bs-toggle="tab" role="tabpanel" aria-control="news" aria-selected="false">News</a>
         </li>
       </ul>
     </div>
@@ -45,9 +45,9 @@
                     <p>
                       {% for host in project.project_hosting_services.all %}
                         {# this all ends up on one line when output by the browser #}
-                        <a href="{{ host.project_url|default:'#' }}">{{ host.hosting_service.name }}</a>
+                        <a class="" href="{{ host.project_url|default:'#' }}">{{ host.hosting_service.name }}</a>
                         {% if host.public_vcs_uri and host.vcs %} {% if host.project_url %} - {% endif %}
-                          <a href="{{ host.public_vcs_uri }}">{{ host.get_vcs_display }}</a>
+                          <a class="" href="{{ host.public_vcs_uri }}">{{ host.get_vcs_display }}</a>
                         {% endif %}<br />
                       {% endfor %}
                     </p>

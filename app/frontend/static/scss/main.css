@@ -10,6 +10,9 @@
   --color-darker-bg: #45515f;
   --color-code-bg: #0b1025;
   --color-card-bg: #45515f;
+
+  /* Override max-width for better content width */
+  --max-width-screen-lg: 1400px;
 }
 
 /* Custom styles for existing functionality */
@@ -22,6 +25,26 @@ body {
 body {
   background: linear-gradient(rgb(43, 62, 80), rgb(0, 0, 21));
   height: 100%;
+}
+
+/* Typography overrides */
+
+a {
+  color: var(--color-orange-accent);
+}
+
+a:hover {
+  color: var(--color-orange-hover);
+}
+
+h2 {
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+h3 {
+  font-size: 1.75rem;
+  font-weight: 500;
 }
 
 header.blog-header {
