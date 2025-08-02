@@ -12,23 +12,23 @@
     <h3>On Tap Now</h3>
   </div>
   <div class="w-full px-0 mt-2">
-    <div class="flex flex-wrap -mr-0">
+    <div class="flex flex-wrap gap-4">
       {% for on_tap_record in currently_on_tap %}
         {% with batch=on_tap_record.batch_log_page %}
-          <div class="w-full md:w-1/3 mt-3 md:mt-0 pr-0">
-            <div class="bg-card-bg min-h-[275px] rounded border">
-              <div class="bg-darker-bg text-center p-3 rounded-t border-b">
+          <div class="w-full md:w-1/3 flex-1 min-w-0">
+            <div class="card currently-on-tap bg-card-bg min-h-[275px] rounded border border-gray-600 flex flex-col">
+              <div class="card-header !bg-gray-600 text-center p-3 rounded-t border-b border-gray-600">
                 <div class="w-full">
-                  <a class="" href="{% pageurl batch.recipe_page %}{% querystring scale_volume=batch.target_post_boil_volume scale_unit=batch.volume_units %}">{{ batch.recipe_page.title }}</a>
+                  <a class="text-orange-accent hover:text-orange-hover" href="{% pageurl batch.recipe_page %}{% querystring scale_volume=batch.target_post_boil_volume scale_unit=batch.volume_units %}">{{ batch.recipe_page.title }}</a>
                 </div>
-                <small>{{ batch.recipe_page.style.name }}{% if batch.recipe_page.style.bjcp_category %} ({{ batch.recipe_page.style.bjcp_category }}){% endif %}</small>
+                <small class="text-sm font-normal">{{ batch.recipe_page.style.name }}{% if batch.recipe_page.style.bjcp_category %} ({{ batch.recipe_page.style.bjcp_category }}){% endif %}</small>
               </div>
-              <div class="p-4">
+              <div class="card-body p-4 flex-1">
                 <p class="mb-3">{{ batch.recipe_page.short_description }}</p>
                 <p class="mb-3">On Tap {{ on_tap_record.on_tap_date|date:"F d, Y" }}</p>
               </div>
-              <div class="bg-darker-bg p-3 rounded-b border-t">
-                <a class="" href="{% pageurl batch %}">Details</a>
+              <div class="card-footer !bg-gray-600 p-3 rounded-b border-t border-gray-600 mt-auto">
+                <a class="text-orange-accent hover:text-orange-hover" href="{% pageurl batch %}">Details</a>
               </div>
             </div>
           </div>
@@ -41,76 +41,82 @@
 On further pages we just show the currently on tap and past batches for now.
 I might get fancy and paginate these lists and show both all the time with two separate page params.
 {% endcomment %}
-    <div class="col-12 mt-4 pr-0 mr-0">
+    <div class="w-full mt-4">
       <h3>Coming Soon</h3>
     </div>
-    <div class="table-responsive">
-      <table class="table table-striped table-dark">
-        <thead class="thead-dark">
+    <div class="w-full px-0 mt-2">
+      <div class="overflow-x-auto">
+      <table class="w-full bg-dark-bg border border-gray-600 rounded">
+        <thead class="bg-darker-bg">
           <tr>
-            <th>Recipe Name</th>
-            <th>Style</th>
-            <th>Status</th>
-            <th>Brewed Date</th>
-            <th>Packaged Date</th>
-            <th>On Tap Date</th>
+            <th class="px-4 py-2 text-left border-b border-gray-600 text-white">Recipe Name</th>
+            <th class="px-4 py-2 text-left border-b border-gray-600 text-white">Style</th>
+            <th class="px-4 py-2 text-left border-b border-gray-600 text-white">Status</th>
+            <th class="px-4 py-2 text-left border-b border-gray-600 text-white">Brewed Date</th>
+            <th class="px-4 py-2 text-left border-b border-gray-600 text-white">Packaged Date</th>
+            <th class="px-4 py-2 text-left border-b border-gray-600 text-white">On Tap Date</th>
           </tr>
         </thead>
         <tbody>
           {% for batch in upcoming_batches %}
-            <tr>
-              <td>
-                <a class="" href="{% pageurl batch.recipe_page %}{% querystring scale_volume=batch.target_post_boil_volume scale_unit=batch.volume_units %}">{{ batch.recipe_page.title }}</a>
-                {% if batch.status != 'planned' %} (<a class="" href="{% pageurl batch %}">Log</a>){% endif %}
+            <tr class="bg-dark-bg">
+              <td class="px-4 py-2 border-b border-gray-600">
+                <a class="text-orange-accent hover:text-orange-hover" href="{% pageurl batch.recipe_page %}{% querystring scale_volume=batch.target_post_boil_volume scale_unit=batch.volume_units %}">{{ batch.recipe_page.title }}</a>
+                {% if batch.status != 'planned' %} (<a class="text-orange-accent hover:text-orange-hover" href="{% pageurl batch %}">Log</a>){% endif %}
               </td>
-              <td>{{ batch.recipe_page.style }}</td>
-              <td>{{ batch.get_status_display }}</td>
-              <td>{{ batch.brewed_date|date:"F d, Y"|default:"" }}</td>
-              <td>{{ batch.packaged_date|date:"F d, Y"|default:"" }}</td>
-              <td>{{ batch.on_tap_date|date:"F d, Y"|default:"" }}</td>
+              <td class="px-4 py-2 border-b border-gray-600 text-white">{{ batch.recipe_page.style }}</td>
+              <td class="px-4 py-2 border-b border-gray-600 text-white">{{ batch.get_status_display }}</td>
+              <td class="px-4 py-2 border-b border-gray-600 text-white">{{ batch.brewed_date|date:"F d, Y"|default:"" }}</td>
+              <td class="px-4 py-2 border-b border-gray-600 text-white">{{ batch.packaged_date|date:"F d, Y"|default:"" }}</td>
+              <td class="px-4 py-2 border-b border-gray-600 text-white">{{ batch.on_tap_date|date:"F d, Y"|default:"" }}</td>
             </tr>
           {% endfor %}
         </tbody>
       </table>
+      </div>
     </div>
   {% endif %}
-  <div class="col-12 mt-4">
+  <div class="w-full mt-4">
     <h3>Past Brews</h3>
   </div>
-  <div class="table-responsive">
-    <table class="table table-striped table-dark pl-0 pr-0">
-      <thead class="thead-dark">
-        <tr>
-          <th>Recipe Name</th>
-          <th>Style</th>
-          <th>Status</th>
-          <th>Brewed Date</th>
-          <th>Packaged Date</th>
-          <th>On Tap Date</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for on_tap_record in past_batches %}
-          {% with batch=on_tap_record.batch_log_page %}
-            <tr>
-              <td><a class="" href="{% pageurl batch.recipe_page %}{% querystring scale_volume=batch.target_post_boil_volume scale_unit=batch.volume_units %}">{{ batch.recipe_page.title }}</a>
-                (<a class="" href="{% pageurl batch %}">Log</a>)</td>
-              <td>{{ batch.recipe_page.style }}</td>
-              <td>{{ batch.get_status_display }}</td>
-              <td>{{ batch.brewed_date|date:"F d, Y" }}</td>
-              <td>{{ batch.packaged_date|date:"F d, Y"|default:"" }}</td>
-              <td>{{ on_tap_record.on_tap_date|date:"F d, Y"|default:"" }}</td>
+  <div class="w-full px-0 mt-2">
+    <div class="overflow-x-auto">
+      <table class="w-full bg-dark-bg border border-gray-600 rounded">
+        <thead class="bg-darker-bg">
+          <tr>
+            <th class="px-4 py-2 text-left border-b border-gray-600 text-white">Recipe Name</th>
+            <th class="px-4 py-2 text-left border-b border-gray-600 text-white">Style</th>
+            <th class="px-4 py-2 text-left border-b border-gray-600 text-white">Status</th>
+            <th class="px-4 py-2 text-left border-b border-gray-600 text-white">Brewed Date</th>
+            <th class="px-4 py-2 text-left border-b border-gray-600 text-white">Packaged Date</th>
+            <th class="px-4 py-2 text-left border-b border-gray-600 text-white">On Tap Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for on_tap_record in past_batches %}
+            {% with batch=on_tap_record.batch_log_page %}
+              <tr class="bg-dark-bg">
+              <td class="px-4 py-2 border-b border-gray-600">
+                <a class="text-orange-accent hover:text-orange-hover" href="{% pageurl batch.recipe_page %}{% querystring scale_volume=batch.target_post_boil_volume scale_unit=batch.volume_units %}">{{ batch.recipe_page.title }}</a>
+                (<a class="text-orange-accent hover:text-orange-hover" href="{% pageurl batch %}">Log</a>)
+              </td>
+              <td class="px-4 py-2 border-b border-gray-600 text-white">{{ batch.recipe_page.style }}</td>
+              <td class="px-4 py-2 border-b border-gray-600 text-white">{{ batch.get_status_display }}</td>
+              <td class="px-4 py-2 border-b border-gray-600 text-white">{{ batch.brewed_date|date:"F d, Y" }}</td>
+              <td class="px-4 py-2 border-b border-gray-600 text-white">{{ batch.packaged_date|date:"F d, Y"|default:"" }}</td>
+              <td class="px-4 py-2 border-b border-gray-600 text-white">{{ on_tap_record.on_tap_date|date:"F d, Y"|default:"" }}</td>
             </tr>
           {% endwith %}
         {% endfor %}
       </tbody>
     </table>
+    </div>
   </div>
-  <nav class="blog-pagination">
-    <a class="btn btn-outline-primary {% if not page_obj.has_previous %}disabled{% endif %}"
+  <nav class="mt-8 mb-16">
+    <a class="inline-block px-4 py-2 border-2 border-orange-accent text-orange-accent rounded-full {% if page_obj.has_previous %}hover:bg-orange-hover hover:!text-white{% else %}opacity-50 cursor-not-allowed{% endif %}"
        href="{% if page_obj.has_previous %}{% pageurl page %}?page={{ page_obj.previous_page_number }}{% else %}#{% endif %}">Newer Brews</a>
-    <a class="btn btn-outline-primary {% if not page_obj.has_next %}disabled{% endif %}"
+    <a class="inline-block px-4 py-2 border-2 border-orange-accent text-orange-accent rounded-full ml-2 {% if page_obj.has_next %}hover:bg-orange-hover hover:!text-white{% else %}opacity-50 cursor-not-allowed{% endif %}"
        href="{% if page_obj.has_next %}{% pageurl page %}?page={{ page_obj.next_page_number }}{% else %}#{% endif %}">Older Brews</a>
   </nav>
-  <hr class="mt-4">
+  <hr class="mt-4 border-gray-600">
 {% endblock primary %}
