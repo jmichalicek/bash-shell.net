@@ -19,7 +19,7 @@
   {% endfor %}
 
   <nav class="mb-16">
-    <a class="inline-block px-4 py-2 border-2 border-orange-accent text-orange-accent rounded-full hover:bg-orange-hover hover:text-white {% if not page_obj.has_previous %}opacity-50 cursor-not-allowed{% endif %}" href="{% if page_obj.has_previous %}{% slugurl 'blog' %}?page={{ page_obj.previous_page_number }}{% else %}#{% endif %}">Newer</a>
-    <a class="inline-block px-4 py-2 border-2 border-orange-accent text-orange-accent rounded-full hover:bg-orange-hover hover:text-white ml-2 {% if not page_obj.has_next %}opacity-50 cursor-not-allowed{% endif %}" href="{% if page_obj.has_next %}{% slugurl 'blog' %}?page={{ page_obj.next_page_number }}{% else %}#{% endif %}">Older</a>
+    <a class="inline-block px-4 py-2 border-2 border-orange-accent text-orange-accent rounded-full {% if page_obj.has_previous %}hover:bg-orange-hover hover:!text-white{% else %}opacity-50 cursor-not-allowed{% endif %}" href="{% if page_obj.has_previous %}{% slugurl 'blog' %}?page={{ page_obj.previous_page_number }}{% else %}#{% endif %}">Newer</a>
+    <a class="inline-block px-4 py-2 border-2 border-orange-accent text-orange-accent rounded-full ml-2 {% if page_obj.has_next %}hover:bg-orange-hover hover:!text-white{% else %}opacity-50 cursor-not-allowed{% endif %}" href="{% if page_obj.has_next %}{% slugurl 'blog' %}?page={{ page_obj.next_page_number }}{% else %}#{% endif %}">Older</a>
   </nav>
 {% endblock %}
