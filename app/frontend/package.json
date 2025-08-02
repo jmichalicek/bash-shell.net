@@ -1,51 +1,48 @@
 {
-    "name": "bash-shell-net",
-    "version": "1.0.0",
-    "description": "bash-shell.net blog site",
-    "private": "true",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "build": "webpack build --stats-children --stats-error-details true",
-        "dev": "webpack --mode development --config ./webpack.config.js --progress --watch --stats-error-details true --stats-children"
-    },
-    "repository": {
-        "type": "git",
-        "url": ""
-    },
-    "bugs": {
-        "url": "https://bash-shell.net/"
-    },
-    "homepage": "",
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "devDependencies": {
-        "@tailwindcss/postcss": "^4.0.0",
-        "autoprefixer": "",
-        "bootstrap": "^5.0.2",
-        "bootswatch": "^5.0.1",
-        "copy-webpack-plugin": "^13.0.0",
-        "css-loader": "",
-        "css-minimizer-webpack-plugin": "",
-        "html-webpack-plugin": "^5.6.3",
-        "mini-css-extract-plugin": "",
-        "postcss": "",
-        "postcss-loader": "",
-        "postcss-pxtorem": "",
-        "resolve-url-loader": "",
-        "sass": "",
-        "sass-loader": "",
-        "source-map-loader": "^5.0.0",
-        "stylelint": "",
-        "stylelint-config-standard": "",
-        "stylelint-scss": "",
-        "stylelint-webpack-plugin": "",
-        "tailwindcss": "^4.0.0",
-        "webpack": "",
-        "webpack-cli": "",
-        "webpack-manifest-plugin": "^5.0.1"
-    },
-    "dependencies": {
-        "@popperjs/core": ""
-    }
+  "name": "bash-shell-net",
+  "version": "1.0.0",
+  "description": "bash-shell.net blog site",
+  "private": "true",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack build --stats-children --stats-error-details true",
+    "dev": "webpack --mode development --config ./webpack.config.js --progress --watch --stats-error-details true --stats-children"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "bugs": {
+    "url": "https://bash-shell.net/"
+  },
+  "homepage": "",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.11",
+    "@tailwindcss/postcss": "^4.1.11",
+    "autoprefixer": "",
+    "copy-webpack-plugin": "^13.0.0",
+    "css-loader": "",
+    "css-minimizer-webpack-plugin": "",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.3",
+    "eslint-webpack-plugin": "^5.0.2",
+    "html-webpack-plugin": "^5.6.3",
+    "mini-css-extract-plugin": "",
+    "postcss": "",
+    "postcss-loader": "",
+    "postcss-pxtorem": "",
+    "resolve-url-loader": "",
+    "source-map-loader": "^5.0.0",
+    "stylelint": "",
+    "stylelint-config-standard": "",
+    "stylelint-scss": "",
+    "stylelint-webpack-plugin": "",
+    "tailwindcss": "^4.1.11",
+    "webpack": "",
+    "webpack-cli": "",
+    "webpack-manifest-plugin": "^5.0.1"
+  }
 }

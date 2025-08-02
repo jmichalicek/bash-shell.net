@@ -11,7 +11,6 @@ static_collected
 media
 
 # compiled static files
-config/static/scss/main.css
 main.css.map
 **/static/js/bundled/*
 
@@ -30,3 +29,4 @@ node_modules/
 src/
 *.sqlite
 .uv_cache/
+**/webpack_assets/

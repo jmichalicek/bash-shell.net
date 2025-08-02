@@ -1,12 +1,10 @@
-import CopyPlugin from "copy-webpack-plugin";
-// import ESLintPlugin from "eslint-webpack-plugin"
-import HtmlWebpackPlugin from "html-webpack-plugin";
+import CssMinimizerPlugin from "css-minimizer-webpack-plugin";
+import ESLintPlugin from "eslint-webpack-plugin";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import path from "path";
 import StylelintPlugin from "stylelint-webpack-plugin";
 import { fileURLToPath } from "url";
 import webpack from "webpack";
-import { WebpackManifestPlugin } from "webpack-manifest-plugin";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -14,10 +12,21 @@ export default (env, argv) => ({
   mode: argv.mode,
   devtool: argv.mode === "development" ? "eval-cheap-source-map" : "source-map",
   context: path.resolve(__dirname),
-  entry: ["./static/js/index.js", "./static/scss/main.css"],
+  entry: {
+    index: "./static/js/index.js",
+    // This unfortunately results in a main.bundle.js which is junk since this just an artifact
+    // of how our plugins process css.
+    // Pretty sure there is a way to configure webpack so that doesn't happen.
+    main: "./static/scss/main.css",
+  },
   output: {
+    // webpack_assets/ output path is due to how webpack handles images, etc.
+    // so that it does not overwrite the images already in static/img/, etc. See comments
+    // at the asset/resource rules entries.
     path: path.resolve(__dirname, "webpack_assets/"),
-    filename: "../config/static/js/bundled/[name].bundle.js",
+    // filename: './static/js/bundled/index.bundle.js',
+    // where we want it to write relative to path above or maybe we should use path.resolve here as well
+    filename: "../static/js/bundled/[name].bundle.js",
     publicPath: "/static/", // Should match Django STATIC_URL
   },
   module: {
@@ -45,10 +54,18 @@ export default (env, argv) => ({
         use: [MiniCssExtractPlugin.loader, "css-loader", "postcss-loader"],
         exclude: [/node_modules/],
       },
+      // These create copies of files which there is really no need to. See if we can find a way to not even copy
+      // the files either by sym linking or just using them in place.
+      // The old config used `asset/inline` for the images and `url-loader` for the fonts and images.
+      // This resulted in inlining all of these which made for HUGE css files which were several MB in size.
+      // This also specifies the filename so that webpack will not use the hashes. Django already
+      // hashes these when we run collectstatic and updates the css files. We want the non-hashed
+      // names so that we know what the real filenmes django sees will be so that we can preload them
       {
         test: /\.(jpg|jpeg|png|gif|webp|svg|mp4)(\?.*)?$/,
         type: "asset/resource",
         generator: {
+          // filename: '[path][name][ext]',
           filename: (source) => source.filename.replace("static/", ""),
         },
       },
@@ -56,6 +73,7 @@ export default (env, argv) => ({
         test: /\.(ttf|eot|woff|woff2)$/,
         type: "asset/resource",
         generator: {
+          // filename: '[path][name][ext]',
           filename: (source) => source.filename.replace("static/", ""),
         },
       },
@@ -76,14 +94,16 @@ export default (env, argv) => ({
     // }),
     new MiniCssExtractPlugin({
       // path we want to write to relative to output path defined above, which is webpack_assets
-      // filename: './static/css/[name].css',  <- in normal template I use now, but keeping with what has worked.
-      filename: "./static/css/main.css", // where we want it to write relative to path above
+      filename: "./static/css/[name].css",
     }),
-    // new StylelintPlugin({
-    //   context: path.resolve(__dirname),
-    //   files: path.join('static/scss', '**/*.s?(a|c)ss'),
-    //   configFile: path.join(path.resolve(__dirname), '.stylelintrc.json'),
-    // }),
-    // new ESLintPlugin({ extensions: ['js', 'ts'] }),
+    new StylelintPlugin({
+      context: path.resolve(__dirname),
+      files: path.join("static", "scss", "**/*.s?(a|c)ss"),
+      configFile: path.join(path.resolve(__dirname), ".stylelintrc.json"),
+    }),
+    new ESLintPlugin({
+      configType: "flat",
+      extensions: ["js", "ts"],
+    }),
   ],
 });
