@@ -7,7 +7,7 @@
 
   /* Background colors */
   --color-dark-bg: #2b3e50;
-  --color-darker-bg: #45515f;
+  --color-darker-bg: oklch(0.4737 0.0252 252.68);
   --color-code-bg: #0b1025;
   --color-card-bg: #45515f;
 
@@ -44,6 +44,11 @@ h2 {
 
 h3 {
   font-size: 1.75rem;
+  font-weight: 500;
+}
+
+h4 {
+  font-size: 1.5rem;
   font-weight: 500;
 }
 

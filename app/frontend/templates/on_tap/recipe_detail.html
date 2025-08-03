@@ -33,77 +33,61 @@
   {% with page_title=page.title %}
     {{ block.super }}
   {% endwith %}
-  <div class="blog-post col-12">
+  <div class="blog-post w-full">
     <!--
         some hackery going on here - use display: block on larger screens so that I can float these to the right and get
         long intro text text to wrap around them but use display: flex and column-reverse on smaller screens so that
         I can drop the floated div down below the introduction text. This way I don't have to duplicate data in elements
         which get hidden or shown on different screen sizes.
       -->
-    <div class="d-flex flex-column-reverse d-lg-block">
-      <div class="d-lg-block col-12 col-lg-4 float-lg-end ps-lg-3 pe-2">
+    <div class="flex flex-col-reverse lg:block">
+      <div class="lg:block w-full lg:w-1/3 lg:float-right lg:ps-3 pe-2">
         {% comment %}
           This outter div does not QUITE line up on the right with the tables below
           as it did with bootstrap 4.5, but is within a couple of px. Probably due
           to something being a bit off due to the switch to rem for everything.
           Figure it out at some point or possibly completely rework the structure.
           {% endcomment %}
-        <div class="card row">
-          <div class="card-header">
+        <div class="bg-card-bg border border-gray-700 rounded-lg shadow-sm mb-4">
+          <div class="bg-gray-700 text-white px-4 py-3 rounded-t-lg border-b border-gray-700 font-semibold">
             Style Profile
           </div>
-          <div class="card-body pb-0">
-            <dl class="row mb-0">
-              <div class="col-6 col-lg-5">
-                <div class="row">
-                  <dt class="col-12">O.G.:</dt><dd class="col-12">{% if page.style.original_gravity_min and page.style.original_gravity_max %}{{ page.style.original_gravity_min|floatformat:"3" }} - {{ page.style.original_gravity_max|floatformat:"3" }}{% else %}N/A{% endif %}</dd>
-                </div>
+          <div class="p-4 pb-0">
+            <dl class="grid grid-cols-2 gap-4 mb-0">
+              <div class="lg:col-span-1">
+                <dt class="font-semibold">O.G.:</dt><dd>{% if page.style.original_gravity_min and page.style.original_gravity_max %}{{ page.style.original_gravity_min|floatformat:"3" }} - {{ page.style.original_gravity_max|floatformat:"3" }}{% else %}N/A{% endif %}</dd>
               </div>
-              <div class="col-6 col-lg-7">
-                <div class="row">
-                  <dt class="col-12">F.G.:</dt><dd class="col-12">{% if page.style.final_gravity_min and page.style.final_gravity_max %}{{ page.style.final_gravity_min|floatformat:"3" }} - {{ page.style.final_gravity_max|floatformat:"3" }}{% else %}N/A{% endif %}</dd>
-                </div>
+              <div class="lg:col-span-1">
+                <dt class="font-semibold">F.G.:</dt><dd>{% if page.style.final_gravity_min and page.style.final_gravity_max %}{{ page.style.final_gravity_min|floatformat:"3" }} - {{ page.style.final_gravity_max|floatformat:"3" }}{% else %}N/A{% endif %}</dd>
               </div>
-              <div class="col-6 col-lg-5">
-                <div class="row">
-                  <dt class="col-12">IBUs:</dt><dd class="col-12">{% if page.style.ibu_min and page.style.ibu_max %}{{ page.style.ibu_min|floatformat:"0" }} - {{ page.style.ibu_max|floatformat:"0" }}{% else %}N/A{% endif %}</dd>
-                </div>
+              <div class="lg:col-span-1">
+                <dt class="font-semibold">IBUs:</dt><dd>{% if page.style.ibu_min and page.style.ibu_max %}{{ page.style.ibu_min|floatformat:"0" }} - {{ page.style.ibu_max|floatformat:"0" }}{% else %}N/A{% endif %}</dd>
               </div>
-              <div class="col-6 col-lg-7">
-                <div class="row">
-                  <dt class="beer-style-guide__srm col-12">Color:</dt><dd class="col-12"><div class="text-center beer-style-guide__srm-gradient">{{ page.style.color_min|default:0|floatformat:"0" }} - {{ page.style.color_max|default:40|floatformat:"0" }} srm</div></dd>
-                </div>
+              <div class="lg:col-span-1">
+                <dt class="beer-style-guide__srm font-semibold">Color:</dt><dd><div class="text-center beer-style-guide__srm-gradient">{{ page.style.color_min|default:0|floatformat:"0" }} - {{ page.style.color_max|default:40|floatformat:"0" }} srm</div></dd>
               </div>
             </dl>
           </div>
         </div>
 
         <!-- recipe profile -->
-        <div class="card row mt-2">
-          <div class="card-header">
+        <div class="bg-card-bg border border-gray-700 rounded-lg shadow-sm mb-4">
+          <div class="bg-gray-700 text-white px-4 py-3 rounded-t-lg border-b border-gray-700 font-semibold">
             Recipe Statistics
           </div>
-          <div class="card-body pb-0">
-            <dl class="row mb-0">
-              <div class="col-6 col-lg-5">
-                <div class="row">
-                  <dt class="col-12">O.G.:</dt><dd class="col-12">{% if page.original_gravity %}{{ page.original_gravity|floatformat:"3" }}{% else %}N/A{% endif %}</dd>
-                </div>
+          <div class="p-4 pb-0">
+            <dl class="grid grid-cols-2 gap-4 mb-0">
+              <div class="lg:col-span-1">
+                <dt class="font-semibold">O.G.:</dt><dd>{% if page.original_gravity %}{{ page.original_gravity|floatformat:"3" }}{% else %}N/A{% endif %}</dd>
               </div>
-              <div class="col-6 col-lg-7">
-                <div class="row">
-                  <dt class="col-12">F.G.:</dt><dd class="col-12">{% if page.final_gravity %}{{ page.final_gravity|floatformat:"3" }}{% else %}N/A{% endif %}</dd>
-                </div>
+              <div class="lg:col-span-1">
+                <dt class="font-semibold">F.G.:</dt><dd>{% if page.final_gravity %}{{ page.final_gravity|floatformat:"3" }}{% else %}N/A{% endif %}</dd>
               </div>
-              <div class="col-6 col-lg-5">
-                <div class="row">
-                  <dt class="col-12">IBUs:</dt><dd class="col-12">{% if page.ibus_tinseth %}{{ page.ibus_tinseth|floatformat:"0" }}{% else %}N/A{% endif %}</dd>
-                </div>
+              <div class="lg:col-span-1">
+                <dt class="font-semibold">IBUs:</dt><dd>{% if page.ibus_tinseth %}{{ page.ibus_tinseth|floatformat:"0" }}{% else %}N/A{% endif %}</dd>
               </div>
-              <div class="col-6 col-lg-7">
-                <div class="row">
-                  <dt class="beer-style-guide__srm col-12">Color:</dt><dd class="col-12">{% if page.calculate_color_srm %}<div class="text-center recipe-stats__srm">{{ page.calculate_color_srm|floatformat:"0" }} srm</div>{% else %}N/A{% endif %}</dd>
-                </div>
+              <div class="lg:col-span-1">
+                <dt class="beer-style-guide__srm font-semibold">Color:</dt><dd>{% if page.calculate_color_srm %}<div class="text-center recipe-stats__srm">{{ page.calculate_color_srm|floatformat:"0" }} srm</div>{% else %}N/A{% endif %}</dd>
               </div>
             </dl>
           </div>
@@ -116,127 +100,126 @@
 
       </div>
     </div>
-    <span class="clearfix"></span>
+    <div class="clear-both"></div>
     <div>
       <h2 name="recipe_details">{{ page.name }}</h2>
       <h4>{{ page.style }}</h4>
     </div>
-    <table class="table mt-4">
-      <thead class="table-active">
-        <tr><th scope="col">Type</th><th scope="col">Boil Volume</th><th scope="col">Volume in Fermenter</th><th scope="col">Boil Time</th><th scope="col">Efficiency</th></tr>
+    <table class="w-full border border-gray-600 mt-4">
+      <thead class="bg-darker-bg">
+        <tr><th scope="col" class="border border-gray-600 px-4 py-2 text-left text-white">Type</th><th scope="col" class="border border-gray-600 px-4 py-2 text-left text-white">Boil Volume</th><th scope="col" class="border border-gray-600 px-4 py-2 text-left text-white">Volume in Fermenter</th><th scope="col" class="border border-gray-600 px-4 py-2 text-left text-white">Boil Time</th><th scope="col" class="border border-gray-600 px-4 py-2 text-left text-white">Efficiency</th></tr>
       </thead>
-      <tbody class="table-secondary">
+      <tbody class="bg-gray-700">
         <tr>
-          <td>{{ page.get_recipe_type_display }}</td>
-          <td>{{ page.boil_size|floatformat:"2" }} {{ page.get_volume_units_display }}</td>
-          <td>{{ page.batch_size|floatformat:"2" }} {{ page.get_volume_units_display }}</td>
-          <td>{{ page.boil_time }} Minutes</td>
-          <td>{{ page.efficiency }}%</td>
+          <td class="border border-gray-600 px-4 py-2 text-white">{{ page.get_recipe_type_display }}</td>
+          <td class="border border-gray-600 px-4 py-2 text-white">{{ page.boil_size|floatformat:"2" }} {{ page.get_volume_units_display }}</td>
+          <td class="border border-gray-600 px-4 py-2 text-white">{{ page.batch_size|floatformat:"2" }} {{ page.get_volume_units_display }}</td>
+          <td class="border border-gray-600 px-4 py-2 text-white">{{ page.boil_time }} Minutes</td>
+          <td class="border border-gray-600 px-4 py-2 text-white">{{ page.efficiency }}%</td>
         </tr>
       </tbody>
     </table>
     <h5>Fermentables</h5>
-    <table class="table mb-0">
-      <thead class="table-active">
+    <table class="w-full border border-gray-600 mb-0">
+      <thead class="bg-darker-bg">
         <tr>
-          <th>Name</th>
-          <th>Amount</th>
-          <th>Type</th>
-          <th>Color</th>
+          <th class="border border-gray-600 px-4 py-2 text-left text-white">Name</th>
+          <th class="border border-gray-600 px-4 py-2 text-left text-white">Amount</th>
+          <th class="border border-gray-600 px-4 py-2 text-left text-white">Type</th>
+          <th class="border border-gray-600 px-4 py-2 text-left text-white">Color</th>
         </tr>
       </thead>
-      <tbody class="table-secondary">
+      <tbody class="bg-gray-700">
         {% for fermentable in page.fermentables.all %}
           <tr>
-            <td>{{ fermentable.name }}</td>
-            <td>{{ fermentable.scaled_amount|default:fermentable.amount|floatformat:"2" }} {{ fermentable.get_amount_units_display }}</td>
-            <td>{{ fermentable.get_type_display }}</td>
-            <td>{{ fermentable.color|floatformat:"0" }} srm</td>
+            <td class="border border-gray-600 px-4 py-2 text-white">{{ fermentable.name }}</td>
+            <td class="border border-gray-600 px-4 py-2 text-white">{{ fermentable.scaled_amount|default:fermentable.amount|floatformat:"2" }} {{ fermentable.get_amount_units_display }}</td>
+            <td class="border border-gray-600 px-4 py-2 text-white">{{ fermentable.get_type_display }}</td>
+            <td class="border border-gray-600 px-4 py-2 text-white">{{ fermentable.color|floatformat:"0" }} srm</td>
           </tr>
         {% endfor %}
       </tbody>
     </table>
-    <table class="table">
-      <tr>
-        <th>Total Grain Weight</td>
-        <td>{{ page.calculate_grain_pounds|default:"0"|floatformat:"2" }} Lbs.</td>
+    <table class="w-full border border-gray-600">
+      <tr class="bg-darker-bg">
+        <th class="border border-gray-600 px-4 py-2 text-left text-white">Total Grain Weight</th>
+        <td class="border border-gray-600 px-4 py-2 text-white">{{ page.calculate_grain_pounds|default:"0"|floatformat:"2" }} Lbs.</td>
         {# hack which makes the weight column align with the table above #}
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td class="border border-gray-600 px-4 py-2"></td>
+        <td class="border border-gray-600 px-4 py-2"></td>
+        <td class="border border-gray-600 px-4 py-2"></td>
+      </tr>
+    </table>
+
+    <h5>Hops</h5>
+    <table class="w-full border border-gray-600">
+      <thead class="bg-darker-bg">
         <tr>
-        </table>
+          <th class="border border-gray-600 px-4 py-2 text-left text-white">Name</th>
+          <th class="border border-gray-600 px-4 py-2 text-left text-white">Amount</th>
+          <th class="border border-gray-600 px-4 py-2 text-left text-white">Form</th>
+          <th class="border border-gray-600 px-4 py-2 text-left text-white">Step</th>
+          <th class="border border-gray-600 px-4 py-2 text-left text-white">Time</th>
+        </tr>
+      </thead>
+      <tbody class="bg-gray-700">
+        {% for hop in page.hops.all %}
+          <tr>
+            <td class="border border-gray-600 px-4 py-2 text-white">{{ hop.name }}</td>
+            <td class="border border-gray-600 px-4 py-2 text-white">{{ hop.amount|floatformat:"2" }} {{ hop.get_amount_units_display }}</td>
+            <td class="border border-gray-600 px-4 py-2 text-white">{{ hop.get_form_display }}</td>
+            <td class="border border-gray-600 px-4 py-2 text-white">{{ hop.get_use_step_display }}</td>
+            <td class="border border-gray-600 px-4 py-2 text-white">{{ hop.use_time }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
 
-        <h5>Hops</h5>
-        <table class="table">
-          <thead class="table-active">
+    <h5>Yeast</h5>
+    <table class="w-full border border-gray-600">
+      <thead class="bg-darker-bg">
+        <tr>
+          <th class="border border-gray-600 px-4 py-2 text-left text-white">Name</th>
+          <th class="border border-gray-600 px-4 py-2 text-left text-white">Amount</th>
+          <th class="border border-gray-600 px-4 py-2 text-left text-white">Type</th>
+        </tr>
+      </thead>
+      <tbody class="bg-gray-700">
+        {% for yeast in page.yeasts.all %}
+          <tr>
+            <td class="border border-gray-600 px-4 py-2 text-white">{{ yeast }}</td>
+            <td class="border border-gray-600 px-4 py-2 text-white">{{ yeast.amount|floatformat:"2" }} {{ yeast.get_amount_units_display }}</td>
+            <td class="border border-gray-600 px-4 py-2 text-white">{{ yeast.get_yeast_type_display }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    {% if page.miscellaneous_ingredients.exists %}
+      <h5>Other Ingredients</h5>
+      <table class="w-full border border-gray-600">
+        <thead class="bg-darker-bg">
+          <tr>
+            <th class="border border-gray-600 px-4 py-2 text-left text-white">Name</th>
+            <th class="border border-gray-600 px-4 py-2 text-left text-white">Amount</th>
+            <th class="border border-gray-600 px-4 py-2 text-left text-white">Type</th>
+            <th class="border border-gray-600 px-4 py-2 text-left text-white">Step</th>
+            <th class="border border-gray-600 px-4 py-2 text-left text-white">Time</th>
+          </tr>
+        </thead>
+        <tbody class="bg-gray-700">
+          {% for misc in page.miscellaneous_ingredients.all %}
             <tr>
-              <th>Name</th>
-              <th>Amount</th>
-              <th>Form</th>
-              <th>Step</th>
-              <th>Time</th>
+              <td class="border border-gray-600 px-4 py-2 text-white">{{ misc.name }}</td>
+              <td class="border border-gray-600 px-4 py-2 text-white">{{ misc.amount|floatformat:"2" }} {{ misc.get_amount_units_display }}</td>
+              <td class="border border-gray-600 px-4 py-2 text-white">{{ misc.get_type_display }}</td>
+              <td class="border border-gray-600 px-4 py-2 text-white">{{ misc.get_use_step_display }}</td>
+              <td class="border border-gray-600 px-4 py-2 text-white">{{ misc.use_time }}</td>
             </tr>
-          </thead>
-          <tbody class="table-secondary">
-            {% for hop in page.hops.all %}
-              <tr>
-                <td>{{ hop.name }}</td>
-                <td>{{ hop.amount|floatformat:"2" }} {{ hop.get_amount_units_display }}</td>
-                <td>{{ hop.get_form_display }}</td>
-                <td>{{ hop.get_use_step_display }}</td>
-                <td>{{ hop.use_time }}</td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-
-        <h5>Yeast</h5>
-        <table class="table">
-          <thead class="table-active">
-            <tr>
-              <th>Name</th>
-              <th>Amount</th>
-              <th>Type</th>
-            </tr>
-          </thead>
-          <tbody class="table-secondary">
-            {% for yeast in page.yeasts.all %}
-              <tr>
-                <td>{{ yeast }}</td>
-                <td>{{ yeast.amount|floatformat:"2" }} {{ yeast.get_amount_units_display }}</td>
-                <td>{{ yeast.get_yeast_type_display }}</td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-
-        {% if page.miscellaneous_ingredients.exists %}
-          <h5>Other Ingredients</h5>
-          <table class="table">
-            <thead class="table-active">
-              <tr>
-                <th>Name</th>
-                <th>Amount</th>
-                <th>Type</th>
-                <th>Step</th>
-                <th>Time</th>
-              </tr>
-            </thead>
-            <tbody class="table-secondary">
-              {% for misc in page.miscellaneous_ingredients.all %}
-                <tr>
-                  <td>{{ misc.name }}</td>
-                  <td>{{ misc.amount|floatformat:"2" }} {{ misc.get_amount_units_display }}</td>
-                  <td>{{ misc.get_type_display }}</td>
-                  <td>{{ misc.get_use_step_display }}</td>
-                  <td>{{ misc.use_time }}</td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
         <div class="recipe_detail__conclusion">
           {{ page.conclusion }}
         </div>
