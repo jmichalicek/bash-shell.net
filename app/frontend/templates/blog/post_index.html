@@ -1,20 +1,20 @@
 {% extends 'base.html' %}
 {% load blog_tags wagtailcore_tags %}
 {% block primary %}
-  <div class="page-header w-full">
-    <h2>Posts</h2>
+  <div class="w-full p-4 bg-dark-bg mb-1 rounded-sm">
+    <h2 class="text-2xl font-medium text-white">Posts</h2>
   </div>
   {% for post in posts %}
-    <div class="blog-post w-full">
-      <h2>{{ post.title }}</h2>
-      <p class="blog-post-meta"> by {{ post.owner.first_name }} on {{ post.first_published_at|date:"N j, Y, P T" }}</p>
+    <div class="w-full mb-4 bg-dark-bg p-4 rounded-sm text-white">
+      <h2 class="text-2xl font-medium text-white mb-1">{{ post.title }}</h2>
+      <p class="mb-5 text-gray-400"> by {{ post.owner.first_name }} on {{ post.first_published_at|date:"N j, Y, P T" }}</p>
       {# add updated if last_published_at is different from first_published_at? #}
 
-      <hr />
+      <hr class="mb-4 border-gray-600" />
       {# markdown will properly wrap the following text in appropriate tags if needed #}
       {# how to us include_block here with the truncatewords_html? #}
       {{ post.body|truncatewords_html:"100"|safe }}
-      <span><a class="" href="{% pageurl post %}">&rarr; read more</a></span>
+      <span><a class="text-orange-accent hover:text-orange-hover" href="{% pageurl post %}">&rarr; read more</a></span>
     </div>
   {% endfor %}
 
