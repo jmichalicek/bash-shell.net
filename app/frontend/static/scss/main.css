@@ -61,7 +61,13 @@ li {
 
 /* Override list styling for navigation menus and image galleries */
 nav ul,
-header ul,
+header ul {
+  list-style-type: none;
+  padding-left: 0;
+  margin-bottom: 0;
+  border-left: 0 !important;
+}
+
 .js-lightbox ul {
   list-style-type: none;
   padding-left: 0;
