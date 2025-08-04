@@ -65,9 +65,10 @@ li {
   margin-bottom: 0;
 }
 
-/* Override list styling for navigation menus and image galleries */
+/* Override list styling for navigation menus, footer, and image galleries */
 nav ul,
-header ul {
+header ul,
+footer ul {
   list-style-type: none;
   padding-left: 0;
   margin-bottom: 0;
@@ -92,7 +93,8 @@ header ul {
 }
 
 nav li,
-header li {
+header li,
+footer li {
   margin-bottom: 0;
   list-style: none;
 }
@@ -131,10 +133,16 @@ header.blog-header .title {
 .twitter-svg,
 .github-svg {
   height: 1rem;
+  margin-right: 0.25rem;
+  display: inline;
+  vertical-align: middle;
 }
 
 .digitalocean-svg {
   height: 0.75rem;
+  margin-left: 0.125rem;
+  display: inline;
+  vertical-align: middle;
 }
 
 pre {
