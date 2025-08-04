@@ -27,7 +27,7 @@
   {% with page_title=page.title %}
     {{ block.super }}
   {% endwith %}
-  <div class="bg-dark-bg text-white p-4 rounded-lg">
+  <div class="bg-dark-bg text-white p-4">
     <!--
       some hackery going on here - use display: block on larger screens so that I can float these to the right and get
       long intro text text to wrap around them but use display: flex and column-reverse on smaller screens so that
@@ -42,7 +42,7 @@
         to something being a bit off due to the switch to rem for everything.
         Figure it out at some point or possibly completely rework the structure.
         {% endcomment %}
-        <div class="bg-card-bg border border-gray-700 rounded-lg shadow-sm mb-4">
+        <div class="bg-card-bg border border-gray-700 shadow-sm mb-4">
           <div class="p-4">
             <ul class="list-none space-y-2">
               <li>Brewed: {{ page.brewed_date|default:"N/A" }}</li>
