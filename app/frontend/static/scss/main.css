@@ -17,6 +17,12 @@
 
 /* Custom styles for existing functionality */
 
+/* Bootstrap compatibility classes */
+.col-12 {
+  flex: 0 0 auto;
+  width: 100%;
+}
+
 html,
 body {
   min-height: 100%;
