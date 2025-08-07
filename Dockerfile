@@ -28,7 +28,7 @@ USER django
 ADD --chown=django https://astral.sh/uv/0.7.5/install.sh /django/uv-installer.sh
 RUN sh /django/uv-installer.sh && rm /django/uv-installer.sh
 ENV HOME=/django/ \
-    PATH=/django/bash-shell.net/app/.venv/bin:/django/.local/bin:/django/bash-shell.net/node_modules/.bin:$PATH \
+    PATH=/django/bash-shell.net/app/.venv/bin:/django/.local/bin:/django/bash-shell.net/app/frontend/node_modules/.bin:$PATH \
     LC_ALL=C.UTF-8 \
     LANG=C.UTF-8 \
     PYTHONIOENCODING=utf-8
@@ -43,17 +43,19 @@ COPY ./app/uv.lock /django/bash-shell.net/uv.lock
 # I am being lazy and installing dev requirements here to make it easy to run my tests on the prod image
 # since they don't add much size
 RUN uv sync --locked --no-cache
-COPY --chown=django ./app/package.json ./app/package-lock.json /django/bash-shell.net/
+COPY --chown=django ./app/frontend/package.json ./app/frontend/package-lock.json /django/bash-shell.net/frontend/
+RUN mkdir -p /django/bash-shell.net/frontend/static
+WORKDIR /django/bash-shell.net/frontend/
 RUN npm ci
-RUN mkdir -p /django/bash-shell.net/config/static
-COPY --chown=django ./app/config/static/ /django/bash-shell.net/config/static
-COPY --chown=django ./app/webpack.config.js ./.stylelintrc.json /django/bash-shell.net/
+ENV PATH=/django/bash-shell.net/frontend/node_modules/.bin:$PATH
+COPY --chown=django ./app/frontend/ /django/bash-shell.net/frontend
 RUN webpack build --mode=production --stats-children
 
 COPY --chown=django ./app /django/bash-shell.net/
 # Cannot ignore *.map anymore, wagtail has changed things so their *.map files get referenced and so need to exist
+WORKDIR /django/bash-shell.net/
 RUN DJANGO_SETTINGS_MODULE=config.settings.production python manage.py collectstatic -l --noinput -i *.scss -i index.js
-RUN rm -rf webpack_assets ./config/static/scss/ ./config/static/js/index.js node_modules
+RUN rm -rf webpack_assets ./frontend/static/scss/ ./frontend/static/js/index.js node_modules
 COPY --chown=django ./.flake8 /django/bash-shell.net/.flake8
 RUN ls -a
 
