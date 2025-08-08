@@ -142,9 +142,9 @@ class DetailImageChooserBlockTest(WagtailTestUtils, TestCase):
                 "license_url": "",
                 "license_name": "",
                 "expected": f"""
-                    <div class="col-12 text-center mb-2 js-lightbox">
-                      <a href="{full_size_rendition.url}" title="" data-caption="">
-                        {image_rendition.img_tag(extra_attributes={'alt': '', 'class': 'mx-auto d-block', 'loading': 'lazy'})}
+                    <div class="w-full text-center mb-2 js-lightbox">
+                      <a class="" href="{full_size_rendition.url}" title="" data-caption="">
+                        {image_rendition.img_tag(extra_attributes={'alt': '', 'class': 'mx-auto block', 'loading': 'lazy'})}
                       </a>
                     </div>
                     """,
@@ -156,9 +156,9 @@ class DetailImageChooserBlockTest(WagtailTestUtils, TestCase):
                 "license_url": "https://example.com/",
                 "license_name": "a license",
                 "expected": f"""
-                    <div class="col-12 text-center mb-2 js-lightbox">
-                      <a href="{full_size_rendition.url}" title="foobar" data-caption="foobar">
-                      {image_rendition.img_tag(extra_attributes={'alt': 'foobar', 'class': 'mx-auto d-block', 'loading': 'lazy'})}
+                    <div class="w-full text-center mb-2 js-lightbox">
+                      <a class="" href="{full_size_rendition.url}" title="foobar" data-caption="foobar">
+                      {image_rendition.img_tag(extra_attributes={'alt': 'foobar', 'class': 'mx-auto block', 'loading': 'lazy'})}
                       <span>foobar</span>
                       </a>
                     </div>
