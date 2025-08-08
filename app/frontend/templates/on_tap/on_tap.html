@@ -46,33 +46,33 @@ I might get fancy and paginate these lists and show both all the time with two s
     </div>
     <div class="w-full px-0 mt-2">
       <div class="overflow-x-auto">
-      <table class="w-full bg-dark-bg border border-gray-600 rounded">
-        <thead class="bg-darker-bg">
-          <tr>
-            <th class="px-4 py-2 text-left border-b border-gray-600 text-white">Recipe Name</th>
-            <th class="px-4 py-2 text-left border-b border-gray-600 text-white">Style</th>
-            <th class="px-4 py-2 text-left border-b border-gray-600 text-white">Status</th>
-            <th class="px-4 py-2 text-left border-b border-gray-600 text-white">Brewed Date</th>
-            <th class="px-4 py-2 text-left border-b border-gray-600 text-white">Packaged Date</th>
-            <th class="px-4 py-2 text-left border-b border-gray-600 text-white">On Tap Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for batch in upcoming_batches %}
-            <tr class="bg-dark-bg">
-              <td class="px-4 py-2 border-b border-gray-600">
-                <a class="text-orange-accent hover:text-orange-hover" href="{% pageurl batch.recipe_page %}{% querystring scale_volume=batch.target_post_boil_volume scale_unit=batch.volume_units %}">{{ batch.recipe_page.title }}</a>
-                {% if batch.status != 'planned' %} (<a class="text-orange-accent hover:text-orange-hover" href="{% pageurl batch %}">Log</a>){% endif %}
-              </td>
-              <td class="px-4 py-2 border-b border-gray-600 text-white">{{ batch.recipe_page.style }}</td>
-              <td class="px-4 py-2 border-b border-gray-600 text-white">{{ batch.get_status_display }}</td>
-              <td class="px-4 py-2 border-b border-gray-600 text-white">{{ batch.brewed_date|date:"F d, Y"|default:"" }}</td>
-              <td class="px-4 py-2 border-b border-gray-600 text-white">{{ batch.packaged_date|date:"F d, Y"|default:"" }}</td>
-              <td class="px-4 py-2 border-b border-gray-600 text-white">{{ batch.on_tap_date|date:"F d, Y"|default:"" }}</td>
+        <table class="w-full bg-dark-bg border border-gray-600 rounded">
+          <thead class="bg-darker-bg">
+            <tr>
+              <th class="px-4 py-2 text-left border-b border-gray-600 text-white">Recipe Name</th>
+              <th class="px-4 py-2 text-left border-b border-gray-600 text-white">Style</th>
+              <th class="px-4 py-2 text-left border-b border-gray-600 text-white">Status</th>
+              <th class="px-4 py-2 text-left border-b border-gray-600 text-white">Brewed Date</th>
+              <th class="px-4 py-2 text-left border-b border-gray-600 text-white">Packaged Date</th>
+              <th class="px-4 py-2 text-left border-b border-gray-600 text-white">On Tap Date</th>
             </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {% for batch in upcoming_batches %}
+              <tr class="bg-dark-bg">
+                <td class="px-4 py-2 border-b border-gray-600">
+                  <a class="text-orange-accent hover:text-orange-hover" href="{% pageurl batch.recipe_page %}{% querystring scale_volume=batch.target_post_boil_volume scale_unit=batch.volume_units %}">{{ batch.recipe_page.title }}</a>
+                  {% if batch.status != 'planned' %} (<a class="text-orange-accent hover:text-orange-hover" href="{% pageurl batch %}">Log</a>){% endif %}
+                </td>
+                <td class="px-4 py-2 border-b border-gray-600 text-white">{{ batch.recipe_page.style }}</td>
+                <td class="px-4 py-2 border-b border-gray-600 text-white">{{ batch.get_status_display }}</td>
+                <td class="px-4 py-2 border-b border-gray-600 text-white">{{ batch.brewed_date|date:"F d, Y"|default:"" }}</td>
+                <td class="px-4 py-2 border-b border-gray-600 text-white">{{ batch.packaged_date|date:"F d, Y"|default:"" }}</td>
+                <td class="px-4 py-2 border-b border-gray-600 text-white">{{ batch.on_tap_date|date:"F d, Y"|default:"" }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
     </div>
   {% endif %}
@@ -96,20 +96,20 @@ I might get fancy and paginate these lists and show both all the time with two s
           {% for on_tap_record in past_batches %}
             {% with batch=on_tap_record.batch_log_page %}
               <tr class="bg-dark-bg">
-              <td class="px-4 py-2 border-b border-gray-600">
-                <a class="text-orange-accent hover:text-orange-hover" href="{% pageurl batch.recipe_page %}{% querystring scale_volume=batch.target_post_boil_volume scale_unit=batch.volume_units %}">{{ batch.recipe_page.title }}</a>
-                (<a class="text-orange-accent hover:text-orange-hover" href="{% pageurl batch %}">Log</a>)
-              </td>
-              <td class="px-4 py-2 border-b border-gray-600 text-white">{{ batch.recipe_page.style }}</td>
-              <td class="px-4 py-2 border-b border-gray-600 text-white">{{ batch.get_status_display }}</td>
-              <td class="px-4 py-2 border-b border-gray-600 text-white">{{ batch.brewed_date|date:"F d, Y" }}</td>
-              <td class="px-4 py-2 border-b border-gray-600 text-white">{{ batch.packaged_date|date:"F d, Y"|default:"" }}</td>
-              <td class="px-4 py-2 border-b border-gray-600 text-white">{{ on_tap_record.on_tap_date|date:"F d, Y"|default:"" }}</td>
-            </tr>
-          {% endwith %}
-        {% endfor %}
-      </tbody>
-    </table>
+                <td class="px-4 py-2 border-b border-gray-600">
+                  <a class="text-orange-accent hover:text-orange-hover" href="{% pageurl batch.recipe_page %}{% querystring scale_volume=batch.target_post_boil_volume scale_unit=batch.volume_units %}">{{ batch.recipe_page.title }}</a>
+                  (<a class="text-orange-accent hover:text-orange-hover" href="{% pageurl batch %}">Log</a>)
+                </td>
+                <td class="px-4 py-2 border-b border-gray-600 text-white">{{ batch.recipe_page.style }}</td>
+                <td class="px-4 py-2 border-b border-gray-600 text-white">{{ batch.get_status_display }}</td>
+                <td class="px-4 py-2 border-b border-gray-600 text-white">{{ batch.brewed_date|date:"F d, Y" }}</td>
+                <td class="px-4 py-2 border-b border-gray-600 text-white">{{ batch.packaged_date|date:"F d, Y"|default:"" }}</td>
+                <td class="px-4 py-2 border-b border-gray-600 text-white">{{ on_tap_record.on_tap_date|date:"F d, Y"|default:"" }}</td>
+              </tr>
+            {% endwith %}
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
   </div>
   <nav class="mt-8 mb-16">

@@ -41,27 +41,27 @@
                   <dd>{{ project.modified_date|date:"M d, Y" }}</dd>
                 </div>
                 <div class="flex">
-                    <dt class="font-medium text-gray-300 w-24">Latest News:</dt>
-                    <dd>{% if project_news.count > 0 %}{{ project_news.0.date_created|date:"M d, Y" }}{% endif %}</dd>
-                  </div>
-                </dl>
-                {% if object.project_hosting_services.all.exists %}
-                  <p class="mt-4 text-gray-300">View this project on:</p>
-                  <p class="mt-2">
-                    {% for host in project.project_hosting_services.all %}
-                      <a class="text-orange-accent hover:text-orange-hover" href="{{ host.project_url|default:'#' }}">{{ host.hosting_service.name }}</a>
-                      {% if host.public_vcs_uri and host.vcs %} {% if host.project_url %} - {% endif %}
-                        <a class="text-orange-accent hover:text-orange-hover" href="{{ host.public_vcs_uri }}">{{ host.get_vcs_display }}</a>
-                      {% endif %}
-                      {% if not forloop.last %}<br />{% endif %}
-                    {% endfor %}
-                  </p>
-                {% endif %}
-              </div>
+                  <dt class="font-medium text-gray-300 w-24">Latest News:</dt>
+                  <dd>{% if project_news.count > 0 %}{{ project_news.0.date_created|date:"M d, Y" }}{% endif %}</dd>
+                </div>
+              </dl>
+              {% if object.project_hosting_services.all.exists %}
+                <p class="mt-4 text-gray-300">View this project on:</p>
+                <p class="mt-2">
+                  {% for host in project.project_hosting_services.all %}
+                    <a class="text-orange-accent hover:text-orange-hover" href="{{ host.project_url|default:'#' }}">{{ host.hosting_service.name }}</a>
+                    {% if host.public_vcs_uri and host.vcs %} {% if host.project_url %} - {% endif %}
+                      <a class="text-orange-accent hover:text-orange-hover" href="{{ host.public_vcs_uri }}">{{ host.get_vcs_display }}</a>
+                    {% endif %}
+                    {% if not forloop.last %}<br />{% endif %}
+                  {% endfor %}
+                </p>
+              {% endif %}
             </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
   </div>
 {% endblock %}
