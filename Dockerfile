@@ -56,7 +56,7 @@ COPY --chown=django ./app /django/bash-shell.net/
 WORKDIR /django/bash-shell.net/
 RUN rm -rf ./frontend/static/scss/
 RUN DJANGO_SETTINGS_MODULE=config.settings.production python manage.py collectstatic -l --noinput -i *.scss -i ./frontend/static/scss/ -i ./frontend/static/css/ -i index.js
-RUN rm -rf ./frontend/webpack_assets ./frontend/static/js/index.js node_modules
+RUN rm -rf ./frontend/static/js/index.js node_modules
 COPY --chown=django ./.flake8 /django/bash-shell.net/.flake8
 
 # Production image
