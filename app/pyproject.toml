@@ -35,6 +35,7 @@ dependencies = [
 
 [tool.black]
 line-length = 120
+extend-exclude = "frontend"
 
 [tool.isort]
 profile = "black"
