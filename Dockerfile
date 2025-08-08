@@ -54,10 +54,10 @@ RUN webpack build --mode=production --stats-children
 COPY --chown=django ./app /django/bash-shell.net/
 # Cannot ignore *.map anymore, wagtail has changed things so their *.map files get referenced and so need to exist
 WORKDIR /django/bash-shell.net/
-RUN DJANGO_SETTINGS_MODULE=config.settings.production python manage.py collectstatic -l --noinput -i *.scss -i index.js
-RUN rm -rf webpack_assets ./frontend/static/scss/ ./frontend/static/js/index.js node_modules
+RUN rm -rf ./frontend/static/scss/
+RUN DJANGO_SETTINGS_MODULE=config.settings.production python manage.py collectstatic -l --noinput -i *.scss -i ./frontend/static/scss/ -i ./frontend/static/css/ -i index.js
+RUN rm -rf ./frontend/webpack_assets ./frontend/static/js/index.js node_modules
 COPY --chown=django ./.flake8 /django/bash-shell.net/.flake8
-RUN ls -a
 
 # Production image
 FROM python:$PYTHON_VERSION-slim-$DISTRO AS prod
