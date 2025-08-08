@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load blog_tags %}
+
+{% block primary %}
+  <div class="w-full max-w-4xl">
+    <div class="mb-4">
+      <h2 class="text-white text-3xl font-bold">{{ flatpage.title }}</h2>
+    </div>
+    <hr class="border-gray-600 mb-4" />
+    <div class="text-gray-300 leading-relaxed">
+      {{ flatpage.content|render_markdown|safe }}
+    </div>
+  </div>
+{% endblock %}

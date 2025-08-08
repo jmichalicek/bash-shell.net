@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load blog_tags %}
+{% load static %}
+{% load wagtailcore_tags %}
+
+{% block primary %}
+  <div class="page-header col-12">
+    <h2>{{ page.title }}</h2>
+  </div>
+  <hr />
+  {% include_block page.body %}
+{% endblock %}

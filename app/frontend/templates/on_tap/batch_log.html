@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load wagtailcore_tags on_tap_tags %}
+{% block page_stylesheets %}
+  <style nonce="{{ request.csp_nonce }}">
+    {# extra specificity needed here or bootstrap padding values override this #}
+    td.beer-style-guide__srm {
+      padding: .5rem .75rem 0;
+    }
+
+    .beer-style-guide__srm-gradient {
+      background-image: linear-gradient(to right, {{ recipe_page.style.color_min|default:0|floatformat:"0"|srm_to_hex }}, {{ recipe_page.style.color_max|default:40|floatformat:"0"|srm_to_hex }});
+      padding: .25rem .75rem;
+    }
+
+    .recipe-stats__srm {
+      background-color: {{ calculated_srm|floatformat:"0"|srm_to_hex }};
+      padding: .25rem .75rem;
+      {# When srm is less than 7-10, the white text gets hard to read #}
+      {% if calculated_srm < 10 %}color: #2B3E50;{% endif %}
+    }
+  </style>
+{% endblock page_stylesheets %}
+{% block title %}{{ page.title }}{% endblock title %}
+{% block og_title %}{{ page.title }}{% endblock og_title %}
+{% block og_description %}Brew day log and notes for {{ recipe_page.title }}{% if page.brewed_date %} brewed on {{ page.brewed_date }}{% endif %}{% endblock og_description %}
+{% block primary %}
+  {% with page_title=page.title %}
+    {{ block.super }}
+  {% endwith %}
+  <div class="bg-dark-bg text-white p-4">
+    <!--
+      some hackery going on here - use display: block on larger screens so that I can float these to the right and get
+      long intro text text to wrap around them but use display: flex and column-reverse on smaller screens so that
+      I can drop the floated div down below the introduction text. This way I don't have to duplicate data in elements
+      which get hidden or shown on different screen sizes.
+    -->
+    <div class="flex flex-col-reverse md:block">
+      <div class="md:block w-full md:w-1/3 md:float-right md:pl-6 pr-2">
+        {% comment %}
+        This outter div does not QUITE line up on the right with the tables below
+        as it did with bootstrap 4.5, but is within a couple of px. Probably due
+        to something being a bit off due to the switch to rem for everything.
+        Figure it out at some point or possibly completely rework the structure.
+        {% endcomment %}
+        <div class="bg-card-bg border border-gray-700 shadow-sm mb-4">
+          <div class="p-4">
+            <ul class="list-none space-y-2">
+              <li>Brewed: {{ page.brewed_date|default:"N/A" }}</li>
+              <li>Packaged: {{ page.packaged_date|default:"N/A" }}</li>
+              <li>On Tap: {{ page.on_tap_date|default:"N/A" }}</li>
+              <li>Recipe: <a class="text-orange-accent hover:text-orange-hover" href="{% pageurl page.recipe_page %}{% querystring scale_volume=page.target_post_boil_volume scale_unit=page.volume_units %}">{{ recipe_page.title }}</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div>
+        <p>
+          {{ page.body }}
+        </p>
+      </div>
+    </div>
+    <h2 class="text-2xl font-medium mt-4">{{ page.name }}</h2>
+    <h4 class="text-xl font-medium mb-4">{{ page.style }}</h4>
+
+    <h3 class="text-xl font-medium mt-6 mb-4">Style Details</h3>
+    <div class="overflow-x-auto mb-6">
+      <table class="w-full border border-gray-600">
+        <thead class="bg-darker-bg">
+          <tr>
+            <th class="border border-gray-600 px-4 py-2 text-left text-white">O.G.</th>
+            <th class="border border-gray-600 px-4 py-2 text-left text-white">F.G.</th>
+            <th class="border border-gray-600 px-4 py-2 text-left text-white">IBU</th>
+            <th class="border border-gray-600 px-4 py-2 text-left text-white">Color</th>
+          </tr>
+        </thead>
+        <tbody class="bg-gray-700">
+          <tr>
+            <td class="border border-gray-600 px-4 py-2 text-white">{% if recipe_page.style.original_gravity_min and recipe_page.style.original_gravity_max %}{{ recipe_page.style.original_gravity_min|floatformat:"3" }} - {{ recipe_page.style.original_gravity_max|floatformat:"3" }}{% else %}N/A{% endif %}</td>
+            <td class="border border-gray-600 px-4 py-2 text-white">{% if recipe_page.style.final_gravity_min and recipe_page.style.final_gravity_max %}{{ recipe_page.style.final_gravity_min|floatformat:"3" }} - {{ recipe_page.style.final_gravity_max|floatformat:"3" }}{% else %}N/A{% endif %}</td>
+            <td class="border border-gray-600 px-4 py-2 text-white">{% if recipe_page.style.ibu_min and recipe_page.style.ibu_max %}{{ recipe_page.style.ibu_min|floatformat:"0" }} - {{ recipe_page.style.ibu_max|floatformat:"0" }}{% else %}N/A{% endif %}</td>
+            <td class="border border-gray-600 px-4 py-2 text-white beer-style-guide__srm"><div class="text-center beer-style-guide__srm-gradient">{{ recipe_page.style.color_min|floatformat:"0" }} - {{ recipe_page.style.color_max|floatformat:"0" }} srm</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="text-xl font-medium mt-6 mb-4">Batch Details</h3>
+    <div class="overflow-x-auto">
+      <table class="w-full border border-gray-600">
+        <thead class="bg-darker-bg">
+          <tr>
+            <th class="border border-gray-600 px-4 py-2 text-left text-white">Brewed On</th>
+            <th class="border border-gray-600 px-4 py-2 text-left text-white">Packaged On</th>
+            <th class="border border-gray-600 px-4 py-2 text-left text-white">On Tap Date</th>
+            <th class="border border-gray-600 px-4 py-2 text-left text-white">Original Gravity</th>
+            <th class="border border-gray-600 px-4 py-2 text-left text-white">Final Gravity</th>
+            <th class="border border-gray-600 px-4 py-2 text-left text-white">Color</th>
+          </tr>
+        </thead>
+        <tbody class="bg-gray-700">
+          <tr>
+            {# move these dates up to some nice div next to the body #}
+            <td class="border border-gray-600 px-4 py-2 text-white">{{ page.brewed_date|default:"N/A" }}</td>
+            <td class="border border-gray-600 px-4 py-2 text-white">{{ page.packaged_date|default:"N/A" }}</td>
+            <td class="border border-gray-600 px-4 py-2 text-white">{{ page.on_tap_date|default:"N/A" }}</td>
+            <td class="border border-gray-600 px-4 py-2 text-white">{{ page.original_gravity }}</td>
+            <td class="border border-gray-600 px-4 py-2 text-white">{{ page.final_gravity }}</td>
+            <td class="border border-gray-600 px-4 py-2 text-white beer-style-guide__srm"><div class="text-center recipe-stats__srm">{{ calculated_srm|floatformat:"0" }} srm</div></td>
+            {% comment %}
+              I will want the batch specific details - how much did I really boil, end with, etc.
+              also add packaging type? keg or bottle? What if I split it up?
+              <td>{{ page.boil_size|floatformat:"2" }} {{ page.get_volume_units_display }}</td>
+              <td>{{ page.batch_size|floatformat:"2" }} {{ page.get_volume_units_display }}</td>
+              <td>{{ page.boil_time }} Minutes</td>
+              <td>{{ page.efficiency }}%</td>
+            {% endcomment %}
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock primary %}

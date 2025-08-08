@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load blog_tags wagtailcore_tags %}
+{% block primary %}
+  <div class="w-full p-4 bg-dark-bg mb-1 rounded-sm">
+    <h2 class="text-2xl font-medium text-white">Posts</h2>
+  </div>
+  {% for post in posts %}
+    <div class="w-full mb-4 bg-dark-bg p-4 rounded-sm text-white">
+      <h2 class="text-2xl font-medium text-white mb-1">{{ post.title }}</h2>
+      <p class="mb-5 text-gray-400"> by {{ post.owner.first_name }} on {{ post.first_published_at|date:"N j, Y, P T" }}</p>
+      {# add updated if last_published_at is different from first_published_at? #}
+
+      <hr class="mb-4 border-gray-600" />
+      {# markdown will properly wrap the following text in appropriate tags if needed #}
+      {# how to us include_block here with the truncatewords_html? #}
+      {{ post.body|truncatewords_html:"100"|safe }}
+      <span><a class="text-orange-accent hover:text-orange-hover" href="{% pageurl post %}">&rarr; read more</a></span>
+    </div>
+  {% endfor %}
+
+  <nav class="mb-16">
+    <a class="inline-block px-4 py-2 border-2 border-orange-accent text-orange-accent rounded-full {% if page_obj.has_previous %}hover:bg-orange-hover hover:!text-white{% else %}opacity-50 cursor-not-allowed{% endif %}" href="{% if page_obj.has_previous %}{% slugurl 'blog' %}?page={{ page_obj.previous_page_number }}{% else %}#{% endif %}">Newer</a>
+    <a class="inline-block px-4 py-2 border-2 border-orange-accent text-orange-accent rounded-full ml-2 {% if page_obj.has_next %}hover:bg-orange-hover hover:!text-white{% else %}opacity-50 cursor-not-allowed{% endif %}" href="{% if page_obj.has_next %}{% slugurl 'blog' %}?page={{ page_obj.next_page_number }}{% else %}#{% endif %}">Older</a>
+  </nav>
+{% endblock %}

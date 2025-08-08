@@ -1,1 +1,0 @@
-import { Tab } from 'bootstrap';

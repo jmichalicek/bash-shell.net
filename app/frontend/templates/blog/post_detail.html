@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load blog_tags %}
+{% load static %}
+{% load wagtailcore_tags %}
+
+{% block title %}{{ page.title }}{% endblock title %}
+{% block og_title %}{{ page.title }}{% endblock og_title %}
+{% block og_description %}{{ page.body|striptags|truncatewords:50 }}{% endblock og_description %}
+
+{% block primary %}
+  <div class="w-full p-4 bg-dark-bg mb-1 rounded-sm">
+    <h2 class="text-2xl font-medium text-white">{{ page.title }}</h2>
+    {% comment %}
+       rather than page.owner, may want to make a field specifically for authors.
+       See https://github.com/wagtail/bakerydemo/blob/master/bakerydemo/blog/models.py#L23 and how
+       it is used on https://github.com/wagtail/bakerydemo/blob/master/bakerydemo/blog/models.py#L85
+     {% endcomment %}
+    <em class="text-gray-400">by {% if page.owner %}{{ page.owner.get_full_name }}{% elif user.is_authenticated %}{{ user.get_full_name }}{% endif %} on {{ page.last_published_at|date:"N j, Y, P T"|default:"Not Published" }}</em>
+  </div>
+  <div class="w-full mb-4 bg-dark-bg p-4 rounded-sm text-white">
+    {# I wonder if the .blog-post wrapper should be part of page.body #}
+    {% include_block page.body %}
+  </div>
+  <nav class="mb-16">
+    <a class="inline-block px-4 py-2 border-2 border-orange-accent text-orange-accent rounded-full {% if next_post %}hover:bg-orange-hover hover:!text-white{% else %}opacity-50 cursor-not-allowed{% endif %}" href="{% if next_post %}{% pageurl next_post %}{% else %}#{% endif %}">Newer</a>
+    <a class="inline-block px-4 py-2 border-2 border-orange-accent text-orange-accent rounded-full ml-2 {% if previous_post %}hover:bg-orange-hover hover:!text-white{% else %}opacity-50 cursor-not-allowed{% endif %}" href="{% if previous_post %}{% pageurl previous_post %}{% else %}#{% endif %}">Older</a>
+  </nav>
+{% endblock %}

@@ -147,20 +147,20 @@ class OnTapPageTest(WagtailPageTestCase):
         with self.subTest(scaled_recipe=False):
             # TODO: Test the whole block of html for this which would allow verifying that it's in the right place?
             expected_on_tap_batches = f"""
-                <div class="col-md-4 col-12 mt-3 mt-md-0 pr-0">
-                  <div class="card currently-on-tap">
-                    <div class="card-header text-center">
-                      <div class="w-100">
-                        <a href="{on_tap_batch.recipe_page.url}?scale_volume={on_tap_batch.target_post_boil_volume}&amp;scale_unit={on_tap_batch.volume_units}">{on_tap_batch.recipe_page.title}</a>
+                <div class="w-full md:w-1/3 flex-1 min-w-0">
+                  <div class="card currently-on-tap bg-card-bg min-h-[275px] rounded border border-gray-600 flex flex-col">
+                    <div class="card-header !bg-gray-600 text-center p-3 rounded-t border-b border-gray-600">
+                      <div class="w-full">
+                        <a class="text-orange-accent hover:text-orange-hover" href="{on_tap_batch.recipe_page.url}?scale_volume={on_tap_batch.target_post_boil_volume}&amp;scale_unit={on_tap_batch.volume_units}">{on_tap_batch.recipe_page.title}</a>
                       </div>
-                      <small>{on_tap_batch.recipe_page.style.name} ({on_tap_batch.recipe_page.style.bjcp_category()})</small>
+                      <small class="text-sm font-normal">{on_tap_batch.recipe_page.style.name} ({on_tap_batch.recipe_page.style.bjcp_category()})</small>
                     </div>
-                    <div class="card-body">
-                      <p class="card-text">{on_tap_batch.recipe_page.short_description}</p>
-                      <p class="card-text">On Tap {currently_on_tap_record.on_tap_date.strftime(DATE_FORMAT)}</p>
+                    <div class="card-body p-4 flex-1">
+                      <p class="mb-3">{on_tap_batch.recipe_page.short_description}</p>
+                      <p class="mb-3">On Tap {currently_on_tap_record.on_tap_date.strftime(DATE_FORMAT)}</p>
                     </div>
-                    <div class="card-footer">
-                      <a href="{on_tap_batch.url}" class="card-link">Details</a>
+                    <div class="card-footer !bg-gray-600 p-3 rounded-b border-t border-gray-600 mt-auto">
+                      <a class="text-orange-accent hover:text-orange-hover" href="{on_tap_batch.url}">Details</a>
                     </div>
                   </div>
                 </div>
@@ -168,26 +168,27 @@ class OnTapPageTest(WagtailPageTestCase):
 
             expected_coming_soon_batches = f"""
             <tbody>
-                <tr>
-                <td>
-                    <a href="{fermenting_batch.recipe_page.url}?scale_volume={fermenting_batch.target_post_boil_volume}&amp;scale_unit={fermenting_batch.volume_units}">{fermenting_batch.recipe_page.title}</a>
-                    (<a href="{fermenting_batch.url}">Log</a>)
+                <tr class="bg-dark-bg">
+                <td class="px-4 py-2 border-b border-gray-600">
+                    <a class="text-orange-accent hover:text-orange-hover" href="{fermenting_batch.recipe_page.url}?scale_volume={fermenting_batch.target_post_boil_volume}&amp;scale_unit={fermenting_batch.volume_units}">{fermenting_batch.recipe_page.title}</a>
+                     (<a class="text-orange-accent hover:text-orange-hover" href="{fermenting_batch.url}">Log</a>)
                 </td>
-                <td>{fermenting_batch.recipe_page.style}</td>
-                <td>{fermenting_batch.get_status_display()}</td>
-                <td>{fermenting_batch.brewed_date.strftime(DATE_FORMAT)}</td>
-                <td></td>
-                <td></td>
+                <td class="px-4 py-2 border-b border-gray-600 text-white">{fermenting_batch.recipe_page.style}</td>
+                <td class="px-4 py-2 border-b border-gray-600 text-white">{fermenting_batch.get_status_display()}</td>
+                <td class="px-4 py-2 border-b border-gray-600 text-white">{fermenting_batch.brewed_date.strftime(DATE_FORMAT)}</td>
+                <td class="px-4 py-2 border-b border-gray-600 text-white"></td>
+                <td class="px-4 py-2 border-b border-gray-600 text-white"></td>
                 </tr>
-                <tr>
-                <td>
-                    <a href="{planned_batch.recipe_page.url}?scale_volume={planned_batch.target_post_boil_volume}&amp;scale_unit={planned_batch.volume_units}">{planned_batch.recipe_page.title}</a>
+                <tr class="bg-dark-bg">
+                <td class="px-4 py-2 border-b border-gray-600">
+                    <a class="text-orange-accent hover:text-orange-hover" href="{planned_batch.recipe_page.url}?scale_volume={planned_batch.target_post_boil_volume}&amp;scale_unit={planned_batch.volume_units}">{planned_batch.recipe_page.title}</a>
+
                 </td>
-                <td>{planned_batch.recipe_page.style}</td>
-                <td>{planned_batch.get_status_display()}</td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td class="px-4 py-2 border-b border-gray-600 text-white">{planned_batch.recipe_page.style}</td>
+                <td class="px-4 py-2 border-b border-gray-600 text-white">{planned_batch.get_status_display()}</td>
+                <td class="px-4 py-2 border-b border-gray-600 text-white"></td>
+                <td class="px-4 py-2 border-b border-gray-600 text-white"></td>
+                <td class="px-4 py-2 border-b border-gray-600 text-white"></td>
                 </tr>
             </tbody>
             """
@@ -440,13 +441,13 @@ class BatchLogPageTest(WagtailPageTestCase):
         self.assertEqual(200, r.status_code)
         # todo: tests for brewed, packaged, on tap, etc to validate those dates are in correctly
         expected_basic_details_html = f"""
-        <div class="card row">
-          <div class="card-body">
-            <ul class="list-unstyled">
+        <div class="bg-card-bg border border-gray-700 shadow-sm mb-4">
+          <div class="p-4">
+            <ul class="list-none space-y-2">
               <li>Brewed: N/A</li>
               <li>Packaged: N/A</li>
               <li>On Tap: N/A</li>
-              <li>Recipe: <a href="{self.batch_log_page.recipe_page.url}?scale_volume={self.batch_log_page.target_post_boil_volume}&amp;scale_unit={self.batch_log_page.volume_units}">{self.batch_log_page.recipe_page.title}</a></li>
+              <li>Recipe: <a class="text-orange-accent hover:text-orange-hover" href="{self.batch_log_page.recipe_page.url}?scale_volume={self.batch_log_page.target_post_boil_volume}&amp;scale_unit={self.batch_log_page.volume_units}">{self.batch_log_page.recipe_page.title}</a></li>
             </ul>
           </div>
         </div>
@@ -458,13 +459,13 @@ class BatchLogPageTest(WagtailPageTestCase):
         self.batch_log_page.save()
         r = self.client.get(self.batch_log_page.full_url)
         expected_basic_details_html = f"""
-        <div class="card row">
-          <div class="card-body">
-            <ul class="list-unstyled">
+        <div class="bg-card-bg border border-gray-700 shadow-sm mb-4">
+          <div class="p-4">
+            <ul class="list-none space-y-2">
               <li>Brewed: N/A</li>
               <li>Packaged: N/A</li>
               <li>On Tap: N/A</li>
-              <li>Recipe: <a href="{self.batch_log_page.recipe_page.url}?scale_volume={self.batch_log_page.target_post_boil_volume}&amp;scale_unit={self.batch_log_page.volume_units}">{self.batch_log_page.recipe_page.title}</a></li>
+              <li>Recipe: <a class="text-orange-accent hover:text-orange-hover" href="{self.batch_log_page.recipe_page.url}?scale_volume={self.batch_log_page.target_post_boil_volume}&amp;scale_unit={self.batch_log_page.volume_units}">{self.batch_log_page.recipe_page.title}</a></li>
             </ul>
           </div>
         </div>
