@@ -111,7 +111,6 @@ MIDDLEWARE = [
     "django.contrib.flatpages.middleware.FlatpageFallbackMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
     "csp.middleware.CSPMiddleware",
-    "django_structlog.middlewares.RequestMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 

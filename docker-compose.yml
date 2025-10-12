@@ -52,9 +52,8 @@ services:
       - type: bind
         source: .
         target: /django/bash-shell.net/
-      - ~/.git-hooks:/django/.git-hooks:ro
-      - ~/.gitconfig:/django/.gitconfig:ro
-      - ~/.ssh:/django/.ssh:ro
+      - ~/.gitconfig:/django/.gitconfig
+      - ~/.ssh:/django/.ssh
   django-ci:
     profiles:
     - ci
