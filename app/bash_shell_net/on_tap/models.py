@@ -969,7 +969,7 @@ class BatchLogPageTag(TaggedItemBase):
 
 class BaseBatchLogPagePageManager(PageManager):
     def get_queryset(self):
-        return super().get_queryset().live().prefetch_related("tagged_items__tag").select_related("recipe_page")
+        return super().get_queryset().prefetch_related("tagged_items__tag").select_related("recipe_page")
 
 
 BatchLogPageManager = BaseBatchLogPagePageManager.from_queryset(PageQuerySet)
