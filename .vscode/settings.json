@@ -69,5 +69,6 @@
   ],
   "emmet.includeLanguages": {
     "django-html": "html"
-  }
+  },
+  "makefile.configureOnOpen": false
 }

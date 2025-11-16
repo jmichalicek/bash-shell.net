@@ -25,6 +25,7 @@ RUN apt-get update && apt-get install -y --allow-unauthenticated \
 RUN pip install -U pip
 RUN useradd -ms /bin/bash -d /django django && echo "django ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 USER django
+RUN curl -fsSL https://claude.ai/install.sh | bash
 ADD --chown=django https://astral.sh/uv/0.7.5/install.sh /django/uv-installer.sh
 RUN sh /django/uv-installer.sh && rm /django/uv-installer.sh
 ENV HOME=/django/ \
