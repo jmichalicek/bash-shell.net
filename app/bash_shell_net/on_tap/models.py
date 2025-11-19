@@ -22,7 +22,7 @@ from wagtail.search import index
 from wagtail.snippets.models import register_snippet
 
 from bash_shell_net.base.mixins import IdAndSlugUrlIndexMixin, IdAndSlugUrlMixin
-from bash_shell_net.on_tap.forms import BatchLogPageForm
+from bash_shell_net.on_tap.forms import BatchLogPageForm, RecipePageForm
 from bash_shell_net.wagtail_blocks.fields import STANDARD_STREAMFIELD_FIELDS
 
 if TYPE_CHECKING:
@@ -772,7 +772,10 @@ class RecipePage(IdAndSlugUrlMixin, Page):  # type: ignore[django-manager-missin
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    base_form_class = RecipePageForm
+
     content_panels = Page.content_panels + [
+        FieldPanel("beerxml_import"),
         FieldPanel("short_description"),
         FieldPanel("style"),
         FieldPanel("recipe_type"),
