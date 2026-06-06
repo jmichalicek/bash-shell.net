@@ -21,7 +21,7 @@ TEMPLATES_DIR = os.path.join(os.path.dirname(PROJECT_ROOT), "frontend", "templat
 AUTH_USER_MODEL = "accounts.User"
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 DEBUG = env("DEBUG", bool, False)
-ADMINS = (("Justin Michalicek", "jmichalicek@gmail.com"),)
+ADMINS = ("jmichalicek@gmail.com",)
 MANAGERS = ADMINS
 
 # Local time zone for this installation. Choices can be found here:

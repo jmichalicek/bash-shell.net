@@ -254,7 +254,7 @@ class RecipeFermentable(ScalableAmountMixin, Orderable, models.Model):
     name = models.CharField(max_length=100, blank=False)
     # maltster = models.CharField(max_length=100, blank=True, default='', db_collation="case_insensitive")
     maltster = models.CharField(max_length=100, blank=True, default="")
-    type = models.CharField(max_length=25, choices=FermentableType.choices, blank=False)
+    type = models.CharField(max_length=25, choices=FermentableType, blank=False)
     # TODO: Default these to 0 then can clean up null checking and rigging in self.calculate_mcu()
     color = models.DecimalField(
         max_digits=6,
