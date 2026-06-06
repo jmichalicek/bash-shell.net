@@ -157,6 +157,7 @@ INSTALLED_APPS = [
     "django.contrib.admindocs",
     "django.contrib.flatpages",
     "django.contrib.sitemaps",
+    "django.contrib.postgres",
     # Wagtail
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",

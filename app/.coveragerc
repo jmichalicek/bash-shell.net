@@ -20,10 +20,6 @@ omit =
     .venv/*
     *.txt
 
-
-plugins =
-    django_coverage_plugin
-
 [report]
 fail_under = 80
 show_missing = True

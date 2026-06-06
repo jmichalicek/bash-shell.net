@@ -34,22 +34,23 @@ mypy:
 ruff:
 	ruff check . --fix
 
+ruff-fix: ruff-check-fix ruff-format
+
 ruff-check:
 	ruff check .
 
-isort-check:
-	isort --check -q --sg **/migrations/* bash_shell_net/
+ruff-format:
+	ruff format .
 
-isort:
-	isort -q --sg **/migrations/* bash_shell_net/
+ruff-format-check:
+	ruff format --diff .
 
-black:
-	black .
+ruff-check-fix:
+	ruff check --fix .
 
-black-check:
-	black --check . --diff
+lint: ruff-check ruff-format-check djhtml-check mypy
 
-lint: ruff-check black-check isort-check djhtml-check mypy
+format: ruff-check-fix ruff-format djhtml
 
 pyupgrade:
 	find ./ -path '**/.venv' -prune -o -path node_modules -prune -o -path '**/migrations' -prune -o -wholename '*/*.py' -exec pyupgrade --py313-plus '{}' +

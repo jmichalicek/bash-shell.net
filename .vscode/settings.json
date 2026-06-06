@@ -33,19 +33,11 @@
   "eslint.format.enable": true,
   "editor.renderWhitespace": "all",
   "[python]": {
-    "editor.defaultFormatter": "ms-python.black-formatter"
+    "editor.defaultFormatter": "charliermarsh.ruff"
   },
   "python.testing.autoTestDiscoverOnSaveEnabled": false,
-  "isort.check": true,
-  "isort.args": [
-    "--settings-path",
-    "${workspaceFolder}/app/pyproject.toml"
-  ],
   "black-formatter.importStrategy": "fromEnvironment",
-  "black-formatter.args": [
-    "--config=${workspaceFolder}/app/pyproject.toml"
-  ],
-  "ruff.organizeImports": false,
+  "ruff.organizeImports": true,
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
