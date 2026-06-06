@@ -85,7 +85,6 @@ class BlogPageIndex(RoutablePageMixin, IdAndSlugUrlIndexMixin, BlogPageIndexMixi
 
 
 class BlogPage(IdAndSlugUrlMixin, Page):
-
     template = "blog/post_detail.html"
     id_and_slug_url_name = "blog_post_by_id_and_slug"
 

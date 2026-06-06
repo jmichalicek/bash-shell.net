@@ -61,7 +61,6 @@ class CodeBlockTest(WagtailTestUtils, SimpleTestCase):
 
         for t in test_matrix:
             with self.subTest(language=t["language"]):
-
                 render_values = block.get_default()
                 render_values.update(
                     {
@@ -144,7 +143,7 @@ class DetailImageChooserBlockTest(WagtailTestUtils, TestCase):
                 "expected": f"""
                     <div class="w-full text-center mb-2 js-lightbox">
                       <a class="" href="{full_size_rendition.url}" title="" data-caption="">
-                        {image_rendition.img_tag(extra_attributes={'alt': '', 'class': 'mx-auto block', 'loading': 'lazy'})}
+                        {image_rendition.img_tag(extra_attributes={"alt": "", "class": "mx-auto block", "loading": "lazy"})}
                       </a>
                     </div>
                     """,
@@ -158,7 +157,7 @@ class DetailImageChooserBlockTest(WagtailTestUtils, TestCase):
                 "expected": f"""
                     <div class="w-full text-center mb-2 js-lightbox">
                       <a class="" href="{full_size_rendition.url}" title="foobar" data-caption="foobar">
-                      {image_rendition.img_tag(extra_attributes={'alt': 'foobar', 'class': 'mx-auto block', 'loading': 'lazy'})}
+                      {image_rendition.img_tag(extra_attributes={"alt": "foobar", "class": "mx-auto block", "loading": "lazy"})}
                       <span>foobar</span>
                       </a>
                     </div>

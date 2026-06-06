@@ -42,13 +42,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(_("First Name"), max_length=50, blank=True)
     last_name = models.CharField(_("Last Name"), max_length=50, blank=True)
     is_staff = models.BooleanField(
-        _("staff status"), default=False, help_text=_("Designates whether the user can log into this admin " "site.")
+        _("staff status"), default=False, help_text=_("Designates whether the user can log into this admin site.")
     )
     is_active = models.BooleanField(
         _("active"),
         default=True,
         help_text=_(
-            "Designates whether this user should be treated as " "active. Unselect this instead of deleting accounts."
+            "Designates whether this user should be treated as active. Unselect this instead of deleting accounts."
         ),
     )
     date_joined = models.DateTimeField(_("Date Joined"), default=timezone.now)
