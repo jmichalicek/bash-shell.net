@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, email, password=None, **extra_fields) -> "User":
+    def create_user(self, email, password=None, **extra_fields) -> User:
         """
         Creates and saves a User with the given username, email, and password.
         """
@@ -19,7 +19,7 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, password, **extra_fields) -> "User":
+    def create_superuser(self, email, password, **extra_fields) -> User:
         """
         Creates and saves a staff superuser
         """
