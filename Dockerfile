@@ -1,32 +1,38 @@
-ARG PYTHON_VERSION=3.13.3
-ARG DISTRO=bookworm
+ARG PYTHON_VERSION=3.14.5
+ARG DISTRO=trixie
 FROM python:$PYTHON_VERSION-$DISTRO AS dev
 LABEL maintainer="Justin Michalicek <jmichalicek@gmail.com>"
 ENV PYTHONUNBUFFERED=1 DEBIAN_FRONTEND=noninteractive PYTHONFAULTHANDLER=1
 
-RUN apt-get update && apt-get upgrade -y \
+RUN export DEBIAN_FRONTEND=noninteractive && apt-get update && apt-get upgrade -y \
   && apt-get install -y --allow-unauthenticated \
-  lsb-release \
   postgresql-common \
   bash-completion \
-  software-properties-common \
+  git-completion \
+  ca-certificates \
+  curl \
+  gnupg \
   sudo \
   vim \
   telnet \
+  tidy \
+  libheif-dev \
   && apt-get autoremove \
-  && apt-get clean
+  && apt-get clean \
+  && unset DEBIAN_FRONTEND
 
-RUN curl -sL https://deb.nodesource.com/setup_20.x | bash
+RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash -
 RUN YES=1 /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh
-RUN apt-get update && apt-get install -y --allow-unauthenticated \
+RUN export DEBIAN_FRONTEND=noninteractive && apt-get update && apt-get install -y --allow-unauthenticated \
   postgresql-client \
   nodejs \
-  && apt-get autoremove && apt-get clean
-RUN pip install -U pip
+  && apt-get autoremove -y && apt-get clean \
+  && unset DEBIAN_FRONTEND
+RUN npm install -g "npm@11.10"
 RUN useradd -ms /bin/bash -d /django django && echo "django ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 USER django
 RUN curl -fsSL https://claude.ai/install.sh | bash
-ADD --chown=django https://astral.sh/uv/0.7.5/install.sh /django/uv-installer.sh
+ADD --chown=django https://astral.sh/uv/0.11.19/install.sh /django/uv-installer.sh
 RUN sh /django/uv-installer.sh && rm /django/uv-installer.sh
 ENV HOME=/django/ \
     PATH=/django/bash-shell.net/app/.venv/bin:/django/.local/bin:/django/bash-shell.net/app/frontend/node_modules/.bin:$PATH \

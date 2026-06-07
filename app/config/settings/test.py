@@ -1,4 +1,15 @@
-from .local import *  # noqa
+from .base import *  # noqa
+
+SECURE_SSL_REDIRECT = False
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
+
+WAGTAIL_SITE_NAME = "bash-shell.net development"
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+    }
+}
 
 # faster password hashing in tests.
 PASSWORD_HASHERS = [
@@ -33,7 +44,3 @@ LOGGING = {
         "level": "CRITICAL",
     },
 }
-
-
-INSTALLED_APPS.remove("debug_toolbar")
-MIDDLEWARE.remove("debug_toolbar.middleware.DebugToolbarMiddleware")

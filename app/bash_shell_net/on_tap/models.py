@@ -254,7 +254,7 @@ class RecipeFermentable(ScalableAmountMixin, Orderable, models.Model):
     name = models.CharField(max_length=100, blank=False)
     # maltster = models.CharField(max_length=100, blank=True, default='', db_collation="case_insensitive")
     maltster = models.CharField(max_length=100, blank=True, default="")
-    type = models.CharField(max_length=25, choices=FermentableType.choices, blank=False)
+    type = models.CharField(max_length=25, choices=FermentableType, blank=False)
     # TODO: Default these to 0 then can clean up null checking and rigging in self.calculate_mcu()
     color = models.DecimalField(
         max_digits=6,
@@ -940,7 +940,7 @@ class RecipePage(IdAndSlugUrlMixin, Page):  # type: ignore[django-manager-missin
             self.yeasts.get_live_queryset().all().annotate(scaled_amount=F("amount") * scale_factor)  # type: ignore
         )
 
-    def get_scaled_recipe(self, target_volume: Decimal, unit: VolumeUnit) -> "RecipePage":
+    def get_scaled_recipe(self, target_volume: Decimal, unit: VolumeUnit) -> RecipePage:
         """
         Returns a copy of self with volumes scaled to the target volume and units and all ingredient querysets annotated and set up
         for their amounts scaled accordingly
@@ -1263,10 +1263,10 @@ class OnTapPage(Page):  # type: ignore
     #         and not cls.objects.exists()  # I really want one per parent, I think
     #         and parent.get_children().type(OnTapPage).count() == 0  # may be more correct... or .exists()
 
-    def children(self: "OnTapPage") -> "QuerySet[Page]":
+    def children(self: OnTapPage) -> QuerySet[Page]:
         return self.get_children().specific().live()
 
-    def get_on_tap_batches(self: "OnTapPage") -> "QuerySet[BatchOnTapRecord]":
+    def get_on_tap_batches(self: OnTapPage) -> QuerySet[BatchOnTapRecord]:
         """
         Returns the currently on tap batches
         """
@@ -1277,7 +1277,7 @@ class OnTapPage(Page):  # type: ignore
             .order_by("-on_tap_date", "pk")
         )
 
-    def get_upcoming_batches(self) -> "QuerySet[BatchLogPage]":
+    def get_upcoming_batches(self) -> QuerySet[BatchLogPage]:
         """
         Returns the batches which are planned and not currently on tap ordered from newest to oldest. These may be
         just planned, fermenting, or packaged and just waiting to go on tap.
@@ -1290,7 +1290,7 @@ class OnTapPage(Page):  # type: ignore
             .select_related("recipe_page__style")
         )
 
-    def get_past_batches(self) -> "QuerySet[BatchOnTapRecord]":
+    def get_past_batches(self) -> QuerySet[BatchOnTapRecord]:
         """
         Returns OnTapRecords of previous batches which are no longer on tap.
         """
@@ -1304,7 +1304,7 @@ class OnTapPage(Page):  # type: ignore
         )
 
     def paginate(
-        self: "OnTapPage", queryset: "QuerySet[BatchOnTapRecord]", page_number: int = 1
+        self: OnTapPage, queryset: QuerySet[BatchOnTapRecord], page_number: int = 1
     ) -> tuple[Paginator, PaginatorPage]:
         paginator = Paginator(queryset, 25)
         try:
@@ -1318,7 +1318,7 @@ class OnTapPage(Page):  # type: ignore
 
         return (paginator, page)
 
-    def get_context(self: "OnTapPage", request: HttpRequest) -> dict:
+    def get_context(self: OnTapPage, request: HttpRequest) -> dict:
         context = super().get_context(request)
         currently_on_tap = self.get_on_tap_batches()
 
@@ -1364,7 +1364,7 @@ class RecipeIndexPage(RoutablePageMixin, IdAndSlugUrlIndexMixin, Page):  # type:
     def __str__(self) -> str:
         return self.title
 
-    def children(self: "RecipeIndexPage") -> "QuerySet[RecipePage]":
+    def children(self: RecipeIndexPage) -> QuerySet[RecipePage]:
         return self.get_children().specific().live()
 
     @route(r"^(?P<id>\d+)/(?P<slug>[-_\w]+)/$", name="on_tap_recipe_by_id_and_slug")
@@ -1399,7 +1399,7 @@ class BatchLogIndexPage(RoutablePageMixin, IdAndSlugUrlIndexMixin, Page):
     def __str__(self) -> str:
         return self.title
 
-    def children(self: "BatchLogIndexPage") -> "QuerySet[BatchLogPage]":
+    def children(self: BatchLogIndexPage) -> QuerySet[BatchLogPage]:
         return self.get_children().specific().live()
 
     @route(r"^(?P<id>\d+)/(?P<slug>[-_\w]+)/$", name="on_tap_batch_log_by_id_and_slug")

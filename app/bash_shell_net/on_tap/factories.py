@@ -19,7 +19,6 @@ from bash_shell_net.on_tap.models import (
 
 
 class BeverageStyleFactory(factory.django.DjangoModelFactory):
-
     name = "English Porter"
     style_guide = "BJCP"
     category = "Brown British Beer"
@@ -45,7 +44,6 @@ class BeverageStyleFactory(factory.django.DjangoModelFactory):
 
 
 class OnTapPageFactory(wagtail_factories.PageFactory):
-
     title = "On Tap"
 
     class Meta:
@@ -53,7 +51,6 @@ class OnTapPageFactory(wagtail_factories.PageFactory):
 
 
 class BatchLogIndexPageFactory(wagtail_factories.PageFactory):
-
     title = "Batch Logs"
 
     class Meta:
@@ -61,7 +58,6 @@ class BatchLogIndexPageFactory(wagtail_factories.PageFactory):
 
 
 class BatchLogPageFactory(wagtail_factories.PageFactory):
-
     title = factory.Sequence(lambda n: f"Batch {n}")
     recipe_page = factory.SubFactory("bash_shell_net.on_tap.factories.RecipePageFactory")  # type:ignore[var-annotated]
     body = wagtail_factories.StreamFieldFactory({"0": wagtail_factories.CharBlockFactory})  # type:ignore[var-annotated]
@@ -91,7 +87,6 @@ class BatchLogPageFactory(wagtail_factories.PageFactory):
 
 
 class RecipeIndexPageFactory(wagtail_factories.PageFactory):
-
     title = "Recipes"
 
     class Meta:
@@ -125,7 +120,6 @@ class RecipeHopFactory(factory.django.DjangoModelFactory):
 
 
 class RecipePageFactory(wagtail_factories.PageFactory):
-
     title = factory.Sequence(lambda n: f"Recipe {n}")
     recipe_type = "all_grain"
     style = factory.SubFactory(BeverageStyleFactory)  # type:ignore[var-annotated]

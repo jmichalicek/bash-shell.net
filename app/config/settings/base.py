@@ -21,7 +21,7 @@ TEMPLATES_DIR = os.path.join(os.path.dirname(PROJECT_ROOT), "frontend", "templat
 AUTH_USER_MODEL = "accounts.User"
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 DEBUG = env("DEBUG", bool, False)
-ADMINS = (("Justin Michalicek", "jmichalicek@gmail.com"),)
+ADMINS = ("jmichalicek@gmail.com",)
 MANAGERS = ADMINS
 
 # Local time zone for this installation. Choices can be found here:
@@ -157,6 +157,7 @@ INSTALLED_APPS = [
     "django.contrib.admindocs",
     "django.contrib.flatpages",
     "django.contrib.sitemaps",
+    "django.contrib.postgres",
     # Wagtail
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
@@ -256,7 +257,7 @@ LOGGING = {
         "handlers": ["console_json"],
     },
     "formatters": {
-        "verbose": {"format": "%(levelname)s %(asctime)s %(module)s " "%(process)d %(thread)d %(message)s"},
+        "verbose": {"format": "%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s"},
         "json_formatter": {
             "()": structlog.stdlib.ProcessorFormatter,
             "processor": structlog.processors.JSONRenderer(),

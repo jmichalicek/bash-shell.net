@@ -33,18 +33,6 @@ dependencies = [
     "whitenoise>=6.9.0",
 ]
 
-[tool.black]
-line-length = 120
-extend-exclude = "frontend"
-
-[tool.isort]
-profile = "black"
-line_length = 120
-skip = ['{{ project_name }}/settings.py']
-known_django = ['django']
-known_wagtail = ['wagtail', 'modelcluster', 'taggit']
-sections = ['FUTURE', 'STDLIB', 'DJANGO', 'WAGTAIL', 'THIRDPARTY', 'FIRSTPARTY', 'LOCALFOLDER']
-
 [tool.mypy]
 plugins = ["mypy_django_plugin.main"]
 exclude = 'migrations'
@@ -56,7 +44,8 @@ django_settings_module = "config.settings.local"
 [tool.ruff]
 line-length = 120
 indent-width = 4
-target-version = "py313"
+target-version = "py314"
+exclude = ["migrations", ".uv_cache", ".ruff_cache", ".venv", "**/node_modules"]
 
 [tool.ruff.lint]
 select = ["E4", "E7", "E9", "F", "DJ"]
@@ -66,18 +55,24 @@ select = ["E4", "E7", "E9", "F", "DJ"]
 "config/settings/*.py" = ["F403", "F405"]
 "wsgi.py" = ["E402"]
 
+[tool.ruff.lint.isort]
+section-order = ["future", "standard-library", "django", "wagtail", "third-party", "first-party", "local-folder"]
+known-first-party = ["bash_shell_net"]
+
+[tool.ruff.lint.isort.sections]
+django = ["django"]
+wagtail = ["wagtail"]
+thirdparty = ["treebeard"]
+
 [dependency-groups]
 dev = [
-    "black>=25.1.0",
     "coverage>=7.8.2",
-    "django-coverage-plugin>=3.1.0",
     "django-stubs>=5.2.0",
     "django-stubs-ext>=5.2.0",
     "django-upgrade>=1.25.0",
     "djhtml>=3.0.8",
     "factory-boy>=3.3.3",
     "freezegun>=1.5.2",
-    "isort>=6.0.1",
     "mypy>=1.15.0",
     "pyupgrade>=3.20.0",
     "ruff>=0.11.11",

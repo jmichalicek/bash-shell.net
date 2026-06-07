@@ -13,7 +13,6 @@ from django.test.runner import DiscoverRunner
 
 
 class TimeLoggingTestResult(TextTestResult):
-
     test_timings: list[tuple[str, float]]
     _test_started_at: float
 

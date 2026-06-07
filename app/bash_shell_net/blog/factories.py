@@ -14,7 +14,6 @@ class BlogPageIndexFactory(wagtail_factories.PageFactory):
 
 
 class BlogPageFactory(wagtail_factories.PageFactory):
-
     title = factory.Sequence(lambda n: f"Blog Post {n}")
 
     class Meta:
