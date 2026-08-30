@@ -1,4 +1,4 @@
-ARG PYTHON_VERSION=3.14.5
+ARG PYTHON_VERSION=3.14.7
 ARG DISTRO=trixie
 FROM python:$PYTHON_VERSION-$DISTRO AS dev
 LABEL maintainer="Justin Michalicek <jmichalicek@gmail.com>"
@@ -32,7 +32,7 @@ RUN npm install -g "npm@11.10"
 RUN useradd -ms /bin/bash -d /django django && echo "django ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 USER django
 RUN curl -fsSL https://claude.ai/install.sh | bash
-ADD --chown=django https://astral.sh/uv/0.11.19/install.sh /django/uv-installer.sh
+ADD --chown=django https://astral.sh/uv/0.12.7/install.sh /django/uv-installer.sh
 RUN sh /django/uv-installer.sh && rm /django/uv-installer.sh
 ENV HOME=/django/ \
     PATH=/django/bash-shell.net/app/.venv/bin:/django/.local/bin:/django/bash-shell.net/app/frontend/node_modules/.bin:$PATH \
